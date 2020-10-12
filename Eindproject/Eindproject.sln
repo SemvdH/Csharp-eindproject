@@ -3,22 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eindproject", "Eindproject.csproj", "{F9D948F4-BD6F-4E5A-B7D1-59C6AA04B308}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "..\Server\Server.csproj", "{67A9BF1A-D317-47CA-9F07-C3480D1360FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "..\Server\Server.csproj", "{67A9BF1A-D317-47CA-9F07-C3480D1360FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "..\Client\Client.csproj", "{83768EDB-097E-4089-A5DE-208CB252D1A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "..\Client\Client.csproj", "{83768EDB-097E-4089-A5DE-208CB252D1A0}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedClientServer", "..\SharedClientServer\SharedClientServer.shproj", "{6D26F969-9CB1-414F-AC3E-7253D449AC5A}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\SharedClientServer\SharedClientServer.projitems*{6d26f969-9cb1-414f-ac3e-7253d449ac5a}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F9D948F4-BD6F-4E5A-B7D1-59C6AA04B308}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9D948F4-BD6F-4E5A-B7D1-59C6AA04B308}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9D948F4-BD6F-4E5A-B7D1-59C6AA04B308}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9D948F4-BD6F-4E5A-B7D1-59C6AA04B308}.Release|Any CPU.Build.0 = Release|Any CPU
 		{67A9BF1A-D317-47CA-9F07-C3480D1360FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{67A9BF1A-D317-47CA-9F07-C3480D1360FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67A9BF1A-D317-47CA-9F07-C3480D1360FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
