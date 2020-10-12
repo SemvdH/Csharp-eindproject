@@ -7,6 +7,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <TextBox HorizontalAlignment="center" Margin="0,0,0,0" Text="{Binding ipAddress, Mode=OneWay}" TextWrapping="Wrap" VerticalAlignment="Center" Width="120"/>
+        <Label Content="IP address:" HorizontalAlignment="Center" Margin="0,176,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Connect" HorizontalAlignment="Left" Margin="465,0,0,0" VerticalAlignment="Center" Click="ConnectServer"/>
 
     </Grid>
 </Window>

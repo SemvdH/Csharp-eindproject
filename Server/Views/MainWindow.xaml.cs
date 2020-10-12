@@ -20,9 +20,15 @@ namespace Server
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string ipAddress = "test";
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void ConnectServer(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
