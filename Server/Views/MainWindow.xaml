@@ -8,7 +8,7 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Button Content="Start Server" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Command="{Binding ServerStartCommand}" IsEnabled="{Binding InformationModel.CanStartServer}"/>
-        <Label Content="{Binding InformationModel.ServerOnline}" HorizontalAlignment="Left" Margin="169,10,0,0" VerticalAlignment="Top"/>
-        <Label Content="Server Online:" HorizontalAlignment="Left" Margin="80,7,0,0" VerticalAlignment="Top"/>
+        <Label Name="serverStatusLabel" Content="{Binding InformationModel.ServerStatus}" HorizontalAlignment="Left" Margin="169,10,0,0" VerticalAlignment="Top"/>
+        <Label Content="Server Status:" HorizontalAlignment="Left" Margin="80,7,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

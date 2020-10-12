@@ -3,6 +3,7 @@ using SharedClientServer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -13,11 +14,28 @@ namespace Server.Models
         private TcpListener listener;
         private List<ServerClient> serverClients;
         public bool Started = false;
+        private static readonly object padlock = new object();
+        private static ServerCommunication instance = null;
 
-        public ServerCommunication(TcpListener listener)
+        private ServerCommunication()
         {
-            this.listener = listener;
+            listener = new TcpListener(IPAddress.Any, 5555);
             serverClients = new List<ServerClient>();
+        }
+
+        public static ServerCommunication INSTANCE
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    if (instance == null) {
+                        instance = new ServerCommunication();
+                    }
+
+                }
+                return INSTANCE;
+            }
         }
 
         public void Start()

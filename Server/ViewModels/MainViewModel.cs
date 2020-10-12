@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Server.ViewModels
 {
@@ -16,20 +17,23 @@ namespace Server.ViewModels
         private ServerCommunication serverCommunication;
         public ICommand ServerStartCommand { get; set; }
         public Information InformationModel { get; set; }
+        private MainWindow mainWindow;
 
-        public MainViewModel()
+        public MainViewModel(MainWindow mainWindow)
         {
+            this.mainWindow = mainWindow;
             Debug.WriteLine("init mainviewmodel");
             InformationModel = new Information();
             InformationModel.CanStartServer = true;
             InformationModel.ServerOnline = false;
+            
             this.ServerStartCommand = new RelayCommand(() =>
             {
                 Debug.WriteLine("connect button clicked");
                 if (serverCommunication == null)
                 {
                     Debug.WriteLine("making new server communication");
-                    serverCommunication = new ServerCommunication(new TcpListener(IPAddress.Any,5555));
+                    serverCommunication = ServerCommunication.INSTANCE;
                 }
                 if (!serverCommunication.Started)
                 {

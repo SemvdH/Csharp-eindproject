@@ -15,6 +15,7 @@ namespace Server.Models
         private byte[] buffer = new byte[1024];
         private byte[] totalBuffer = new byte[1024];
         private int totalBufferReceived = 0;
+        
 
         public ServerClient(TcpClient client)
         {
@@ -75,6 +76,7 @@ namespace Server.Models
         /// <param name="message">the incoming message</param>
         private void HandleIncomingMessage(byte[] message)
         {
+            Debug.WriteLine($"Got message from client : {message}");
             //TODO implement ways to handle the message
         }
 
