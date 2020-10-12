@@ -55,5 +55,13 @@ namespace Server.Models
             serverClients.Add(new ServerClient(tcpClient));
             listener.BeginAcceptTcpClient(new AsyncCallback(OnClientConnected), null);
         }
+
+        public void sendToAll(byte[] message)
+        {
+            foreach (ServerClient sc in serverClients)
+            {
+                sc.sendMessage(message);
+            }
+        }
     }
 }
