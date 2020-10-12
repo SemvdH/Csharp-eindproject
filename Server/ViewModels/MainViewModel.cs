@@ -22,6 +22,7 @@ namespace Server.ViewModels
             Debug.WriteLine("init mainviewmodel");
             InformationModel = new Information();
             InformationModel.CanStartServer = true;
+            InformationModel.ServerOnline = false;
             this.ServerStartCommand = new RelayCommand(() =>
             {
                 Debug.WriteLine("connect button clicked");
@@ -35,7 +36,7 @@ namespace Server.ViewModels
                     
                     Debug.WriteLine("can start server " + InformationModel.CanStartServer);
                     serverCommunication.Start();
-                    
+                    InformationModel.ServerOnline = true;
                     InformationModel.CanStartServer = false;
                 }
             });

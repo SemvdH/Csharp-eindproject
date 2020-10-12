@@ -26,9 +26,9 @@ namespace Server
         public MainWindow()
         {
             
-            InitializeComponent();
             // use mainviewmodel for the bindings of our methods
             DataContext = new MainViewModel();
+            InitializeComponent();
         }
     }
 }

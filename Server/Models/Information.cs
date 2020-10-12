@@ -10,5 +10,7 @@ namespace Server.Models
     class Information : ObservableObject
     {
         public bool CanStartServer { get; set; }
+
+        public bool ServerOnline { get; set; }
     }
 }
