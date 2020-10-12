@@ -2,6 +2,7 @@
 using SharedClientServer;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
 
@@ -17,6 +18,10 @@ namespace Server.Models
         private int totalBufferReceived = 0;
         
 
+        /// <summary>
+        /// Constructor that creates a new serverclient object with the given tcp client.
+        /// </summary>
+        /// <param name="client">the TcpClient object to use</param>
         public ServerClient(TcpClient client)
         {
             tcpClient = client;
@@ -56,8 +61,11 @@ namespace Server.Models
                 // move the contents of the totalbuffer to the start of the array
                 Array.Copy(totalBuffer, expectedMessageLength, totalBuffer, 0, (totalBufferReceived - expectedMessageLength));
 
+                // remove the length of the expected message from the total buffer
                 totalBufferReceived -= expectedMessageLength;
+                // and set the new expected length to the rest that is still in the buffer
                 expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
+
                 if (expectedMessageLength == 0)
                 {
                     break;
@@ -86,6 +94,7 @@ namespace Server.Models
         /// <param name="message">message to send</param>
         public void sendMessage(byte[] message)
         {
+            // start writing the message from the start and until it is empty. When we are done we want to execute the OnWrite method.
             stream.BeginWrite(message, 0, message.Length, new AsyncCallback(OnWrite), null);
         }
 
@@ -95,6 +104,7 @@ namespace Server.Models
         /// <param name="ar">the async result status</param>
         private void OnWrite(IAsyncResult ar)
         {
+            // end writing
             stream.EndWrite(ar);
         }
     }

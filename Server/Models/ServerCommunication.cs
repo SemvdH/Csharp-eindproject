@@ -14,15 +14,24 @@ namespace Server.Models
         private TcpListener listener;
         private List<ServerClient> serverClients;
         public bool Started = false;
+
+        /// <summary>
+        /// use a padlock object to make sure the singleton is thread-safe
+        /// </summary>
         private static readonly object padlock = new object();
+
         private static ServerCommunication instance = null;
+        public int port = 5555;
 
         private ServerCommunication()
         {
-            listener = new TcpListener(IPAddress.Any, 5555);
+            listener = new TcpListener(IPAddress.Any, port);
             serverClients = new List<ServerClient>();
         }
 
+        /// <summary>
+        /// returns the singleton serverCommunication instance
+        /// </summary>
         public static ServerCommunication INSTANCE
         {
             get
@@ -38,24 +47,37 @@ namespace Server.Models
             }
         }
 
+        /// <summary>
+        /// start the server and start listening on port 5555 and begin acceptinc tcp clients
+        /// </summary>
         public void Start()
         {
             listener.Start();
             Debug.WriteLine($"================================================\nStarted Accepting clients at {DateTime.Now}\n================================================");
             Started = true;
+            // when we have accepted a tcp client, call the onclientconnected callback method
             listener.BeginAcceptTcpClient(new AsyncCallback(OnClientConnected), null);
         }
 
+        /// <summary>
+        /// callback method that gets called when a client is accepted
+        /// </summary>
+        /// <param name="ar">the result of the asynchronous connect call</param>
         private void OnClientConnected(IAsyncResult ar) 
         {
+            // stop the acceptation
             TcpClient tcpClient = listener.EndAcceptTcpClient(ar);
             Console.WriteLine($"Got connection from {tcpClient.Client.RemoteEndPoint}");
-            ServerClient sc = new ServerClient(tcpClient);
-            
+            // create a new serverclient object and add it to the list
             serverClients.Add(new ServerClient(tcpClient));
+            //start listening for new tcp clients
             listener.BeginAcceptTcpClient(new AsyncCallback(OnClientConnected), null);
         }
 
+        /// <summary>
+        /// send a message to all tcp clients in the list
+        /// </summary>
+        /// <param name="message">the message to send</param>
         public void sendToAll(byte[] message)
         {
             foreach (ServerClient sc in serverClients)
