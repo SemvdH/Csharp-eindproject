@@ -9,5 +9,6 @@
     <Import_RootNamespace>SharedClientServer</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ClientServerUtil.cs" />
   </ItemGroup>
 </Project>
