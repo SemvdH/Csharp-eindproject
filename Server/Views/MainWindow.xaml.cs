@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Server.ViewModels;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,15 +22,13 @@ namespace Server
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string ipAddress = "test";
+        
         public MainWindow()
         {
+            
             InitializeComponent();
-        }
-
-        private void ConnectServer(object sender, RoutedEventArgs e)
-        {
-
+            // use mainviewmodel for the bindings of our methods
+            DataContext = new MainViewModel();
         }
     }
 }

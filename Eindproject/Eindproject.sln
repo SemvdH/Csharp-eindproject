@@ -11,6 +11,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedClientServer", "..\Sh
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\SharedClientServer\SharedClientServer.projitems*{67a9bf1a-d317-47ca-9f07-c3480d1360ff}*SharedItemsImports = 5
 		..\SharedClientServer\SharedClientServer.projitems*{6d26f969-9cb1-414f-ac3e-7253d449ac5a}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

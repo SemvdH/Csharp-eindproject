@@ -6,4 +6,12 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <Import Project="..\SharedClientServer\SharedClientServer.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <PackageReference Include="AsyncAwaitBestPractices" Version="4.3.0" />
+    <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
+    <PackageReference Include="PropertyChanged.Fody" Version="3.2.9" />
+  </ItemGroup>
+
 </Project>
