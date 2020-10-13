@@ -85,5 +85,13 @@ namespace Server.Models
                 sc.sendMessage(message);
             }
         }
+
+        public void sendToAllExcept(string username, byte[] message)
+        {
+            foreach (ServerClient sc in serverClients)
+            {
+                if (sc.Username != username) sc.sendMessage(message);
+            }
+        }
     }
 }

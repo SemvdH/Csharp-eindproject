@@ -86,16 +86,23 @@ namespace Server.Models
         {
             Debug.WriteLine($"Got message from {Username} : {message}");
             byte id = message[0];
+            byte[] payload = new byte[message.Length - 1];
+            Array.Copy(message,1,payload,0,message.Length-1);
             switch(id)
             {
                 case 0x01:
                     // canvas data
                     break;
                 case 0x02:
-                    // message data
+                    // json message data
+                    (string, string) combo = JSONConvert.GetUsernameAndMessage(payload);
+                    string textUsername = combo.Item1;
+                    string textMsg = combo.Item2;
+                    // todo handle sending to all except this user the username and message to display in chat
                     break;
+
                 case 0x03:
-                    // json data
+                    // object data
                     break;
                 default:
                     Debug.WriteLine("Received weird identifier: " + id);
