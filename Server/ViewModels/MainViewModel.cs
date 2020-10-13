@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Server.ViewModels
 {
@@ -24,8 +25,11 @@ namespace Server.ViewModels
             this.mainWindow = mainWindow;
             Debug.WriteLine("init mainviewmodel");
             InformationModel = new Information();
+            InformationModel.ClientsConnected = 0;
             InformationModel.CanStartServer = true;
             InformationModel.ServerOnline = false;
+            //BitmapImage onlineImg = new BitmapImage(new Uri(@"/img/online.png",UriKind.Relative));
+            //BitmapImage offlineImg = new BitmapImage(new Uri(@"/img/offline.png", UriKind.Relative));
             
             this.ServerStartCommand = new RelayCommand(() =>
             {
@@ -38,7 +42,7 @@ namespace Server.ViewModels
                 if (!serverCommunication.Started)
                 {
                     
-                    Debug.WriteLine("can start server " + InformationModel.CanStartServer);
+                    
                     serverCommunication.Start();
                     InformationModel.ServerOnline = true;
                     InformationModel.CanStartServer = false;

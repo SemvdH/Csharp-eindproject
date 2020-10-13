@@ -84,7 +84,23 @@ namespace Server.Models
         /// <param name="message">the incoming message</param>
         private void HandleIncomingMessage(byte[] message)
         {
-            Debug.WriteLine($"Got message from client : {message}");
+            Debug.WriteLine($"Got message from {Username} : {message}");
+            byte id = message[0];
+            switch(id)
+            {
+                case 0x01:
+                    // canvas data
+                    break;
+                case 0x02:
+                    // message data
+                    break;
+                case 0x03:
+                    // json data
+                    break;
+                default:
+                    Debug.WriteLine("Received weird identifier: " + id);
+                    break;
+            }
             //TODO implement ways to handle the message
         }
 
