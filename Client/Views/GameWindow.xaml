@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client.Views"
         mc:Ignorable="d"
-        Title="GameWindow" Height="600" Width="1200">
+        Title="Scrubl.io" Height="600" Width="1200">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -30,14 +30,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" Content="{Binding Path=...}" FontSize="15"/>
-            <Label Grid.Row="1" Content="{Binding Path=...}" FontSize="15"/>
-            <Label Grid.Row="2" Content="{Binding Path=...}" FontSize="15"/>
-            <Label Grid.Row="3" Content="{Binding Path=...}" FontSize="15"/>
-            <Label Grid.Row="4" Content="{Binding Path=...}" FontSize="15"/>
-            <Label Grid.Row="5" Content="{Binding Path=...}" FontSize="15"/>
-            <Label Grid.Row="6" Content="{Binding Path=...}" FontSize="15"/>
-            <Label Grid.Row="7" Content="{Binding Path=...}" FontSize="15"/>
+            
         </Grid>
 
         <Button Name="CanvasReset" Click="CanvasReset_Click" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Width="100" Margin="10, 10, 10, 10" Content="RESET" />

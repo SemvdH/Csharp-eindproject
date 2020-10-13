@@ -35,6 +35,9 @@ namespace Client
                 testLabel.Content = lobbySelected.ID;
                 usernameTextbox.IsEnabled = false;
                 colorSelection.IsEnabled = false;
+                joinButton.IsEnabled = false;
+                hostButton.IsEnabled = false;
+
                 GameWindow window = new GameWindow();
                 window.Show();
             }
