@@ -17,6 +17,6 @@ namespace Server.Models
             }
         }
 
-        public int ClientsConnected{ get; set; }
+        public int ClientsConnected{ get { return ServerCommunication.INSTANCE.ClientsConnected; } }
     }
 }

@@ -14,6 +14,7 @@ namespace Server.Models
         private TcpListener listener;
         private List<ServerClient> serverClients;
         public bool Started = false;
+        public int ClientsConnected { get { return serverClients.Count; } }
 
         /// <summary>
         /// use a padlock object to make sure the singleton is thread-safe

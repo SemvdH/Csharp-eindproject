@@ -22,10 +22,10 @@ namespace Server.ViewModels
 
         public MainViewModel(MainWindow mainWindow)
         {
+            serverCommunication = ServerCommunication.INSTANCE;
             this.mainWindow = mainWindow;
             Debug.WriteLine("init mainviewmodel");
             InformationModel = new Information();
-            InformationModel.ClientsConnected = 0;
             InformationModel.CanStartServer = true;
             InformationModel.ServerOnline = false;
             //BitmapImage onlineImg = new BitmapImage(new Uri(@"/img/online.png",UriKind.Relative));
@@ -34,15 +34,9 @@ namespace Server.ViewModels
             this.ServerStartCommand = new RelayCommand(() =>
             {
                 Debug.WriteLine("connect button clicked");
-                if (serverCommunication == null)
-                {
-                    Debug.WriteLine("making new server communication");
-                    serverCommunication = ServerCommunication.INSTANCE;
-                }
+                
                 if (!serverCommunication.Started)
                 {
-                    
-                    
                     serverCommunication.Start();
                     InformationModel.ServerOnline = true;
                     InformationModel.CanStartServer = false;
