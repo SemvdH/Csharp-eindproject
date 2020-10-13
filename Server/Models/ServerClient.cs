@@ -115,6 +115,7 @@ namespace Server.Models
                     break;
                 case 0x04:
                     // canvas data
+                    // todo send canvas data to all other serverclients in lobby
                     break;
                 default:
                     Debug.WriteLine("[SERVER] Received weird identifier: " + id);
