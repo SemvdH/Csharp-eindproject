@@ -7,6 +7,60 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Content="This client information:" FontSize="17"/>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Your username:" FontSize="15" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="1" Grid.Column="1" MaxLength="10" FontSize="15" VerticalAlignment="Center"/>
+
+            <Label Grid.Row="2" Grid.Column="0" Content="Which color you want to be:" FontSize="15" VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" FontSize="15">
+                <ComboBoxItem Content="BLUE"/>
+                <ComboBoxItem Content="RED"/>
+                <ComboBoxItem Content="YELLOW"/>
+                <ComboBoxItem Content="BLACK"/>
+                <ComboBoxItem Content="GREEN"/>
+                <ComboBoxItem Content="ORANGE"/>
+                <ComboBoxItem Content="PURPLE"/>
+            </ComboBox>
+
+        </Grid>
+
+
+        <ListView Name="LobbyList" Grid.Row="1" Grid.Column="0" Margin="10, 10, 10, 10" ItemsSource="{Binding Path=Lobbies}">
+            <ListView.View>
+                <GridView x:Name="grdList">
+                    <GridViewColumn Header="Lobby ID" DisplayMemberBinding="{Binding ID}" Width="70"/>
+                    <GridViewColumn Header="Players in" DisplayMemberBinding="{Binding PlayersIn}" Width="70"/>
+                    <GridViewColumn Header="max players available" DisplayMemberBinding="{Binding MaxPlayers}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        
+        <Button Grid.Column="1" Grid.Row="0" Content="CHECK" Command="{Binding ButtonCommand}"/>
+         
     </Grid>
 </Window>
