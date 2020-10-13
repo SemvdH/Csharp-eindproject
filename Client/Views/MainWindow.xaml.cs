@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Client.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,21 @@ namespace Client
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            Lobby lobbySelected = LobbyList.SelectedItem as Lobby;
+            if(lobbySelected != null)
+            {
+                testLabel.Content = lobbySelected.ID;
+                usernameTextbox.IsEnabled = false;
+                colorSelection.IsEnabled = false;
+                GameWindow window = new GameWindow();
+                window.Show();
+            }
+
         }
     }
 }
