@@ -8,8 +8,11 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Button Content="Start Server" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Command="{Binding ServerStartCommand}" IsEnabled="{Binding InformationModel.CanStartServer}"/>
-        <Label Name="serverStatusLabel" Content="{Binding InformationModel.ServerStatus}" HorizontalAlignment="Left" Margin="169,10,0,0" VerticalAlignment="Top"/>
+        <Label Name="serverStatusLabel" Content="{Binding InformationModel.ServerStatus}" HorizontalAlignment="Left" Margin="174,7,0,0" VerticalAlignment="Top"/>
         <Label Content="Server Status:" HorizontalAlignment="Left" Margin="80,7,0,0" VerticalAlignment="Top"/>
-        <Image Source="https://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/16/Status-user-online-icon.png" HorizontalAlignment="Left" Margin="161,16,0,0" VerticalAlignment="Top" Width="8"/>
+        <Label Content="Clients connected:" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top"/>
+        <Label Content="{Binding InformationModel.ClientsConnected}" HorizontalAlignment="Left" Margin="117,35,0,0" VerticalAlignment="Top"/>
+
+
     </Grid>
 </Window>

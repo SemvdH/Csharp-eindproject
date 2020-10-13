@@ -4,6 +4,7 @@ namespace Server.Models
 {
     public class Information : ObservableObject
     {
+        
         public bool CanStartServer { get; set; }
         public bool ServerOnline { get; set; }
 
@@ -15,5 +16,7 @@ namespace Server.Models
                 return "Offline";
             }
         }
+
+        public int ClientsConnected{ get { return ServerCommunication.INSTANCE.ClientsConnected; } }
     }
 }

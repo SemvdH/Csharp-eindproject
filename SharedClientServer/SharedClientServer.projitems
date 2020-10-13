@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ClientServerUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JSONConvert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObservableObject.cs" />
   </ItemGroup>
 </Project>
