@@ -17,7 +17,6 @@ namespace Server.Models
         public bool Started = false;
         public List<Lobby> lobbies;
         private Dictionary<Lobby, List<ServerClient>> serverClientsInlobbies;
-        public int ClientsConnected { get; set; }
         public Action newClientAction;
 
         /// <summary>
@@ -34,7 +33,6 @@ namespace Server.Models
             serverClients = new List<ServerClient>();
             lobbies = new List<Lobby>();
             serverClientsInlobbies = new Dictionary<Lobby, List<ServerClient>>();
-            ClientsConnected = 0;
         }
 
         /// <summary>
@@ -80,7 +78,6 @@ namespace Server.Models
             newClientAction.Invoke();
             // create a new serverclient object and add it to the list
             serverClients.Add(new ServerClient(tcpClient));
-            ClientsConnected++;
             //start listening for new tcp clients
             listener.BeginAcceptTcpClient(new AsyncCallback(OnClientConnected), null);
         }
@@ -133,7 +130,15 @@ namespace Server.Models
                         // TODO send lobby full message
                     } else
                     {
-                        // TODO add serverclient to lobbies dict
+                        foreach(ServerClient sc in serverClients)
+                        {
+                            if (sc.Username == username)
+                            {
+                                serverClientsInlobbies[l].Add(sc);
+                                break;
+                            }
+                        }
+                        
                     }
                     break;
                 }
