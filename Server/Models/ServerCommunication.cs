@@ -15,9 +15,10 @@ namespace Server.Models
         private TcpListener listener;
         private List<ServerClient> serverClients;
         public bool Started = false;
-        public int ClientsConnected { get { return serverClients.Count; } }
         public List<Lobby> lobbies;
         private Dictionary<Lobby, List<ServerClient>> serverClientsInlobbies;
+        public int ClientsConnected { get; set; }
+        public Action newClientAction;
 
         /// <summary>
         /// use a padlock object to make sure the singleton is thread-safe
@@ -33,6 +34,7 @@ namespace Server.Models
             serverClients = new List<ServerClient>();
             lobbies = new List<Lobby>();
             serverClientsInlobbies = new Dictionary<Lobby, List<ServerClient>>();
+            ClientsConnected = 0;
         }
 
         /// <summary>
@@ -62,6 +64,7 @@ namespace Server.Models
             Debug.WriteLine($"================================================\nStarted Accepting clients at {DateTime.Now}\n================================================");
             Started = true;
             // when we have accepted a tcp client, call the onclientconnected callback method
+
             listener.BeginAcceptTcpClient(new AsyncCallback(OnClientConnected), null);
         }
 
@@ -72,10 +75,12 @@ namespace Server.Models
         private void OnClientConnected(IAsyncResult ar) 
         {
             // stop the acceptation
-            TcpClient tcpClient = listener.EndAcceptTcpClient(ar);
-            Console.WriteLine($"Got connection from {tcpClient.Client.RemoteEndPoint}");
+            var tcpClient = listener.EndAcceptTcpClient(ar);
+            Debug.WriteLine($"Got connection from {tcpClient.Client.RemoteEndPoint}");
+            newClientAction.Invoke();
             // create a new serverclient object and add it to the list
             serverClients.Add(new ServerClient(tcpClient));
+            ClientsConnected++;
             //start listening for new tcp clients
             listener.BeginAcceptTcpClient(new AsyncCallback(OnClientConnected), null);
         }

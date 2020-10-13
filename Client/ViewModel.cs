@@ -19,7 +19,7 @@ namespace Client
             _model = new Model();
             ButtonCommand = new RelayCommand(() =>
             {
-                ClickCheck();
+                Client client = new Client();
             });
 
             _lobbies = new List<Lobby>();

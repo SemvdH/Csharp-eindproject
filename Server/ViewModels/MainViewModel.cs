@@ -15,7 +15,7 @@ namespace Server.ViewModels
 {
     class MainViewModel : ObservableObject
     {
-        private ServerCommunication serverCommunication;
+        public ServerCommunication serverCommunication { get; set; }
         public ICommand ServerStartCommand { get; set; }
         public Information InformationModel { get; set; }
         private MainWindow mainWindow;
@@ -28,6 +28,11 @@ namespace Server.ViewModels
             InformationModel = new Information();
             InformationModel.CanStartServer = true;
             InformationModel.ServerOnline = false;
+            InformationModel.ClientsConnected = 0;
+            serverCommunication.newClientAction = () =>
+            {
+                InformationModel.ClientsConnected++;
+            };
             //BitmapImage onlineImg = new BitmapImage(new Uri(@"/img/online.png",UriKind.Relative));
             //BitmapImage offlineImg = new BitmapImage(new Uri(@"/img/offline.png", UriKind.Relative));
             

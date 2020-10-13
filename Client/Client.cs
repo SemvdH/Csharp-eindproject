@@ -22,11 +22,13 @@ namespace Client
         public Client()
         {
             this.tcpClient = new TcpClient();
+            Debug.WriteLine("Starting connect to server");
             tcpClient.BeginConnect("localhost", Port, new AsyncCallback(OnConnect), null);
         }
 
         private void OnConnect(IAsyncResult ar)
         {
+            Debug.Write("finished connecting to server");
             this.tcpClient.EndConnect(ar);
             this.stream = tcpClient.GetStream();
             this.stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete),null);
