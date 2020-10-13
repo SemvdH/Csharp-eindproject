@@ -34,10 +34,10 @@
             <Label Grid.Row="0" Content="This client information:" FontSize="17"/>
 
             <Label Grid.Row="1" Grid.Column="0" Content="Your username:" FontSize="15" VerticalAlignment="Center"/>
-            <TextBox Grid.Row="1" Grid.Column="1" MaxLength="10" FontSize="15" VerticalAlignment="Center"/>
+            <TextBox Name="usernameTextbox" Grid.Row="1" Grid.Column="1" MaxLength="10" FontSize="15" VerticalAlignment="Center"/>
 
             <Label Grid.Row="2" Grid.Column="0" Content="Which color you want to be:" FontSize="15" VerticalAlignment="Center"/>
-            <ComboBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" FontSize="15">
+            <ComboBox Name="colorSelection" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" FontSize="15">
                 <ComboBoxItem Content="BLUE"/>
                 <ComboBoxItem Content="RED"/>
                 <ComboBoxItem Content="YELLOW"/>
@@ -46,6 +46,8 @@
                 <ComboBoxItem Content="ORANGE"/>
                 <ComboBoxItem Content="PURPLE"/>
             </ComboBox>
+
+            <Label Grid.Row="3" Name="testLabel" FontSize="15" VerticalAlignment="Center"/>
 
         </Grid>
 
@@ -59,8 +61,15 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        
-        <Button Grid.Column="1" Grid.Row="0" Content="CHECK" Command="{Binding ButtonCommand}"/>
-         
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" Content="join a selected lobby" Click="Button_Click" Width="200" Height="40" HorizontalAlignment="Left" Margin="10, 0, 0, 0"/>
+            <Button Grid.Row="1" Content="host a new lobby" Command="{Binding ...}" Width="200" Height="40" HorizontalAlignment="left" Margin="10, 0, 0, 0"/>
+        </Grid>
+
     </Grid>
 </Window>
