@@ -126,6 +126,9 @@ namespace Server.Models
                     if (!succ)
                     {
                         // TODO send lobby full message
+                    } else
+                    {
+                        // TODO add serverclient to lobbies dict
                     }
                     break;
                 }

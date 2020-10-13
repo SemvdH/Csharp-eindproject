@@ -94,8 +94,12 @@ namespace Server.Models
                 case 0x01:
                     // json log in username data
                     string uName = JSONConvert.GetUsernameLogin(message);
-                    if (uName != null) Username = uName;
-                    Debug.WriteLine("[SERVERCLIENT] set username to " + Username);
+                    if (uName != null)
+                    {
+                        Username = uName;
+                        Debug.WriteLine("[SERVERCLIENT] set username to " + Username);
+                        
+                    }
                     break;
                 case 0x02:
                     // json message data
