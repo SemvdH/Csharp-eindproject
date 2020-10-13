@@ -43,7 +43,7 @@ namespace Server.Models
                     }
 
                 }
-                return INSTANCE;
+                return instance;
             }
         }
 
