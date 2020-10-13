@@ -13,5 +13,12 @@ namespace SharedClientServer
             dynamic payload = JsonConvert.DeserializeObject(msg);
             return (payload.username, payload.message);
         }
+
+        public static string GetUsernameLogin(byte[] json)
+        {
+            string msg = Encoding.ASCII.GetString(json);
+            dynamic payload = JsonConvert.DeserializeObject(msg);
+            return payload.username;
+        }
     }
 }

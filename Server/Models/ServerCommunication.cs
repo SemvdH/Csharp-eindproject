@@ -1,4 +1,5 @@
 ﻿
+using Client;
 using SharedClientServer;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ namespace Server.Models
         private List<ServerClient> serverClients;
         public bool Started = false;
         public int ClientsConnected { get { return serverClients.Count; } }
+        public List<Lobby> lobbies;
+        private Dictionary<Lobby, List<ServerClient>> serverClientsInlobbies;
 
         /// <summary>
         /// use a padlock object to make sure the singleton is thread-safe
@@ -28,6 +31,8 @@ namespace Server.Models
         {
             listener = new TcpListener(IPAddress.Any, port);
             serverClients = new List<ServerClient>();
+            lobbies = new List<Lobby>();
+            serverClientsInlobbies = new Dictionary<Lobby, List<ServerClient>>();
         }
 
         /// <summary>
@@ -87,11 +92,43 @@ namespace Server.Models
             }
         }
 
-        public void sendToAllExcept(string username, byte[] message)
+        public void SendToAllExcept(string username, byte[] message)
         {
             foreach (ServerClient sc in serverClients)
             {
                 if (sc.Username != username) sc.sendMessage(message);
+            }
+        }
+
+        public void SendToLobby(Lobby lobby, byte[] message)
+        {
+            foreach (Lobby l in lobbies)
+            {
+                if (l == lobby)
+                {
+                    foreach (ServerClient sc in serverClientsInlobbies[l])
+                    {
+                        sc.sendMessage(message);
+                    }
+                    break;
+                }
+            }
+        }
+
+        public void AddToLobby(Lobby lobby, string username)
+        {
+            foreach (Lobby l in lobbies)
+            {
+                if (l == lobby)
+                {
+                    bool succ;
+                    l.AddUsername(username, out succ);
+                    if (!succ)
+                    {
+                        // TODO send lobby full message
+                    }
+                    break;
+                }
             }
         }
     }

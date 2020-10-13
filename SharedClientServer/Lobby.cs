@@ -13,12 +13,24 @@ namespace Client
         private int _id;
         private int _playersIn;
         private int _maxPlayers;
+        private List<string> _usernames;
+
+        public void AddUsername(string username, out bool success)
+        {
+            success = false;
+            if (_usernames.Count < _maxPlayers)
+            {
+                _usernames.Add(username);
+                success = true;
+            }
+        }
 
         public Lobby(int id, int playersIn, int maxPlayers)
         {
             _id = id;
             _playersIn = playersIn;
             _maxPlayers = maxPlayers;
+            _usernames = new List<string>();
         }
 
         public int ID

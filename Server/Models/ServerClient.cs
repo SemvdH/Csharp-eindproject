@@ -90,22 +90,30 @@ namespace Server.Models
             Array.Copy(message,1,payload,0,message.Length-1);
             switch(id)
             {
+                
                 case 0x01:
-                    // canvas data
+                    // json log in username data
+                    string uName = JSONConvert.GetUsernameLogin(message);
+                    if (uName != null) Username = uName;
+                    Debug.WriteLine("[SERVERCLIENT] set username to " + Username);
                     break;
                 case 0x02:
                     // json message data
                     (string, string) combo = JSONConvert.GetUsernameAndMessage(payload);
                     string textUsername = combo.Item1;
                     string textMsg = combo.Item2;
+
                     // todo handle sending to all except this user the username and message to display in chat
                     break;
 
                 case 0x03:
-                    // object data
+                    // lobby data
+                    break;
+                case 0x04:
+                    // canvas data
                     break;
                 default:
-                    Debug.WriteLine("Received weird identifier: " + id);
+                    Debug.WriteLine("[SERVER] Received weird identifier: " + id);
                     break;
             }
             //TODO implement ways to handle the message
