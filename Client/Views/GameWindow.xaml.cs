@@ -40,7 +40,9 @@ namespace Client.Views
             {
                 Line line = new Line();
 
-                line.Stroke = SystemColors.WindowFrameBrush;
+                
+                line.Stroke = new SolidColorBrush(color);
+                //line.Stroke = SystemColors.WindowFrameBrush;
                 line.X1 = currentPoint.X;
                 line.Y1 = currentPoint.Y;
                 line.X2 = e.GetPosition(CanvasForPaint).X;
@@ -53,10 +55,21 @@ namespace Client.Views
 
         }
 
+        private Color color;
+
+        private void ClrPcker_Background_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
+        {
+            Color colorSelected = new Color();
+            colorSelected.A = 255;
+            colorSelected.R = ClrPcker_Background.SelectedColor.Value.R;
+            colorSelected.G = ClrPcker_Background.SelectedColor.Value.G;
+            colorSelected.B = ClrPcker_Background.SelectedColor.Value.B;
+            color = colorSelected;
+        }
+
         private void CanvasReset_Click(object sender, RoutedEventArgs e)
         {
             CanvasForPaint.Children.Clear();
-
 
             //FOR FUTURE USE, IF NECCESSARY
             //TEST.Children.Clear();
@@ -68,6 +81,16 @@ namespace Client.Views
             //    TEST.Children.Add(deepCopy);
             //}
 
+        }
+
+        private void ClrPcker_Background_SelectedColorChanged_1(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            Color colorSelected = new Color();
+            colorSelected.A = 255;
+            colorSelected.R = ClrPcker_Background.SelectedColor.Value.R;
+            colorSelected.G = ClrPcker_Background.SelectedColor.Value.G;
+            colorSelected.B = ClrPcker_Background.SelectedColor.Value.B;
+            color = colorSelected;
         }
     }
 }
