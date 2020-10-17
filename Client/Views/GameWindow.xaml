@@ -38,11 +38,13 @@
 
         <xctk:ColorPicker Name="ClrPcker_Background" SelectedColorChanged="ClrPcker_Background_SelectedColorChanged_1" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"></xctk:ColorPicker>
 
-        <Canvas Name="CanvasForPaint" Grid.Row="1" Grid.Column="1" MouseDown="CanvasForPaint_MouseDown" MouseMove="CanvasForPaint_MouseMove" Margin="10, 10, 10, 10" >
-            <Canvas.Background>
-                <SolidColorBrush Color="White" Opacity="0"/>
-            </Canvas.Background>
-        </Canvas>
-
+        <Border Grid.Row="1" Grid.Column="1" Margin ="10, 10, 10, 10" BorderBrush="Black" BorderThickness ="2.5">
+            <Canvas Name="CanvasForPaint" MouseDown="CanvasForPaint_MouseDown" MouseMove="CanvasForPaint_MouseMove">
+                <Canvas.Background>
+                    <SolidColorBrush Color="White" Opacity="0"/>
+                </Canvas.Background>
+            </Canvas>
+        </Border>
+        
     </Grid>
 </Window>
