@@ -12,8 +12,6 @@ namespace Client
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        
-
         public ViewModel()
         {
             _model = new Model();
@@ -63,9 +61,5 @@ namespace Client
             get { return _lobbies; }
             set { _lobbies = value; }
         }
-
-
-
-
     }
 }
