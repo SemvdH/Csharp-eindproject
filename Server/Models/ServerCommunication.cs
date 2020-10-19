@@ -124,7 +124,7 @@ namespace Server.Models
                 if (l == lobby)
                 {
                     bool succ;
-                    l.AddUsername(username, out succ);
+                    l.AddUser(username, out succ);
                     if (!succ)
                     {
                         // TODO send lobby full message

@@ -13,5 +13,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)JSONConvert.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Lobby.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ObservableObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)User.cs" />
   </ItemGroup>
 </Project>

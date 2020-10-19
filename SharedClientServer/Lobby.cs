@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharedClientServer;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -13,24 +14,46 @@ namespace Client
         private int _id;
         private int _playersIn;
         private int _maxPlayers;
-        private List<string> _usernames;
+        //private List<string> _usernames;
+        private List<User> _users;
 
-        public void AddUsername(string username, out bool success)
-        {
-            success = false;
-            if (_usernames.Count < _maxPlayers)
-            {
-                _usernames.Add(username);
-                success = true;
-            }
-        }
+        //public void AddUsername(string username, out bool success)
+        //{
+        //    success = false;
+        //    if (_usernames.Count < _maxPlayers)
+        //    {
+        //        _usernames.Add(username);
+        //        success = true;
+        //    }
+        //}
 
         public Lobby(int id, int playersIn, int maxPlayers)
         {
             _id = id;
             _playersIn = playersIn;
             _maxPlayers = maxPlayers;
-            _usernames = new List<string>();
+            //_usernames = new List<string>();
+            _users = new List<User>();
+        }
+
+        public void AddUser(string username, out bool succes)
+        {
+            succes = false;
+            if (_users.Count < _maxPlayers)
+            {
+                _users.Add(new User(username, 0));
+                succes = true;
+            }
+        }
+
+        public void AddUser(User user, out bool succes)
+        {
+            succes = false;
+            if (_users.Count < _maxPlayers)
+            {
+                _users.Add(user);
+                succes = true;
+            }
         }
 
         public int ID
