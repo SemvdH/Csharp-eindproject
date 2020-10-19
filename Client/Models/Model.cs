@@ -12,12 +12,10 @@ namespace Client
         private int _numbers;
         private bool _status;
 
+        //Test code 
         public int Numbers
         {
-            get
-            {
-                return _numbers;
-            }
+            get { return _numbers; }
 
             set
             {

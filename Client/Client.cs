@@ -17,7 +17,7 @@ namespace Client
         public int Port = 5555;
         public bool Connected = false;
         //TODO send login packet to server with ClientServerUtil.createpayload(0x01,dynamic json with username)
-        public string username;
+        public string Username { get; }
 
         public Client()
         {
@@ -81,6 +81,7 @@ namespace Client
                     string textUsername = combo.Item1;
                     string textMsg = combo.Item2;
                     //TODO display username and message in chat window
+
                     break;
 
                 case 0x03:

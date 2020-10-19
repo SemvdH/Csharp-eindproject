@@ -18,10 +18,12 @@ namespace Client.Views
     /// </summary>
     public partial class GameWindow : Window
     {
+
         public GameWindow()
         {
             DataContext = new ViewModelGame();
             InitializeComponent();
+            
         }
         Point currentPoint = new Point();
 
@@ -40,7 +42,7 @@ namespace Client.Views
             {
                 Line line = new Line();
 
-                
+             
                 line.Stroke = new SolidColorBrush(color);
                 //line.Stroke = SystemColors.WindowFrameBrush;
                 line.X1 = currentPoint.X;
@@ -91,6 +93,25 @@ namespace Client.Views
             colorSelected.G = ClrPcker_Background.SelectedColor.Value.G;
             colorSelected.B = ClrPcker_Background.SelectedColor.Value.B;
             color = colorSelected;
+        }
+
+        private void ChatBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            //if enter then clear textbox and send message.
+            if (e.Key.Equals(Key.Enter))
+            {
+                WriteToChat(ChatBox.Text);
+                ChatBox.Clear();
+            }
+        }
+
+        /*
+         * Writes the current client's message to the chatbox.
+         */
+        private void WriteToChat(string message)
+        {
+            string user = "Monkey"; 
+            SentMessage.AppendText($"{user}: {message}\n");
         }
     }
 }

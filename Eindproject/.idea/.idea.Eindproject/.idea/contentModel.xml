@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\doguk\AppData\Local\JetBrains\Rider2020.2\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\doguk\AppData\Local\JetBrains\Rider2020.2\resharper-host\Local\Transient\Rider\v202\SolutionCaches\_Eindproject.984599145.00" t="ExcludeRecursive" />
+    <e p="C:\Users\doguk\Documents\C#-EindopdrachtP1J2\Csharp-eindproject\Client" t="IncludeRecursive">
+      <e p="App.xaml" t="Include" />
+      <e p="App.xaml.cs" t="Include" />
+      <e p="AssemblyInfo.cs" t="Include" />
+      <e p="bin" t="ExcludeRecursive" />
+      <e p="Client.cs" t="Include" />
+      <e p="Client.csproj" t="IncludeRecursive" />
+      <e p="FodyWeavers.xml" t="Include" />
+      <e p="Models" t="Include">
+        <e p="Model.cs" t="Include" />
+      </e>
+      <e p="obj" t="ExcludeRecursive">
+        <e p="Debug" t="Include">
+          <e p="netcoreapp3.1" t="Include">
+            <e p="App.g.cs" t="Include" />
+            <e p="Client.AssemblyInfo.cs" t="Include" />
+            <e p="Views" t="Include">
+              <e p="GameWindow.g.cs" t="Include" />
+              <e p="MainWindow.g.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="ViewModels" t="Include">
+        <e p="ViewModel.cs" t="Include" />
+        <e p="ViewModelGame.cs" t="Include" />
+      </e>
+      <e p="Views" t="Include">
+        <e p="GameWindow.xaml" t="Include" />
+        <e p="GameWindow.xaml.cs" t="Include" />
+        <e p="MainWindow.xaml" t="Include" />
+        <e p="MainWindow.xaml.cs" t="Include" />
+      </e>
+    </e>
+    <e p="C:\Users\doguk\Documents\C#-EindopdrachtP1J2\Csharp-eindproject\Eindproject" t="IncludeFlat">
+      <e p="Eindproject.sln" t="IncludeFlat" />
+      <e p="packages" t="ExcludeRecursive" />
+    </e>
+    <e p="C:\Users\doguk\Documents\C#-EindopdrachtP1J2\Csharp-eindproject\Server" t="IncludeRecursive">
+      <e p="App.xaml" t="Include" />
+      <e p="App.xaml.cs" t="Include" />
+      <e p="AssemblyInfo.cs" t="Include" />
+      <e p="bin" t="ExcludeRecursive" />
+      <e p="FodyWeavers.xml" t="Include" />
+      <e p="img" t="Include">
+        <e p="offline.png" t="Include" />
+        <e p="online.png" t="Include" />
+      </e>
+      <e p="Models" t="Include">
+        <e p="Information.cs" t="Include" />
+        <e p="ServerClient.cs" t="Include" />
+        <e p="ServerCommunication.cs" t="Include" />
+      </e>
+      <e p="obj" t="ExcludeRecursive">
+        <e p="Debug" t="Include">
+          <e p="netcoreapp3.1" t="Include">
+            <e p="App.g.cs" t="Include" />
+            <e p="Server.AssemblyInfo.cs" t="Include" />
+            <e p="Views" t="Include">
+              <e p="MainWindow.g.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
+      <e p="Server.csproj" t="IncludeRecursive" />
+      <e p="ViewModels" t="Include">
+        <e p="MainViewModel.cs" t="Include" />
+      </e>
+      <e p="Views" t="Include">
+        <e p="MainWindow.xaml" t="Include" />
+        <e p="MainWindow.xaml.cs" t="Include" />
+      </e>
+    </e>
+    <e p="C:\Users\doguk\Documents\C#-EindopdrachtP1J2\Csharp-eindproject\SharedClientServer" t="IncludeRecursive">
+      <e p="ClientServerUtil.cs" t="Include" />
+      <e p="JSONConvert.cs" t="Include" />
+      <e p="Lobby.cs" t="Include" />
+      <e p="ObservableObject.cs" t="Include" />
+      <e p="SharedClientServer.projitems" t="Include" />
+      <e p="SharedClientServer.shproj" t="IncludeRecursive" />
+    </e>
+  </component>
+</project>

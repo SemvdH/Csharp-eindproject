@@ -15,7 +15,8 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="799"/>
+            <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
 
 
@@ -34,17 +35,22 @@
 
         </Grid>
 
-        <Button Name="CanvasReset" Click="CanvasReset_Click" Grid.Row="0" Grid.Column="1" Margin="890,10,10,10" Content="RESET" />
+        <Button Name="CanvasReset" Click="CanvasReset_Click" Grid.Row="0" Grid.Column="2" Margin="84,10,10,10" Content="RESET"/>
 
-        <xctk:ColorPicker Name="ClrPcker_Background" SelectedColorChanged="ClrPcker_Background_SelectedColorChanged_1" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"></xctk:ColorPicker>
+        <xctk:ColorPicker Name="ClrPcker_Background" SelectedColorChanged="ClrPcker_Background_SelectedColorChanged_1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="22" Width="100"/>
 
-        <Border Grid.Row="1" Grid.Column="1" Margin ="10, 10, 10, 10" BorderBrush="Black" BorderThickness ="2.5">
+        <Border Grid.Row="1" Grid.Column="1" Margin ="10,10,10,10" BorderBrush="Black" BorderThickness ="2.5">
             <Canvas Name="CanvasForPaint" MouseDown="CanvasForPaint_MouseDown" MouseMove="CanvasForPaint_MouseMove">
                 <Canvas.Background>
                     <SolidColorBrush Color="White" Opacity="0"/>
                 </Canvas.Background>
             </Canvas>
         </Border>
-        
+
+        <Grid Grid.Column="2" Grid.Row="1">
+            <TextBox Name="SentMessage" IsReadOnly="True"/>
+            <TextBox x:Name="ChatBox" Keyboard.KeyDown="ChatBox_KeyDown" Width="200" Height="50" ToolTip="Message goes here" ToolTipService.IsEnabled="True" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+        </Grid>
+
     </Grid>
 </Window>
