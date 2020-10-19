@@ -117,14 +117,14 @@ namespace Server.Models
             }
         }
 
-        public void AddToLobby(Lobby lobby, string username)
+        public void AddToLobby(Lobby lobby, User user)
         {
             foreach (Lobby l in lobbies)
             {
                 if (l == lobby)
                 {
                     bool succ;
-                    l.AddUser(username, out succ);
+                    l.AddUser(user, out succ);
                     if (!succ)
                     {
                         // TODO send lobby full message
