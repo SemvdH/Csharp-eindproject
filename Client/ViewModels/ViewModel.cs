@@ -18,7 +18,7 @@ namespace Client
             ButtonCommand = new RelayCommand(() =>
             {
                 Client client = new Client();
-            });
+            }, true);
 
             _lobbies = new List<Lobby>();
 

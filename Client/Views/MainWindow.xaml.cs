@@ -21,9 +21,13 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
+        ClientData data = ClientData.Instance;
         public MainWindow()
         {
+            this.DataContext = new ViewModel();
             InitializeComponent();
+
+            usernameTextbox.Text = data.User.Username;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

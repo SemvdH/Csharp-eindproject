@@ -18,7 +18,7 @@ namespace Client.Views
     /// </summary>
     public partial class GameWindow : Window
     {
-
+        ClientData data = ClientData.Instance;
         public GameWindow()
         {
             DataContext = new ViewModelGame();
@@ -110,7 +110,7 @@ namespace Client.Views
          */
         private void WriteToChat(string message)
         {
-            string user = "Monkey"; 
+            string user = data.User.Username; 
             SentMessage.AppendText($"{user}: {message}\n");
         }
     }
