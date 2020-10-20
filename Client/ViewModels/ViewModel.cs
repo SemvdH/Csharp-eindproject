@@ -39,6 +39,7 @@ namespace Client
             {
                 if (SelectedLobby != null)
                 {
+                    _model.CanStartGame = false;
                     GameWindow window = new GameWindow();
                     window.Show();
                 }
@@ -53,7 +54,6 @@ namespace Client
 
             _model.Numbers = _model.Numbers + 5;
         }
-
 
 
         private Model _model;
