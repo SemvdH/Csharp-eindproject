@@ -10,13 +10,12 @@ namespace Server.Models
 {
     class ServerClient : ObservableObject
     {
-        public string Username { get; set; }
         private TcpClient tcpClient;
         private NetworkStream stream;
         private byte[] buffer = new byte[1024];
         private byte[] totalBuffer = new byte[1024];
         private int totalBufferReceived = 0;
-        public User user;
+        public User User { get; set; }
         
 
         /// <summary>
@@ -85,7 +84,7 @@ namespace Server.Models
         /// <param name="message">the incoming message</param>
         private void HandleIncomingMessage(byte[] message)
         {
-            Debug.WriteLine($"Got message from {Username} : {message}");
+            Debug.WriteLine($"Got message from {User?.Username} : {message}");
             byte id = message[0];
             byte[] payload = new byte[message.Length - 1];
             Array.Copy(message,1,payload,0,message.Length-1);
@@ -97,8 +96,9 @@ namespace Server.Models
                     string uName = JSONConvert.GetUsernameLogin(message);
                     if (uName != null)
                     {
-                        Username = uName;
-                        Debug.WriteLine("[SERVERCLIENT] set username to " + Username);
+                        User = new User(uName);
+                        User.Username = uName;
+                        Debug.WriteLine("[SERVERCLIENT] set username to " + uName);
                         
                     }
                     break;
