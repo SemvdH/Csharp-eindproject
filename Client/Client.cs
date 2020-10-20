@@ -17,6 +17,7 @@ namespace Client
         public int Port = 5555;
         public bool Connected = false;
         private string username;
+        public Callback OnSuccessfullConnect;
 
         public Client(string username)
         {
@@ -31,6 +32,7 @@ namespace Client
             Debug.Write("finished connecting to server");
             this.tcpClient.EndConnect(ar);
             this.stream = tcpClient.GetStream();
+            OnSuccessfullConnect?.Invoke();
             SendMessage(JSONConvert.ConstructUsernameMessage(username));
             this.stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete),null);
         }

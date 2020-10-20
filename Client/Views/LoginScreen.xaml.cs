@@ -28,13 +28,18 @@ namespace Client.Views
         {
             User user = new User(usernameTextbox.Text);
             Client client = new Client(user.Username);
+            client.OnSuccessfullConnect = () =>
+            {
+                // because we need to start the main window on a UI thread, we need to let the dispatcher handle it, which will execute the code on the ui thread
+                Application.Current.Dispatcher.Invoke(delegate {
+                    data.User = user;
+                    data.Client = client;
+                    MainWindow startWindow = new MainWindow();
+                    startWindow.Show();
+                    this.Close();
+                });
+            };
 
-            data.User = user;
-            data.Client = client;
-
-            MainWindow startWindow = new MainWindow();
-            startWindow.Show();
-            this.Close();
         }
     }
 }
