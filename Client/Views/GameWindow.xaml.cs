@@ -19,54 +19,24 @@ namespace Client.Views
     public partial class GameWindow : Window
     {
         ClientData data = ClientData.Instance;
+        private ViewModelGame viewModel;
         public GameWindow()
         {
-            DataContext = new ViewModelGame();
+            this.viewModel = new ViewModelGame();
+            DataContext = this.viewModel;
             InitializeComponent();
             
         }
-        Point currentPoint = new Point();
+        
 
         private void CanvasForPaint_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ButtonState == MouseButtonState.Pressed)
-            {
-                currentPoint = e.GetPosition(CanvasForPaint);
-            }
-
+            this.viewModel.Canvas_MouseDown(e, this);
         }
 
         private void CanvasForPaint_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                Line line = new Line();
-
-             
-                line.Stroke = new SolidColorBrush(color);
-                //line.Stroke = SystemColors.WindowFrameBrush;
-                line.X1 = currentPoint.X;
-                line.Y1 = currentPoint.Y;
-                line.X2 = e.GetPosition(CanvasForPaint).X;
-                line.Y2 = e.GetPosition(CanvasForPaint).Y;
-
-                currentPoint = e.GetPosition(CanvasForPaint);
-
-                CanvasForPaint.Children.Add(line);
-            }
-
-        }
-
-        private Color color;
-
-        private void ClrPcker_Background_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
-        {
-            Color colorSelected = new Color();
-            colorSelected.A = 255;
-            colorSelected.R = ClrPcker_Background.SelectedColor.Value.R;
-            colorSelected.G = ClrPcker_Background.SelectedColor.Value.G;
-            colorSelected.B = ClrPcker_Background.SelectedColor.Value.B;
-            color = colorSelected;
+            viewModel.Canvas_MouseMove(e, this);
         }
 
         private void CanvasReset_Click(object sender, RoutedEventArgs e)
@@ -87,12 +57,7 @@ namespace Client.Views
 
         private void ClrPcker_Background_SelectedColorChanged_1(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            Color colorSelected = new Color();
-            colorSelected.A = 255;
-            colorSelected.R = ClrPcker_Background.SelectedColor.Value.R;
-            colorSelected.G = ClrPcker_Background.SelectedColor.Value.G;
-            colorSelected.B = ClrPcker_Background.SelectedColor.Value.B;
-            color = colorSelected;
+            viewModel.Color_Picker(e, this);
         }
 
         private void ChatBox_KeyDown(object sender, KeyEventArgs e)
