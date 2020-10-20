@@ -64,7 +64,7 @@ namespace Client
 
         public int PlayersIn
         {
-            get { return _playersIn; }
+            get { return _users.Count; }
             set { _playersIn = value; }
         }
 

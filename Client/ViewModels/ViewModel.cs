@@ -30,17 +30,34 @@ namespace Client
             _lobbies = new ObservableCollection<Lobby>();
             client = ClientData.Instance.Client;
             client.OnLobbiesListReceived = updateLobbies;
-            //_lobbies.Add(new Lobby(50, 3, 8));
-            //_lobbies.Add(new Lobby(69, 1, 9));
-            //_lobbies.Add(new Lobby(420, 7, 7));
+            
 
-            OnHostButtonClick = new RelayCommand(() => 
-            {
-                Debug.WriteLine("Host button clicked");
-            });
+            OnHostButtonClick = new RelayCommand(hostGame);
 
             JoinSelectedLobby = new RelayCommand(startGameInLobby, true);
         }
+
+        private void hostGame()
+        {
+            Debug.WriteLine("attempting to host game for " + ClientData.Instance.User.Username);
+            client.SendMessage(JSONConvert.ConstructLobbyHostMessage());
+            client.OnLobbyCreated = becomeHostForLobby;
+        }
+
+        private void becomeHostForLobby(int id, int players, int maxplayers)
+        {
+            
+            Debug.WriteLine($"got host succes with data {id} {players} {maxplayers} ");
+            Lobby newLobby = new Lobby(id, players, maxplayers);
+            SelectedLobby = newLobby;
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                _lobbies.Add(newLobby);
+                startGameInLobby();
+            });
+        }
+
+
 
         private void updateLobbies()
         {
@@ -61,11 +78,15 @@ namespace Client
             if (SelectedLobby != null)
             {
                 ClientData.Instance.Lobby = SelectedLobby;
-                
-                _model.CanStartGame = false;
-                GameWindow window = new GameWindow();
-                window.Show();
+                startGameWindow();
             }
+        }
+
+        private void startGameWindow()
+        {
+            _model.CanStartGame = false;
+            GameWindow window = new GameWindow();
+            window.Show();
         }
 
         private void ClickCheck()

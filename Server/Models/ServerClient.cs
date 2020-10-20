@@ -1,4 +1,5 @@
 ﻿
+using Client;
 using SharedClientServer;
 using System;
 using System.Collections.Generic;
@@ -128,6 +129,12 @@ namespace Server.Models
                         case LobbyIdentifier.REQUEST:
                             Debug.WriteLine("[SERVERCLIENT] got lobby request message, sending lobbies...");
                             sendMessage(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                            break;
+                        case LobbyIdentifier.HOST:
+                            // add new lobby and add this serverclient to it
+                            Lobby created = ServerCommunication.INSTANCE.HostForLobby(this.User);
+                            Debug.WriteLine("[SERVERCLIENT] created lobby");
+                            sendMessage(JSONConvert.ConstructLobbyHostCreatedMessage(created));
                             break;
                     }
                     break;

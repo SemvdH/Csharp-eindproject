@@ -148,5 +148,14 @@ namespace Server.Models
                 }
             }
         }
+
+        public Lobby HostForLobby(User user)
+        {
+            Lobby lobby = new Lobby( lobbies.Count + 1,0, 8);
+            lobbies.Add(lobby);
+            serverClientsInlobbies.Add(lobby, new List<ServerClient>());
+            AddToLobby(lobby, user);
+            return lobby;
+        }
     }
 }

@@ -46,6 +46,25 @@ namespace SharedClientServer
             });
         }
 
+        #region lobby messages
+
+        public static byte[] ConstructLobbyHostMessage()
+        {
+            return GetMessageToSend(LOBBY, new
+            {
+                identifier = LobbyIdentifier.HOST
+            });
+        }
+
+        public static byte[] ConstructLobbyHostCreatedMessage(Lobby l)
+        {
+            return GetMessageToSend(LOBBY, new
+            {
+                identifier = LobbyIdentifier.HOST,
+                lobby = l
+            }) ;
+        }
+
         public static byte[] ConstructLobbyRequestMessage()
         {
             return GetMessageToSend(LOBBY, new
@@ -80,6 +99,11 @@ namespace SharedClientServer
                 id = lobbyID
             });
         }
+        public static LobbyIdentifier GetLobbyIdentifier(byte[] json)
+        {
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            return payload.identifier;
+        }
 
         public static Lobby[] GetLobbiesFromMessage(byte[] json)
         {
@@ -94,6 +118,15 @@ namespace SharedClientServer
             dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
             return payload.id;
         }
+
+        public static Lobby GetLobby(byte[] json)
+        {
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            JObject dynamicAsObject = payload.lobby;
+            return dynamicAsObject.ToObject<Lobby>();
+        }
+
+        #endregion
 
         /// <summary>
         /// constructs a message that can be sent to the clients or server
@@ -116,10 +149,6 @@ namespace SharedClientServer
             return res;
         }
 
-        public static LobbyIdentifier GetLobbyIdentifier(byte[] json)
-        {
-            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
-            return payload.identifier;
-        }
+        
     }
 }
