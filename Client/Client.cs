@@ -21,6 +21,7 @@ namespace Client
         private string username;
         public Callback OnSuccessfullConnect;
         public Callback OnLobbiesListReceived;
+        public Callback OnLobbyJoinSuccess;
         public OnLobbyCreated OnLobbyCreated;
         public Lobby[] Lobbies { get; set; }
 
@@ -107,7 +108,9 @@ namespace Client
                             Debug.WriteLine("[CLIENT] got lobby object");
                             Lobby lobby = JSONConvert.GetLobby(payload);
                             OnLobbyCreated?.Invoke(lobby.ID,lobby.PlayersIn,lobby.MaxPlayers);
-
+                            break;
+                        case LobbyIdentifier.JOIN_SUCCESS:
+                            OnLobbyJoinSuccess?.Invoke();
                             break;
                     }
                     //TODO fill lobby with the data received

@@ -33,10 +33,10 @@ namespace Server.Models
             listener = new TcpListener(IPAddress.Any, port);
             serverClients = new List<ServerClient>();
             lobbies = new List<Lobby>();
-            lobbies.Add(new Lobby(1,1,1));
-            lobbies.Add(new Lobby(2, 2, 2));
-            lobbies.Add(new Lobby(3, 3, 3));
+            Lobby temp = new Lobby(1, 1, 8);
+            lobbies.Add(temp);
             serverClientsInlobbies = new Dictionary<Lobby, List<ServerClient>>();
+            serverClientsInlobbies.Add(temp, new List<ServerClient>());
         }
 
         /// <summary>
@@ -156,6 +156,19 @@ namespace Server.Models
             serverClientsInlobbies.Add(lobby, new List<ServerClient>());
             AddToLobby(lobby, user);
             return lobby;
+        }
+
+        public void JoinLobby(User user, int id)
+        {
+            foreach (Lobby l in lobbies)
+            {
+                if (l.ID == id)
+                {
+                    AddToLobby(l, user);
+                    Debug.WriteLine($"{user.Username} joined lobby with id {id}");
+                    break;
+                }
+            }
         }
     }
 }

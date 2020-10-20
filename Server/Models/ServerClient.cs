@@ -124,19 +124,7 @@ namespace Server.Models
                 case JSONConvert.LOBBY:
                     // lobby data
                     LobbyIdentifier l = JSONConvert.GetLobbyIdentifier(payload);
-                    switch(l)
-                    {
-                        case LobbyIdentifier.REQUEST:
-                            Debug.WriteLine("[SERVERCLIENT] got lobby request message, sending lobbies...");
-                            sendMessage(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
-                            break;
-                        case LobbyIdentifier.HOST:
-                            // add new lobby and add this serverclient to it
-                            Lobby created = ServerCommunication.INSTANCE.HostForLobby(this.User);
-                            Debug.WriteLine("[SERVERCLIENT] created lobby");
-                            sendMessage(JSONConvert.ConstructLobbyHostCreatedMessage(created));
-                            break;
-                    }
+                    handleLobbyMessage(payload,l);
                     break;
                 case JSONConvert.CANVAS:
                     // canvas data
@@ -144,6 +132,28 @@ namespace Server.Models
                     break;
                 default:
                     Debug.WriteLine("[SERVER] Received weird identifier: " + id);
+                    break;
+            }
+        }
+
+        private void handleLobbyMessage(byte[] payload, LobbyIdentifier l)
+        {
+            switch (l)
+            {
+                case LobbyIdentifier.REQUEST:
+                    Debug.WriteLine("[SERVERCLIENT] got lobby request message, sending lobbies...");
+                    sendMessage(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                    break;
+                case LobbyIdentifier.HOST:
+                    // add new lobby and add this serverclient to it
+                    Lobby created = ServerCommunication.INSTANCE.HostForLobby(this.User);
+                    Debug.WriteLine("[SERVERCLIENT] created lobby");
+                    sendMessage(JSONConvert.ConstructLobbyHostCreatedMessage(created));
+                    break;
+                case LobbyIdentifier.JOIN:
+                    int id = JSONConvert.GetLobbyID(payload);
+                    ServerCommunication.INSTANCE.JoinLobby(this.User,id);
+                    sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage());
                     break;
             }
         }

@@ -113,5 +113,10 @@ namespace Client.Views
             string user = data.User.Username; 
             SentMessage.AppendText($"{user}: {message}\n");
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
     }
 }

@@ -20,6 +20,7 @@ namespace SharedClientServer
         {
             HOST,
             JOIN,
+            JOIN_SUCCESS,
             LEAVE,
             LIST,
             REQUEST
@@ -124,6 +125,11 @@ namespace SharedClientServer
             dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
             JObject dynamicAsObject = payload.lobby;
             return dynamicAsObject.ToObject<Lobby>();
+        }
+
+        public static byte[] ConstructLobbyJoinSuccessMessage()
+        {
+            return GetMessageToSend(LOBBY, new { identifier = LobbyIdentifier.JOIN_SUCCESS});
         }
 
         #endregion

@@ -34,7 +34,7 @@ namespace Client
 
             OnHostButtonClick = new RelayCommand(hostGame);
 
-            JoinSelectedLobby = new RelayCommand(startGameInLobby, true);
+            JoinSelectedLobby = new RelayCommand(joinLobby, true);
         }
 
         private void hostGame()
@@ -55,6 +55,17 @@ namespace Client
                 _lobbies.Add(newLobby);
                 startGameInLobby();
             });
+        }
+
+        private void joinLobby()
+        {
+            client.OnLobbyJoinSuccess = OnLobbyJoinSuccess;
+            client.SendMessage(JSONConvert.ConstructLobbyJoinMessage(SelectedLobby.ID));
+        }
+
+        private void OnLobbyJoinSuccess()
+        {
+            startGameInLobby();
         }
 
 
@@ -85,8 +96,11 @@ namespace Client
         private void startGameWindow()
         {
             _model.CanStartGame = false;
-            GameWindow window = new GameWindow();
-            window.Show();
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                GameWindow window = new GameWindow();
+                window.Show();
+            });
         }
 
         private void ClickCheck()
