@@ -17,6 +17,7 @@ namespace Server.Models
         public List<Lobby> lobbies;
         private Dictionary<Lobby, List<ServerClient>> serverClientsInlobbies;
         public Action newClientAction;
+        
 
         /// <summary>
         /// use a padlock object to make sure the singleton is thread-safe
@@ -97,7 +98,7 @@ namespace Server.Models
         {
             foreach (ServerClient sc in serverClients)
             {
-                if (sc.Username != username) sc.sendMessage(message);
+                if (sc.User.Username != username) sc.sendMessage(message);
             }
         }
 
@@ -116,14 +117,14 @@ namespace Server.Models
             }
         }
 
-        public void AddToLobby(Lobby lobby, string username)
+        public void AddToLobby(Lobby lobby, User user)
         {
             foreach (Lobby l in lobbies)
             {
                 if (l == lobby)
                 {
                     bool succ;
-                    l.AddUser(username, out succ);
+                    l.AddUser(user, out succ);
                     if (!succ)
                     {
                         // TODO send lobby full message
@@ -131,7 +132,7 @@ namespace Server.Models
                     {
                         foreach(ServerClient sc in serverClients)
                         {
-                            if (sc.Username == username)
+                            if (sc.User.Username == user.Username)
                             {
                                 serverClientsInlobbies[l].Add(sc);
                                 break;

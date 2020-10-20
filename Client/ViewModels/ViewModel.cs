@@ -5,6 +5,10 @@ using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
 using SharedClientServer;
+using System.Diagnostics;
+using System.Windows;
+using System.Collections.ObjectModel;
+using Client.Views;
 
 namespace Client
 {
@@ -12,19 +16,38 @@ namespace Client
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public ICommand OnHostButtonClick { get; set; }
+        public ICommand JoinSelectedLobby { get; set; }
+
+        public Lobby SelectedLobby { get; set; }
+
         public ViewModel()
         {
             _model = new Model();
-            ButtonCommand = new RelayCommand(() =>
-            {
-                Client client = new Client();
-            });
-
-            _lobbies = new List<Lobby>();
+            _lobbies = new ObservableCollection<Lobby>();
 
             _lobbies.Add(new Lobby(50, 3, 8));
             _lobbies.Add(new Lobby(69, 1, 9));
             _lobbies.Add(new Lobby(420, 7, 7));
+
+            OnHostButtonClick = new RelayCommand(() => 
+            {
+                Debug.WriteLine("Host button clicked");
+            });
+
+            JoinSelectedLobby = new RelayCommand(startGameInLobby, true);
+        }
+
+        private void startGameInLobby()
+        {
+            if (SelectedLobby != null)
+            {
+                ClientData.Instance.Lobby = SelectedLobby;
+                
+                _model.CanStartGame = false;
+                GameWindow window = new GameWindow();
+                window.Show();
+            }
         }
 
         private void ClickCheck()
@@ -35,17 +58,12 @@ namespace Client
             _model.Numbers = _model.Numbers + 5;
         }
 
-        public ICommand ButtonCommand { get; set; }
-
 
         private Model _model;
         public Model Model
         {
             get
             {
-                if (_model == null)
-                    _model = new Model();
-
                 return _model;
             }
 
@@ -55,8 +73,8 @@ namespace Client
             }
         }
 
-        private List<Lobby> _lobbies;
-        public List<Lobby> Lobbies
+        private ObservableCollection<Lobby> _lobbies;
+        public ObservableCollection<Lobby> Lobbies
         {
             get { return _lobbies; }
             set { _lobbies = value; }

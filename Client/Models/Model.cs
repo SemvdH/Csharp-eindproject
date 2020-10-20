@@ -11,6 +11,7 @@ namespace Client
 
         private int _numbers;
         private bool _status;
+        private bool _canStartGame;
 
         //Test code 
         public int Numbers
@@ -37,11 +38,18 @@ namespace Client
             }
         }
 
+        public bool CanStartGame
+        {
+            get { return _canStartGame; }
+            set { _canStartGame = value; }
+        }
+
 
         public Model()
         {
             _status = false;
             _numbers = 0;
+            _canStartGame = true;
         }
 
     }

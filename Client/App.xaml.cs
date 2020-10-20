@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Client.Views;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -17,9 +18,9 @@ namespace Client
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            MainWindow startWindow = new MainWindow();
-            ViewModel VM = new ViewModel();
-            startWindow.DataContext = VM;
+            LoginScreen startWindow = new LoginScreen();
+            //ViewModel VM = new ViewModel();
+            //startWindow.DataContext = VM;
             startWindow.Show();
         }
 

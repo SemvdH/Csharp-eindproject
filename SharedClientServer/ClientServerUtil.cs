@@ -6,6 +6,7 @@ using System.Text;
 
 namespace SharedClientServer
 {
+    public delegate void Callback();
     class ClientServerUtil
     {
         // creates a message array to send to the server or to clients

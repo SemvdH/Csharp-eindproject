@@ -21,9 +21,13 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
+        ClientData data = ClientData.Instance;
         public MainWindow()
         {
+            this.DataContext = new ViewModel();
             InitializeComponent();
+
+            usernameLabel.Content = data.User.Username;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -33,13 +37,13 @@ namespace Client
             if(lobbySelected != null)
             {
                 testLabel.Content = lobbySelected.ID;
-                usernameTextbox.IsEnabled = false;
                 colorSelection.IsEnabled = false;
                 joinButton.IsEnabled = false;
                 hostButton.IsEnabled = false;
 
                 GameWindow window = new GameWindow();
                 window.Show();
+                Close();
             }
         }
     }

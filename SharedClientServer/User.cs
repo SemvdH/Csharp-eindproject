@@ -8,11 +8,20 @@ namespace SharedClientServer
     {
         private string _username;
         private int _score;
+        private bool _host;
 
-        public User(string username, int score)
+        public User(string username, int score, bool host)
         {
             _username = username;
             _score = score;
+            _host = host;
+        }
+
+        public User(string username)
+        {
+            _username = username;
+            _score = 0;
+            _host = false;
         }
 
         public string Username
@@ -25,6 +34,12 @@ namespace SharedClientServer
         {
             get { return _score; }
             set { _score = value; }
+        }
+
+        public bool Host
+        {
+            get { return _host; }
+            set { _host = value; }
         }
     }
 }
