@@ -37,7 +37,6 @@ namespace Client
             if(lobbySelected != null)
             {
                 testLabel.Content = lobbySelected.ID;
-                usernameTextbox.IsEnabled = false;
                 colorSelection.IsEnabled = false;
                 joinButton.IsEnabled = false;
                 hostButton.IsEnabled = false;

@@ -12,7 +12,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition/>
@@ -34,7 +34,6 @@
             <Label Grid.Row="0" Content="This client information:" FontSize="17"/>
 
             <Label Grid.Row="1" Grid.Column="0" Content="Your username:" FontSize="15" VerticalAlignment="Center"/>
-            <TextBox Name="usernameTextbox" Grid.Row="1" Grid.Column="1" MaxLength="10" FontSize="15" VerticalAlignment="Center"/>
 
             <Label Grid.Row="2" Grid.Column="0" Content="Which color you want to be:" FontSize="15" VerticalAlignment="Center"/>
             <ComboBox Name="colorSelection" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" FontSize="15">
@@ -48,6 +47,7 @@
             </ComboBox>
 
             <Label Grid.Row="3" Name="testLabel" FontSize="15" VerticalAlignment="Center"/>
+            <Label Content="place username here" Grid.Column="1" HorizontalAlignment="Center" Margin="0,12,0,0" VerticalAlignment="Top" Grid.Row="1"/>
 
         </Grid>
 
@@ -68,7 +68,7 @@
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
             <Button Name="joinButton" Grid.Row="0" Content="join a selected lobby" Click="Button_Click" Width="200" Height="40" HorizontalAlignment="Left" Margin="10, 0, 0, 0"/>
-            <Button Name="hostButton" Grid.Row="1" Content="host a new lobby" Command="{Binding ...}" Width="200" Height="40" HorizontalAlignment="left" Margin="10, 0, 0, 0"/>
+            <Button Name="hostButton" Grid.Row="1" Content="host a new lobby" Command="{Binding Path=OnHostButtonClick}" Width="200" Height="40" HorizontalAlignment="left" Margin="10, 0, 0, 0"/>
         </Grid>
 
     </Grid>

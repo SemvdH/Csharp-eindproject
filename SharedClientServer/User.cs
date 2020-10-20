@@ -17,6 +17,13 @@ namespace SharedClientServer
             _host = host;
         }
 
+        public User(string username)
+        {
+            _username = username;
+            _score = 0;
+            _host = false;
+        }
+
         public string Username
         {
             get { return _username; }

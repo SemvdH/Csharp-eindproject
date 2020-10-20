@@ -72,10 +72,10 @@ namespace Client
             Array.Copy(message, 1, payload, 0, message.Length - 1);
             switch (id)
             {
-                case 0x01:
+                case JSONConvert.LOGIN:
                     // json log in username data
                     break;
-                case 0x02:
+                case JSONConvert.MESSAGE:
                     // json message data
                     (string, string) combo = JSONConvert.GetUsernameAndMessage(payload);
                     string textUsername = combo.Item1;
@@ -84,11 +84,11 @@ namespace Client
 
                     break;
 
-                case 0x03:
+                case JSONConvert.LOBBY:
                     // lobby data
                     //TODO fill lobby with the data received
                     break;
-                case 0x04:
+                case JSONConvert.CANVAS:
                     // canvas data
                     break;
                 default:

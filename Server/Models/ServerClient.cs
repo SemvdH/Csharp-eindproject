@@ -10,12 +10,12 @@ namespace Server.Models
 {
     class ServerClient : ObservableObject
     {
-        public string Username { get; set; }
         private TcpClient tcpClient;
         private NetworkStream stream;
         private byte[] buffer = new byte[1024];
         private byte[] totalBuffer = new byte[1024];
         private int totalBufferReceived = 0;
+        public User User { get; set; }
         
 
         /// <summary>
@@ -84,24 +84,25 @@ namespace Server.Models
         /// <param name="message">the incoming message</param>
         private void HandleIncomingMessage(byte[] message)
         {
-            Debug.WriteLine($"Got message from {Username} : {message}");
+            Debug.WriteLine($"Got message from {User?.Username} : {message}");
             byte id = message[0];
             byte[] payload = new byte[message.Length - 1];
             Array.Copy(message,1,payload,0,message.Length-1);
             switch(id)
             {
                 
-                case 0x01:
+                case JSONConvert.LOGIN:
                     // json log in username data
-                    string uName = JSONConvert.GetUsernameLogin(message);
+                    string uName = JSONConvert.GetUsernameLogin(payload);
                     if (uName != null)
                     {
-                        Username = uName;
-                        Debug.WriteLine("[SERVERCLIENT] set username to " + Username);
+                        User = new User(uName);
+                        User.Username = uName;
+                        Debug.WriteLine("[SERVERCLIENT] set username to " + uName);
                         
                     }
                     break;
-                case 0x02:
+                case JSONConvert.MESSAGE:
                     // json message data
                     (string, string) combo = JSONConvert.GetUsernameAndMessage(payload);
                     string textUsername = combo.Item1;
@@ -110,10 +111,10 @@ namespace Server.Models
                     // todo handle sending to all except this user the username and message to display in chat
                     break;
 
-                case 0x03:
+                case JSONConvert.LOBBY:
                     // lobby data
                     break;
-                case 0x04:
+                case JSONConvert.CANVAS:
                     // canvas data
                     // todo send canvas data to all other serverclients in lobby
                     break;

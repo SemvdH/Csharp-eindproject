@@ -18,6 +18,7 @@ namespace Server.Models
         public List<Lobby> lobbies;
         private Dictionary<Lobby, List<ServerClient>> serverClientsInlobbies;
         public Action newClientAction;
+        
 
         /// <summary>
         /// use a padlock object to make sure the singleton is thread-safe
@@ -98,7 +99,7 @@ namespace Server.Models
         {
             foreach (ServerClient sc in serverClients)
             {
-                if (sc.Username != username) sc.sendMessage(message);
+                if (sc.User.Username != username) sc.sendMessage(message);
             }
         }
 
