@@ -24,8 +24,10 @@ namespace Server.Models
         /// <param name="client">the TcpClient object to use</param>
         public ServerClient(TcpClient client)
         {
+            Debug.WriteLine("[SERVERCLIENT] making new instance and starting");
             tcpClient = client;
             stream = tcpClient.GetStream();
+            Debug.WriteLine("[SERVERCLIENT] starting read");
             stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnRead), null);
         }
 
@@ -35,6 +37,10 @@ namespace Server.Models
         /// <param name="ar">the async result status</param>
         private void OnRead(IAsyncResult ar)
         {
+            if (ar == null || (!ar.IsCompleted) || (!this.stream.CanRead) || !this.tcpClient.Client.Connected)
+                return;
+
+
             int bytesReceived = this.stream.EndRead(ar);
 
             if (totalBufferReceived + bytesReceived > 1024)
@@ -84,16 +90,18 @@ namespace Server.Models
         /// <param name="message">the incoming message</param>
         private void HandleIncomingMessage(byte[] message)
         {
-            Debug.WriteLine($"Got message from {User?.Username} : {message}");
-            byte id = message[0];
-            byte[] payload = new byte[message.Length - 1];
-            Array.Copy(message,1,payload,0,message.Length-1);
+            Debug.WriteLine($"Got message : {Encoding.ASCII.GetString(message)}");
+            byte id = message[4];
+            byte[] payload = new byte[message.Length - 5];
+            Array.Copy(message,5,payload,0,message.Length-5);
+            Debug.WriteLine("[SERVERCLIENT] GOT STRING" + Encoding.ASCII.GetString(payload));
             switch(id)
             {
                 
                 case JSONConvert.LOGIN:
                     // json log in username data
                     string uName = JSONConvert.GetUsernameLogin(payload);
+                    
                     if (uName != null)
                     {
                         User = new User(uName);

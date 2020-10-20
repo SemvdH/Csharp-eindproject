@@ -27,7 +27,7 @@ namespace Client
             this.DataContext = new ViewModel();
             InitializeComponent();
 
-            usernameTextbox.Text = data.User.Username;
+            usernameLabel.Content = data.User.Username;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

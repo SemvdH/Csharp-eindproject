@@ -26,8 +26,8 @@ namespace Client.Views
 
         private void Button_EnterUsername(object sender, RoutedEventArgs e)
         {
-            User user = new User(usernameTextbox.Text, 0, false);
-            Client client = new Client();
+            User user = new User(usernameTextbox.Text);
+            Client client = new Client(user.Username);
 
             data.User = user;
             data.Client = client;

@@ -133,7 +133,7 @@ namespace Server.Models
                     {
                         foreach(ServerClient sc in serverClients)
                         {
-                            if (sc.Username == user.Username)
+                            if (sc.User.Username == user.Username)
                             {
                                 serverClientsInlobbies[l].Add(sc);
                                 break;

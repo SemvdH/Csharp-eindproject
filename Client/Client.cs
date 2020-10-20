@@ -16,11 +16,11 @@ namespace Client
         private int totalBufferReceived = 0;
         public int Port = 5555;
         public bool Connected = false;
-        //TODO send login packet to server with ClientServerUtil.createpayload(0x01,dynamic json with username)
-        public string Username { get; }
+        private string username;
 
-        public Client()
+        public Client(string username)
         {
+            this.username = username;
             this.tcpClient = new TcpClient();
             Debug.WriteLine("Starting connect to server");
             tcpClient.BeginConnect("localhost", Port, new AsyncCallback(OnConnect), null);
@@ -31,6 +31,7 @@ namespace Client
             Debug.Write("finished connecting to server");
             this.tcpClient.EndConnect(ar);
             this.stream = tcpClient.GetStream();
+            SendMessage(JSONConvert.ConstructUsernameMessage(username));
             this.stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete),null);
         }
 
@@ -100,11 +101,13 @@ namespace Client
 
         public void SendMessage(byte[] message)
         {
+            Debug.WriteLine("[CLIENT] sending message " + Encoding.ASCII.GetString(message));
             stream.BeginWrite(message, 0, message.Length, new AsyncCallback(OnWriteComplete), null);
         }
 
         private void OnWriteComplete(IAsyncResult ar)
         {
+            Debug.WriteLine("[CLIENT] finished writing");
             stream.EndWrite(ar);
         }
     }

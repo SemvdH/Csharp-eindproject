@@ -1,6 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace SharedClientServer
@@ -25,13 +27,20 @@ namespace SharedClientServer
             return payload.username;
         }
 
-        public static byte[] GetUsernameMessage(string uName)
+        public static byte[] ConstructUsernameMessage(string uName)
         {
             return GetMessageToSend(LOGIN, new
             {
                 username = uName
             });
         }
+
+        public static byte[] ConstructLobbyDataMessage(Lobby lobby)
+        {
+            return null;
+        }
+
+
 
         /// <summary>
         /// constructs a message that can be sent to the clients or server
@@ -44,9 +53,13 @@ namespace SharedClientServer
             // convert the dynamic to bytes
             byte[] payloadBytes = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(payload));
             // make the array that holds the message and copy the payload into it with the first spot containing the identifier
-            byte[] res = new byte[payloadBytes.Length + 1];
-            Array.Copy(payloadBytes, 0, res, 1, payloadBytes.Length);
-            res[0] = identifier;
+            byte[] res = new byte[payloadBytes.Length + 5];
+            // put the payload in the res array
+            Array.Copy(payloadBytes, 0, res, 5, payloadBytes.Length);
+            // put the identifier at the start of the payload part
+            res[4] = identifier;
+            // put the length of the payload at the start of the res array
+            res[0] = BitConverter.GetBytes(payloadBytes.Length+5);
             return res;
         }
     }
