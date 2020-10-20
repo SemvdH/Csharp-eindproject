@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Input;
 using SharedClientServer;
 using System.Diagnostics;
+using System.Windows;
 
 namespace Client
 {
@@ -13,9 +14,13 @@ namespace Client
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public ICommand OnHostButtonClick { get; set; }
+        public ICommand JoinSelectedLobby { get; set; }
+
         public ViewModel()
         {
             _model = new Model();
+
             ButtonCommand = new RelayCommand(() =>
             {
                 
@@ -26,6 +31,17 @@ namespace Client
             _lobbies.Add(new Lobby(50, 3, 8));
             _lobbies.Add(new Lobby(69, 1, 9));
             _lobbies.Add(new Lobby(420, 7, 7));
+
+            OnHostButtonClick = new RelayCommand(() => 
+            {
+                Debug.WriteLine("Host button clicked");
+            });
+
+            JoinSelectedLobby = new RelayCommand(() =>
+            {
+                
+                Debug.WriteLine("Joining selected lobby");
+            });
         }
 
         private void ClickCheck()
@@ -58,11 +74,6 @@ namespace Client
         {
             get { return _lobbies; }
             set { _lobbies = value; }
-        }
-
-        public void OnHostButtonClick()
-        {
-            Debug.WriteLine("Click host button");
         }
     }
 }

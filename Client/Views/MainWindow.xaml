@@ -67,8 +67,8 @@
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
-            <Button Name="joinButton" Grid.Row="0" Content="join a selected lobby" Click="Button_Click" Width="200" Height="40" HorizontalAlignment="Left" Margin="10, 0, 0, 0"/>
-            <Button Name="hostButton" Grid.Row="1" Content="host a new lobby" Command="{Binding Path=OnHostButtonClick}" Width="200" Height="40" HorizontalAlignment="left" Margin="10, 0, 0, 0"/>
+            <Button Name="joinButton" Grid.Row="0" Content="join a selected lobby" Command="{Binding JoinSelectedLobby}" Width="200" Height="40" HorizontalAlignment="Left" Margin="10, 0, 0, 0"/>
+            <Button Name="hostButton" Grid.Row="1" Content="host a new lobby" Command="{Binding OnHostButtonClick}" Width="200" Height="40" HorizontalAlignment="left" Margin="10, 0, 0, 0"/>
         </Grid>
 
     </Grid>

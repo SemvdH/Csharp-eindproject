@@ -43,6 +43,7 @@ namespace Client
 
                 GameWindow window = new GameWindow();
                 window.Show();
+                Close();
             }
         }
     }
