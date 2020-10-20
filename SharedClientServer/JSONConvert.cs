@@ -59,7 +59,7 @@ namespace SharedClientServer
             // put the identifier at the start of the payload part
             res[4] = identifier;
             // put the length of the payload at the start of the res array
-            res[0] = BitConverter.GetBytes(payloadBytes.Length+5);
+            Array.Copy(BitConverter.GetBytes(payloadBytes.Length+5),0,res,0,4);
             return res;
         }
     }
