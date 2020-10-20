@@ -35,7 +35,7 @@
 
             <Label Grid.Row="1" Grid.Column="0" Content="Your username:" FontSize="15" VerticalAlignment="Center"/>
 
-            <Label Grid.Row="2" Grid.Column="0" Content="Which color you want to be:" FontSize="15" VerticalAlignment="Center"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="Select your color:" FontSize="15" VerticalAlignment="Center"/>
             <ComboBox Name="colorSelection" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" FontSize="15">
                 <ComboBoxItem Content="BLUE"/>
                 <ComboBoxItem Content="RED"/>
@@ -52,7 +52,7 @@
         </Grid>
 
 
-        <ListView Name="LobbyList" Grid.Row="1" Grid.Column="0" Margin="10, 10, 10, 10" ItemsSource="{Binding Path=Lobbies}">
+        <ListView Name="LobbyList" Grid.Row="1" Grid.Column="0" SelectedItem="{Binding SelectedLobby}" Margin="10, 10, 10, 10" ItemsSource="{Binding Path=Lobbies}">
             <ListView.View>
                 <GridView x:Name="grdList">
                     <GridViewColumn Header="Lobby ID" DisplayMemberBinding="{Binding ID}" Width="70"/>
@@ -67,8 +67,8 @@
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
-            <Button Name="joinButton" Grid.Row="0" Content="join a selected lobby" Command="{Binding JoinSelectedLobby}" Width="200" Height="40" HorizontalAlignment="Left" Margin="10, 0, 0, 0"/>
-            <Button Name="hostButton" Grid.Row="1" Content="host a new lobby" Command="{Binding OnHostButtonClick}" Width="200" Height="40" HorizontalAlignment="left" Margin="10, 0, 0, 0"/>
+            <Button Name="joinButton" Grid.Row="0" Content="join a selected lobby" Command="{Binding JoinSelectedLobby}" IsEnabled="{Binding Model.CanStartGame}" Width="200" Height="40" HorizontalAlignment="Left" Margin="10, 0, 0, 0"/>
+            <Button Name="hostButton" Grid.Row="1" Content="host a new lobby" Command="{Binding OnHostButtonClick}" IsEnabled="{Binding Model.CanStartGame}" Width="200" Height="40" HorizontalAlignment="left" Margin="10, 0, 0, 0"/>
         </Grid>
 
     </Grid>
