@@ -7,6 +7,10 @@ namespace SharedClientServer
 {
     class JSONConvert
     {
+        public const byte LOGIN = 0x01;
+        public const byte MESSAGE = 0x02;
+        public const byte LOBBY = 0x03;
+        public const byte CANVAS = 0x04;
         public static (string,string) GetUsernameAndMessage(byte[] json)
         {
             string msg = Encoding.ASCII.GetString(json);
@@ -19,6 +23,11 @@ namespace SharedClientServer
         {
             dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
             return payload.username;
+        }
+
+        public static byte[] GetUsernameMessage(string username)
+        {
+
         }
 
         /// <summary>

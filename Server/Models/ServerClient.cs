@@ -91,7 +91,7 @@ namespace Server.Models
             switch(id)
             {
                 
-                case 0x01:
+                case JSONConvert.LOGIN:
                     // json log in username data
                     string uName = JSONConvert.GetUsernameLogin(message);
                     if (uName != null)
@@ -102,7 +102,7 @@ namespace Server.Models
                         
                     }
                     break;
-                case 0x02:
+                case JSONConvert.MESSAGE:
                     // json message data
                     (string, string) combo = JSONConvert.GetUsernameAndMessage(payload);
                     string textUsername = combo.Item1;
@@ -111,10 +111,10 @@ namespace Server.Models
                     // todo handle sending to all except this user the username and message to display in chat
                     break;
 
-                case 0x03:
+                case JSONConvert.LOBBY:
                     // lobby data
                     break;
-                case 0x04:
+                case JSONConvert.CANVAS:
                     // canvas data
                     // todo send canvas data to all other serverclients in lobby
                     break;
