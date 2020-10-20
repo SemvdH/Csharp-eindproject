@@ -35,16 +35,19 @@ namespace Client
                 Debug.WriteLine("Host button clicked");
             });
 
-            JoinSelectedLobby = new RelayCommand(() =>
+            JoinSelectedLobby = new RelayCommand(startGameInLobby, true);
+        }
+
+        private void startGameInLobby()
+        {
+            if (SelectedLobby != null)
             {
-                if (SelectedLobby != null)
-                {
-                    _model.CanStartGame = false;
-                    GameWindow window = new GameWindow();
-                    window.Show();
-                }
+                ClientData.Instance.Lobby = SelectedLobby;
                 
-            }, true);
+                _model.CanStartGame = false;
+                GameWindow window = new GameWindow();
+                window.Show();
+            }
         }
 
         private void ClickCheck()
