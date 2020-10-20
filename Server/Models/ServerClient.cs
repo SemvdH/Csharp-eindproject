@@ -93,7 +93,7 @@ namespace Server.Models
                 
                 case JSONConvert.LOGIN:
                     // json log in username data
-                    string uName = JSONConvert.GetUsernameLogin(message);
+                    string uName = JSONConvert.GetUsernameLogin(payload);
                     if (uName != null)
                     {
                         User = new User(uName);

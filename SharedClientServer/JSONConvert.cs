@@ -25,9 +25,12 @@ namespace SharedClientServer
             return payload.username;
         }
 
-        public static byte[] GetUsernameMessage(string username)
+        public static byte[] GetUsernameMessage(string uName)
         {
-
+            return GetMessageToSend(LOGIN, new
+            {
+                username = uName
+            });
         }
 
         /// <summary>
