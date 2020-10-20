@@ -1,8 +1,10 @@
 ﻿using Client;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace SharedClientServer
@@ -77,6 +79,14 @@ namespace SharedClientServer
                 identifier = LobbyIdentifier.LEAVE,
                 id = lobbyID
             });
+        }
+
+        public static Lobby[] GetLobbiesFromMessage(byte[] json)
+        {
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            JArray lobbiesArray = payload.lobbies;
+            Debug.WriteLine(lobbiesArray.ToString());
+            return lobbiesArray.ToObject<Lobby[]>();
         }
 
         public static int GetLobbyID(byte[] json)

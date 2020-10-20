@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Collections.ObjectModel;
 using Client.Views;
+using System.Linq;
 
 namespace Client
 {
@@ -21,14 +22,17 @@ namespace Client
 
         public Lobby SelectedLobby { get; set; }
 
+        private Client client;
+
         public ViewModel()
         {
             _model = new Model();
             _lobbies = new ObservableCollection<Lobby>();
-
-            _lobbies.Add(new Lobby(50, 3, 8));
-            _lobbies.Add(new Lobby(69, 1, 9));
-            _lobbies.Add(new Lobby(420, 7, 7));
+            client = ClientData.Instance.Client;
+            client.OnLobbiesListReceived = updateLobbies;
+            //_lobbies.Add(new Lobby(50, 3, 8));
+            //_lobbies.Add(new Lobby(69, 1, 9));
+            //_lobbies.Add(new Lobby(420, 7, 7));
 
             OnHostButtonClick = new RelayCommand(() => 
             {
@@ -37,6 +41,20 @@ namespace Client
 
             JoinSelectedLobby = new RelayCommand(startGameInLobby, true);
         }
+
+        private void updateLobbies()
+        {
+            Lobby[] lobbiesArr = client.Lobbies;
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                foreach (Lobby lobby in lobbiesArr)
+                {
+                    _lobbies.Add(lobby);
+                }
+            });
+        }
+
+
 
         private void startGameInLobby()
         {

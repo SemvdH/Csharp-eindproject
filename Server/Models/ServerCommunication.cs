@@ -33,6 +33,9 @@ namespace Server.Models
             listener = new TcpListener(IPAddress.Any, port);
             serverClients = new List<ServerClient>();
             lobbies = new List<Lobby>();
+            lobbies.Add(new Lobby(1,1,1));
+            lobbies.Add(new Lobby(2, 2, 2));
+            lobbies.Add(new Lobby(3, 3, 3));
             serverClientsInlobbies = new Dictionary<Lobby, List<ServerClient>>();
         }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
+using static SharedClientServer.JSONConvert;
 
 namespace Client
 {
@@ -18,6 +19,8 @@ namespace Client
         public bool Connected = false;
         private string username;
         public Callback OnSuccessfullConnect;
+        public Callback OnLobbiesListReceived;
+        public Lobby[] Lobbies { get; set; }
 
         public Client(string username)
         {
@@ -70,9 +73,9 @@ namespace Client
 
         private void handleData(byte[] message)
         {
-            byte id = message[0];
-            byte[] payload = new byte[message.Length - 1];
-            Array.Copy(message, 1, payload, 0, message.Length - 1);
+            byte id = message[4];
+            byte[] payload = new byte[message.Length - 5];
+            Array.Copy(message, 5, payload, 0, message.Length - 5);
             switch (id)
             {
                 case JSONConvert.LOGIN:
@@ -89,6 +92,14 @@ namespace Client
 
                 case JSONConvert.LOBBY:
                     // lobby data
+                    LobbyIdentifier lobbyIdentifier = JSONConvert.GetLobbyIdentifier(payload);
+                    switch (lobbyIdentifier)
+                    {
+                        case LobbyIdentifier.LIST:
+                            Lobbies = JSONConvert.GetLobbiesFromMessage(payload);
+                            OnLobbiesListReceived?.Invoke();
+                            break;
+                    }
                     //TODO fill lobby with the data received
                     break;
                 case JSONConvert.CANVAS:

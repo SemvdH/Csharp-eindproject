@@ -123,6 +123,13 @@ namespace Server.Models
                 case JSONConvert.LOBBY:
                     // lobby data
                     LobbyIdentifier l = JSONConvert.GetLobbyIdentifier(payload);
+                    switch(l)
+                    {
+                        case LobbyIdentifier.REQUEST:
+                            Debug.WriteLine("[SERVERCLIENT] got lobby request message, sending lobbies...");
+                            sendMessage(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                            break;
+                    }
                     break;
                 case JSONConvert.CANVAS:
                     // canvas data
@@ -132,7 +139,6 @@ namespace Server.Models
                     Debug.WriteLine("[SERVER] Received weird identifier: " + id);
                     break;
             }
-            //TODO implement ways to handle the message
         }
 
         /// <summary>
