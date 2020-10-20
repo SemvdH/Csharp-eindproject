@@ -1,5 +1,4 @@
-﻿
-using Client;
+﻿using Client;
 using SharedClientServer;
 using System;
 using System.Collections.Generic;
