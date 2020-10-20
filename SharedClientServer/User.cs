@@ -9,6 +9,7 @@ namespace SharedClientServer
         private string _username;
         private int _score;
         private bool _host;
+        private string _message;
 
         public User(string username, int score, bool host)
         {

@@ -65,7 +65,6 @@ namespace Client
             }
 
             stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete), null);
-
         }
 
         private void handleData(byte[] message)
@@ -84,16 +83,18 @@ namespace Client
                     string textUsername = combo.Item1;
                     string textMsg = combo.Item2;
                     //TODO display username and message in chat window
-
+                    Debug.WriteLine("Message username: {0}\t Message: {1}", textUsername, textMsg);
                     break;
 
                 case JSONConvert.LOBBY:
                     // lobby data
                     //TODO fill lobby with the data received
                     break;
+
                 case JSONConvert.CANVAS:
                     // canvas data
                     break;
+
                 default:
                     Debug.WriteLine("[CLIENT] Received weird identifier: " + id);
                     break;

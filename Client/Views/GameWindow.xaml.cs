@@ -18,7 +18,7 @@ namespace Client.Views
     /// </summary>
     public partial class GameWindow : Window
     {
-        ClientData data = ClientData.Instance;
+       
         public GameWindow()
         {
             DataContext = new ViewModelGame();
@@ -82,7 +82,6 @@ namespace Client.Views
             //    var deepCopy = System.Windows.Markup.XamlReader.Parse(xaml) as UIElement;
             //    TEST.Children.Add(deepCopy);
             //}
-
         }
 
         private void ClrPcker_Background_SelectedColorChanged_1(object sender, RoutedPropertyChangedEventArgs<Color?> e)
@@ -95,23 +94,14 @@ namespace Client.Views
             color = colorSelected;
         }
 
-        private void ChatBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            //if enter then clear textbox and send message.
-            if (e.Key.Equals(Key.Enter))
-            {
-                WriteToChat(ChatBox.Text);
-                ChatBox.Clear();
-            }
-        }
-
-        /*
-         * Writes the current client's message to the chatbox.
-         */
-        private void WriteToChat(string message)
-        {
-            string user = data.User.Username; 
-            SentMessage.AppendText($"{user}: {message}\n");
-        }
+        ///*
+        // * Writes the current client's message to the chatbox.
+        // */
+        //private void WriteToChat(string message)
+        //{
+        //    string user = data.User.Username;
+        //    SentMessage.AppendText($"{user}: {message}\n");
+        //    data.User.Message = message;
+        //}
     }
 }

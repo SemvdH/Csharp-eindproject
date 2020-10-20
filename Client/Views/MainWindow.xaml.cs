@@ -32,7 +32,6 @@ namespace Client
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
             Lobby lobbySelected = LobbyList.SelectedItem as Lobby;
             if(lobbySelected != null)
             {
