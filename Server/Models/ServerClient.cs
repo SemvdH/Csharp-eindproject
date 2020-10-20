@@ -16,6 +16,7 @@ namespace Server.Models
         private byte[] buffer = new byte[1024];
         private byte[] totalBuffer = new byte[1024];
         private int totalBufferReceived = 0;
+        public User user;
         
 
         /// <summary>

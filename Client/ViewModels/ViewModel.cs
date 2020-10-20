@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
 using SharedClientServer;
+using System.Diagnostics;
 
 namespace Client
 {
@@ -57,6 +58,11 @@ namespace Client
         {
             get { return _lobbies; }
             set { _lobbies = value; }
+        }
+
+        public void OnHostButtonClick()
+        {
+            Debug.WriteLine("Click host button");
         }
     }
 }
