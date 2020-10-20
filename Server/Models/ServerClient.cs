@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
+using static SharedClientServer.JSONConvert;
 
 namespace Server.Models
 {
@@ -121,6 +122,7 @@ namespace Server.Models
 
                 case JSONConvert.LOBBY:
                     // lobby data
+                    LobbyIdentifier l = JSONConvert.GetLobbyIdentifier(payload);
                     break;
                 case JSONConvert.CANVAS:
                     // canvas data

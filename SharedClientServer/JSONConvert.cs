@@ -14,11 +14,12 @@ namespace SharedClientServer
         public const byte LOBBY = 0x03;
         public const byte CANVAS = 0x04;
 
-        enum LobbyIdentifier
+        public enum LobbyIdentifier
         {
             HOST,
-            ADD,
+            JOIN,
             LEAVE,
+            LIST,
             REQUEST
         }
         public static (string,string) GetUsernameAndMessage(byte[] json)
@@ -43,12 +44,46 @@ namespace SharedClientServer
             });
         }
 
-        public static byte[] ConstructLobbyDataMessage(Lobby lobby)
+        public static byte[] ConstructLobbyRequestMessage()
         {
-            return null;
+            return GetMessageToSend(LOBBY, new
+            {
+                identifier = LobbyIdentifier.REQUEST
+            });
         }
 
+        public static byte[] ConstructLobbyListMessage(Lobby[] lobbiesList)
+        {
+            return GetMessageToSend(LOBBY, new
+            { 
+                identifier = LobbyIdentifier.LIST,
+                lobbies = lobbiesList
+            });
+        }
 
+        public static byte[] ConstructLobbyJoinMessage(int lobbyID)
+        {
+            return GetMessageToSend(LOBBY, new
+            {
+                identifier = LobbyIdentifier.JOIN,
+                id = lobbyID
+            });
+        }
+
+        public static byte[] ConstructLobbyLeaveMessage(int lobbyID)
+        {
+            return GetMessageToSend(LOBBY, new
+            {
+                identifier = LobbyIdentifier.LEAVE,
+                id = lobbyID
+            });
+        }
+
+        public static int GetLobbyID(byte[] json)
+        {
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            return payload.id;
+        }
 
         /// <summary>
         /// constructs a message that can be sent to the clients or server
@@ -69,6 +104,12 @@ namespace SharedClientServer
             // put the length of the payload at the start of the res array
             Array.Copy(BitConverter.GetBytes(payloadBytes.Length+5),0,res,0,4);
             return res;
+        }
+
+        public static LobbyIdentifier GetLobbyIdentifier(byte[] json)
+        {
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            return payload.identifier;
         }
     }
 }
