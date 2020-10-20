@@ -99,7 +99,7 @@ namespace Server.Models
         {
             foreach (ServerClient sc in serverClients)
             {
-                if (sc.Username != username) sc.sendMessage(message);
+                if (sc.User.Username != username) sc.sendMessage(message);
             }
         }
 
@@ -134,7 +134,7 @@ namespace Server.Models
                         foreach(ServerClient sc in serverClients)
                         {
                             
-                            if (sc.Username == user.Username)
+                            if (sc.User.Username == user.Username)
                             {
                                 serverClientsInlobbies[l].Add(sc);
                                 break;
