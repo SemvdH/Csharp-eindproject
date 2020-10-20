@@ -43,9 +43,6 @@ namespace Client
         {
             get
             {
-                if (_model == null)
-                    _model = new Model();
-
                 return _model;
             }
 
