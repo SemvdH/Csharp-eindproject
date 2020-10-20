@@ -41,7 +41,7 @@ namespace Client
             succes = false;
             if (_users.Count < _maxPlayers)
             {
-                _users.Add(new User(username, 0));
+                _users.Add(new User(username, 0,false));
                 succes = true;
             }
         }
