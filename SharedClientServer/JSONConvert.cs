@@ -13,6 +13,14 @@ namespace SharedClientServer
         public const byte MESSAGE = 0x02;
         public const byte LOBBY = 0x03;
         public const byte CANVAS = 0x04;
+
+        enum LobbyIdentifier
+        {
+            HOST,
+            ADD,
+            LEAVE,
+            REQUEST
+        }
         public static (string,string) GetUsernameAndMessage(byte[] json)
         {
             string msg = Encoding.ASCII.GetString(json);
