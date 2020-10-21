@@ -122,11 +122,15 @@ namespace Server.Models
                     string textUsername = combo.Item1;
                     string textMsg = combo.Item2;
 
-                    Debug.WriteLine("[SERVERCLIENT] User name: {0}\t User message: {1}", textUsername, textMsg);
+                    //Takes the data sent from the client, and then sets it in a data packet to be sent.
+                    dynamic packet = new
+                    {
+                        username = textUsername,
+                        message = textMsg
+                    };
 
-                    // todo handle sending to all except this user the username and message to display in chat
-                    serverCom.SendToLobby(ServerCommunication.INSTANCE.GetLobbyForUser(User),payload);
-                    Debug.WriteLine("Payload has been sent!");
+                    //Sends the incomming message to be broadcast to all of the clients inside the current lobby.
+                    serverCom.SendToLobby(serverCom.GetLobbyForUser(User), JSONConvert.GetMessageToSend(JSONConvert.MESSAGE, packet));
                     break;
 
                 case JSONConvert.LOBBY:
