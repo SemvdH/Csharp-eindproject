@@ -10,6 +10,7 @@ using System.Windows;
 using System.Collections.ObjectModel;
 using Client.Views;
 using System.Linq;
+using System.Windows.Data;
 
 namespace Client
 {
@@ -23,6 +24,9 @@ namespace Client
         public Lobby SelectedLobby { get; set; }
 
         private Client client;
+
+        private bool wantToBeHost = false;
+        private int wantToBeHostId = 0;
 
         public ViewModel()
         {
@@ -44,21 +48,40 @@ namespace Client
             client.OnLobbyCreated = becomeHostForLobby;
         }
 
-        private void becomeHostForLobby(int id, int players, int maxplayers)
+        private void becomeHostForLobby(int id)
         {
             
-            Debug.WriteLine($"got host succes with data {id} {players} {maxplayers} ");
-            Lobby newLobby = new Lobby(id, players, maxplayers);
-            SelectedLobby = newLobby;
-            Application.Current.Dispatcher.Invoke(delegate
-            {
-                _lobbies.Add(newLobby);
-                startGameInLobby();
-            });
+            Debug.WriteLine($"got host succes with data {id} ");
+            wantToBeHost = true;
+            wantToBeHostId = id;
+            client.OnLobbiesReceivedAndWaitingForHost = hostLobbiesReceived;
+            // lobby id krijgen waarvan je host bent
+            // wachten totdat list van lobbies is gekomen
+            // uit die list de id zoeken en die joinen
+
+        }
+
+        private void hostLobbiesReceived()
+        {
+            if (wantToBeHost)
+                foreach (Lobby l in Lobbies)
+                {
+                    if (l.ID == wantToBeHostId)
+                    {
+                        Debug.WriteLine("found lobby that we want to be host of: " + l.ID + ", joining..");
+                        SelectedLobby = l;
+                        startGameInLobby();
+                        wantToBeHost = false;
+                        client.OnLobbiesReceivedAndWaitingForHost = null;
+                        break;
+                    }
+                }
         }
 
         private void joinLobby()
         {
+            // lobby die je wilt joinen verwijderen
+            // nieuwe binnengekregen lobby toevoegen
             client.OnLobbyJoinSuccess = OnLobbyJoinSuccess;
             client.SendMessage(JSONConvert.ConstructLobbyJoinMessage(SelectedLobby.ID));
         }
@@ -77,24 +100,28 @@ namespace Client
             Application.Current.Dispatcher.Invoke(delegate
             {
                 
-                for (int i = 0; i < lobbiesArr.Length; i++)
+                //for (int i = 0; i < lobbiesArr.Length; i++)
+                //{
+                //    Lobby lobby = lobbiesArr[i];
+                //    Debug.WriteLine(lobby.PlayersIn);
+                //    if (i < _lobbies.Count && _lobbies[i].ID == lobby.ID)
+                //    {
+                //        _lobbies[i].Set(lobby);
+                //    } else
+                //    {
+                //        _lobbies.Add(lobbiesArr[i]);
+                //    }
+                //}
+
+                _lobbies.Clear();
+
+                foreach (Lobby l in lobbiesArr)
                 {
-                    Lobby lobby = lobbiesArr[i];
-                    Debug.WriteLine(lobby.PlayersIn);
-                    if (i < _lobbies.Count && _lobbies[i].ID == lobby.ID)
-                    {
-                        _lobbies[i].Set(lobby);
-                    } else
-                    {
-                        _lobbies.Add(lobbiesArr[i]);
-                    }
+                    _lobbies.Add(l);
                 }
-                
 
             });
         }
-
-
 
         private void startGameInLobby()
         {

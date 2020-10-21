@@ -33,7 +33,7 @@ namespace Server.Models
             listener = new TcpListener(IPAddress.Any, port);
             serverClients = new List<ServerClient>();
             lobbies = new List<Lobby>();
-            Lobby temp = new Lobby(1, 1, 8);
+            Lobby temp = new Lobby(1, 7, 8);
             lobbies.Add(temp);
             serverClientsInlobbies = new Dictionary<Lobby, List<ServerClient>>();
             serverClientsInlobbies.Add(temp, new List<ServerClient>());
@@ -150,14 +150,14 @@ namespace Server.Models
             }
         }
 
-        public Lobby HostForLobby(User user)
+        public int HostForLobby(User user)
         {
             Lobby lobby = new Lobby( lobbies.Count + 1,0, 8);
             lobbies.Add(lobby);
             serverClientsInlobbies.Add(lobby, new List<ServerClient>());
             user.Host = true;
             AddToLobby(lobby, user);
-            return lobby;
+            return lobby.ID;
         }
 
         public void JoinLobby(User user, int id)

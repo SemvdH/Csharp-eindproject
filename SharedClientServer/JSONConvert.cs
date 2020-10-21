@@ -57,12 +57,12 @@ namespace SharedClientServer
             });
         }
 
-        public static byte[] ConstructLobbyHostCreatedMessage(Lobby l)
+        public static byte[] ConstructLobbyHostCreatedMessage(int lobbyID)
         {
             return GetMessageToSend(LOBBY, new
             {
                 identifier = LobbyIdentifier.HOST,
-                lobby = l
+                id = lobbyID
             }) ;
         }
 

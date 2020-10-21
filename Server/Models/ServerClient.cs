@@ -146,16 +146,16 @@ namespace Server.Models
                     break;
                 case LobbyIdentifier.HOST:
                     // add new lobby and add this serverclient to it
-                    Lobby created = ServerCommunication.INSTANCE.HostForLobby(this.User);
+                    int createdLobbyID = ServerCommunication.INSTANCE.HostForLobby(this.User);
                     Debug.WriteLine("[SERVERCLIENT] created lobby");
-                    sendMessage(JSONConvert.ConstructLobbyHostCreatedMessage(created));
-                    sendMessage(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                    sendMessage(JSONConvert.ConstructLobbyHostCreatedMessage(createdLobbyID));
+                    ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
                     break;
                 case LobbyIdentifier.JOIN:
                     int id = JSONConvert.GetLobbyID(payload);
                     ServerCommunication.INSTANCE.JoinLobby(this.User,id);
                     sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage());
-                    sendMessage(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                    ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
                     break;
             }
         }

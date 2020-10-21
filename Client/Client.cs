@@ -8,7 +8,7 @@ using static SharedClientServer.JSONConvert;
 
 namespace Client
 {
-    public delegate void OnLobbyCreated(int id, int playersIn, int playersMax);
+    public delegate void OnLobbyCreated(int id);
     class Client : ObservableObject
     {
         private TcpClient tcpClient;
@@ -22,6 +22,7 @@ namespace Client
         public Callback OnSuccessfullConnect;
         public Callback OnLobbiesListReceived;
         public Callback OnLobbyJoinSuccess;
+        public Callback OnLobbiesReceivedAndWaitingForHost;
         public OnLobbyCreated OnLobbyCreated;
         public Lobby[] Lobbies { get; set; }
 
@@ -102,13 +103,14 @@ namespace Client
                             Debug.WriteLine("got lobbies list");
                             Lobbies = JSONConvert.GetLobbiesFromMessage(payload);
                             OnLobbiesListReceived?.Invoke();
+                            OnLobbiesReceivedAndWaitingForHost?.Invoke();
                             break;
                         case LobbyIdentifier.HOST:
                             // we receive this when the server has made us a host of a new lobby
-                            // TODO get the new lobby and the id
+                            // TODO get lobby id 
                             Debug.WriteLine("[CLIENT] got lobby object");
-                            Lobby lobby = JSONConvert.GetLobby(payload);
-                            OnLobbyCreated?.Invoke(lobby.ID,lobby.PlayersIn,lobby.MaxPlayers);
+                            int lobbyCreatedID = JSONConvert.GetLobbyID(payload);
+                            OnLobbyCreated?.Invoke(lobbyCreatedID);
                             break;
                         case LobbyIdentifier.JOIN_SUCCESS:
                             OnLobbyJoinSuccess?.Invoke();
