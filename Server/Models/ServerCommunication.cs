@@ -16,6 +16,7 @@ namespace Server.Models
         public bool Started = false;
         public List<Lobby> lobbies;
         private Dictionary<Lobby, List<ServerClient>> serverClientsInlobbies;
+        internal Action DisconnectClientAction;
         public Action newClientAction;
         
 
@@ -99,8 +100,22 @@ namespace Server.Models
 
         public void ServerClientDisconnect(ServerClient serverClient)
         {
-            // remove from serverclientsinlobbies
-            // send leave message
+            Debug.WriteLine("[SERVERCOMM] handling disconnect");
+            DisconnectClientAction?.Invoke();
+            int id = -1;
+            foreach (Lobby l in serverClientsInlobbies.Keys)
+            {
+                if (serverClientsInlobbies[l].Contains(serverClient))
+                {
+                    id = l.ID;
+                }break;
+            }
+
+            if (id != -1)
+            {
+                LeaveLobby(serverClient.User, id);
+                SendToAllExcept(serverClient, JSONConvert.ConstructLobbyLeaveMessage(id));
+            }
         }
 
         public void SendToAllExcept(string username, byte[] message)
@@ -108,6 +123,14 @@ namespace Server.Models
             foreach (ServerClient sc in serverClients)
             {
                 if (sc.User.Username != username) sc.sendMessage(message);
+            }
+        }
+
+        public void SendToAllExcept(ServerClient sc, byte[] message)
+        {
+            foreach (ServerClient s in serverClients)
+            {
+                if (s != sc) s.sendMessage(message);
             }
         }
 
