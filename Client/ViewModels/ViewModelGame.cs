@@ -14,6 +14,7 @@ namespace Client.ViewModels
     class ViewModelGame : INotifyPropertyChanged
     {
         private ClientData data = ClientData.Instance;
+        private GameWindow window;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -68,7 +69,7 @@ namespace Client.ViewModels
                 currentPoint = e.GetPosition(window.CanvasForPaint);
 
                 window.CanvasForPaint.Children.Add(line);
-                data.Client.SendMessage(JSONConvert.GetMessageToSend(0x04, coordinates));
+                data.Client.SendMessage(JSONConvert.ConstructCanvasDataSend(coordinates));
             }
         }
 
@@ -83,8 +84,9 @@ namespace Client.ViewModels
         }
         
 
-        public ViewModelGame()
+        public ViewModelGame(GameWindow window)
         {
+            this.window = window;
             if (_payload == null)
             {
                 _message = "";
@@ -97,6 +99,24 @@ namespace Client.ViewModels
                 //Messages.Add($"{data.User.Username}: {Message}");
             }
             OnKeyDown = new RelayCommand(ChatBox_KeyDown);
+            data.Client.CanvasDataReceived = UpdateCanvasWithNewData;
+        }
+
+
+        private void UpdateCanvasWithNewData(double[] coordinates)
+        {
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                Line line = new Line();
+                line.Stroke = new SolidColorBrush(Colors.Black);
+                line.X1 = coordinates[0];
+                line.Y1 = coordinates[1];
+                line.X2 = coordinates[2];
+                line.Y2 = coordinates[3];
+
+                this.window.CanvasForPaint.Children.Add(line);
+            });
+            
         }
 
         private void ChatBox_KeyDown()

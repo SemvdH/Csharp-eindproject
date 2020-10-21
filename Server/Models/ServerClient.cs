@@ -16,8 +16,8 @@ namespace Server.Models
     {
         private TcpClient tcpClient;
         private NetworkStream stream;
-        private byte[] buffer = new byte[1024];
-        private byte[] totalBuffer = new byte[1024];
+        private byte[] buffer = new byte[2048];
+        private byte[] totalBuffer = new byte[2048];
         private int totalBufferReceived = 0;
         public User User { get; set; }
         private ServerCommunication serverCom = ServerCommunication.INSTANCE;
@@ -48,7 +48,7 @@ namespace Server.Models
 
             int bytesReceived = this.stream.EndRead(ar);
 
-            if (totalBufferReceived + bytesReceived > 1024)
+            if (totalBufferReceived > 2048)
             {
                 throw new OutOfMemoryException("buffer is too small!");
             }
@@ -136,6 +136,11 @@ namespace Server.Models
                     break;
                 case JSONConvert.CANVAS:
                     Debug.WriteLine("GOT A MESSAGE FROM THE CLIENT ABOUT THE CANVAS!!!");
+                    dynamic canvasData = new {
+                        coordinatesLine = JSONConvert.getCoordinates(payload)
+                    };
+                    serverCom.SendToLobby(serverCom.GetLobbyForUser(User), JSONConvert.GetMessageToSend(CANVAS, canvasData));
+
                     // canvas data
                     // todo send canvas data to all other serverclients in lobby
                     break;

@@ -83,6 +83,7 @@ namespace SharedClientServer
             });
         }
 
+
         public static byte[] ConstructLobbyJoinMessage(int lobbyID)
         {
             return GetMessageToSend(LOBBY, new
@@ -139,6 +140,24 @@ namespace SharedClientServer
         }
 
         #endregion
+
+        public static byte[] ConstructCanvasDataSend(double[] coordinates)
+        {
+            return GetMessageToSend(CANVAS, new
+            {
+                coordinatesLine = coordinates
+            }); ;
+        }
+
+        public static double[] getCoordinates(byte[] payload)
+        {
+            dynamic payloadD = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(payload));
+            JArray coordinatesArray = payloadD.coordinatesLine;
+
+            double[] coordinates = coordinatesArray.ToObject<double[]>();
+
+            return coordinates;
+        }
 
         /// <summary>
         /// constructs a message that can be sent to the clients or server

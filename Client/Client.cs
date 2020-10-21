@@ -9,12 +9,17 @@ using static SharedClientServer.JSONConvert;
 namespace Client
 {
     public delegate void OnLobbyCreated(int id);
+
+    public delegate void CanvasDataReceived(double[] coordinates);
     class Client : ObservableObject
     {
+
+        private ClientData clientData = ClientData.Instance;
+
         private TcpClient tcpClient;
         private NetworkStream stream;
-        private byte[] buffer = new byte[1024];
-        private byte[] totalBuffer = new byte[1024];
+        private byte[] buffer = new byte[2048];
+        private byte[] totalBuffer = new byte[2048];
         private int totalBufferReceived = 0;
         public int Port = 5555;
         public bool Connected = false;
@@ -24,6 +29,8 @@ namespace Client
         public Callback OnLobbyJoinSuccess;
         public Callback OnLobbiesReceivedAndWaitingForHost;
         public OnLobbyCreated OnLobbyCreated;
+
+        public CanvasDataReceived CanvasDataReceived;
         public Lobby[] Lobbies { get; set; }
 
         public Client(string username)
@@ -48,7 +55,7 @@ namespace Client
         {
             int amountReceived = stream.EndRead(ar);
 
-            if (totalBufferReceived + amountReceived > 1024)
+            if (totalBufferReceived > 2048)
             {
                 throw new OutOfMemoryException("buffer too small");
             }
@@ -68,6 +75,7 @@ namespace Client
                 handleData(message);
 
                 totalBufferReceived -= expectedMessageLength;
+                Debug.WriteLine($"reduced buffer: {expectedMessageLength}");
                 expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
             }
 
@@ -124,6 +132,8 @@ namespace Client
 
                 case JSONConvert.CANVAS:
                     // canvas data
+                    //clientData.CanvasData = JSONConvert.getCoordinates(payload);                   
+                    CanvasDataReceived?.Invoke(JSONConvert.getCoordinates(payload));
                     break;
 
                 default:

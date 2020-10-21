@@ -22,7 +22,7 @@ namespace Client.Views
         private ViewModelGame viewModel;
         public GameWindow()
         {
-            this.viewModel = new ViewModelGame();
+            this.viewModel = new ViewModelGame(this);
             DataContext = this.viewModel;
             InitializeComponent();
             
