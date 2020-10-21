@@ -34,6 +34,7 @@ namespace Client.Views
                 Application.Current.Dispatcher.Invoke(delegate {
                     data.User = user;
                     data.Client = client;
+                    client.SendMessage(JSONConvert.ConstructLobbyRequestMessage());
                     MainWindow startWindow = new MainWindow();
                     startWindow.Show();
                     this.Close();

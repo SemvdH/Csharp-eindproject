@@ -1,10 +1,14 @@
 ﻿
+
+using Client;
+using Newtonsoft.Json.Linq;
 using SharedClientServer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
+using static SharedClientServer.JSONConvert;
 
 namespace Server.Models
 {
@@ -16,6 +20,7 @@ namespace Server.Models
         private byte[] totalBuffer = new byte[1024];
         private int totalBufferReceived = 0;
         public User User { get; set; }
+        private ServerCommunication serverCom = ServerCommunication.INSTANCE;
         
 
         /// <summary>
@@ -117,11 +122,17 @@ namespace Server.Models
                     string textUsername = combo.Item1;
                     string textMsg = combo.Item2;
 
+                    Debug.WriteLine("[SERVERCLIENT] User name: {0}\t User message: {1}", textUsername, textMsg);
+
                     // todo handle sending to all except this user the username and message to display in chat
+                    serverCom.SendToLobby(ServerCommunication.INSTANCE.GetLobbyForUser(User),payload);
+                    Debug.WriteLine("Payload has been sent!");
                     break;
 
                 case JSONConvert.LOBBY:
                     // lobby data
+                    LobbyIdentifier l = JSONConvert.GetLobbyIdentifier(payload);
+                    handleLobbyMessage(payload,l);
                     break;
                 case JSONConvert.CANVAS:
                     Debug.WriteLine("GOT A MESSAGE FROM THE CLIENT ABOUT THE CANVAS!!!");
@@ -132,7 +143,30 @@ namespace Server.Models
                     Debug.WriteLine("[SERVER] Received weird identifier: " + id);
                     break;
             }
-            //TODO implement ways to handle the message
+        }
+
+        private void handleLobbyMessage(byte[] payload, LobbyIdentifier l)
+        {
+            switch (l)
+            {
+                case LobbyIdentifier.REQUEST:
+                    Debug.WriteLine("[SERVERCLIENT] got lobby request message, sending lobbies...");
+                    sendMessage(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                    break;
+                case LobbyIdentifier.HOST:
+                    // add new lobby and add this serverclient to it
+                    int createdLobbyID = ServerCommunication.INSTANCE.HostForLobby(this.User);
+                    Debug.WriteLine("[SERVERCLIENT] created lobby");
+                    sendMessage(JSONConvert.ConstructLobbyHostCreatedMessage(createdLobbyID));
+                    ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                    break;
+                case LobbyIdentifier.JOIN:
+                    int id = JSONConvert.GetLobbyID(payload);
+                    ServerCommunication.INSTANCE.JoinLobby(this.User,id);
+                    sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage());
+                    ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                    break;
+            }
         }
 
         /// <summary>

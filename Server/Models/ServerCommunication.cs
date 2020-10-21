@@ -1,5 +1,4 @@
-﻿
-using Client;
+﻿using Client;
 using SharedClientServer;
 using System;
 using System.Collections.Generic;
@@ -33,7 +32,10 @@ namespace Server.Models
             listener = new TcpListener(IPAddress.Any, port);
             serverClients = new List<ServerClient>();
             lobbies = new List<Lobby>();
+            Lobby temp = new Lobby(1, 7, 8);
+            lobbies.Add(temp);
             serverClientsInlobbies = new Dictionary<Lobby, List<ServerClient>>();
+            serverClientsInlobbies.Add(temp, new List<ServerClient>());
         }
 
         /// <summary>
@@ -118,6 +120,18 @@ namespace Server.Models
             }
         }
 
+        public Lobby GetLobbyForUser(User user)
+        {
+            foreach (Lobby l in lobbies)
+            {
+                if (l.Users.Contains(user))
+                {
+                    return l;
+                }
+            }
+            return null;
+        }
+
         public void AddToLobby(Lobby lobby, User user)
         {
             foreach (Lobby l in lobbies)
@@ -126,6 +140,7 @@ namespace Server.Models
                 {
                     bool succ;
                     l.AddUser(user, out succ);
+                    Debug.WriteLine("[SERVERCOMM] added user to lobby, now contains " + l.PlayersIn);
                     if (!succ)
                     {
                         // TODO send lobby full message
@@ -141,6 +156,29 @@ namespace Server.Models
                         }
                         
                     }
+                    break;
+                }
+            }
+        }
+
+        public int HostForLobby(User user)
+        {
+            Lobby lobby = new Lobby( lobbies.Count + 1,0, 8);
+            lobbies.Add(lobby);
+            serverClientsInlobbies.Add(lobby, new List<ServerClient>());
+            user.Host = true;
+            AddToLobby(lobby, user);
+            return lobby.ID;
+        }
+
+        public void JoinLobby(User user, int id)
+        {
+            foreach (Lobby l in lobbies)
+            {
+                if (l.ID == id)
+                {
+                    AddToLobby(l, user);
+                    Debug.WriteLine($"{user.Username} joined lobby with id {id}");
                     break;
                 }
             }

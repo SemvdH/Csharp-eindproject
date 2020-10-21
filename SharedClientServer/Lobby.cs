@@ -64,14 +64,27 @@ namespace Client
 
         public int PlayersIn
         {
-            get { return _playersIn; }
+            get { return _users.Count; }
             set { _playersIn = value; }
+        }
+
+        public void Set(Lobby lobby)
+        {
+            this._id = lobby._id;
+            this._users = lobby._users;
+            this._maxPlayers = lobby._maxPlayers;
         }
 
         public int MaxPlayers
         {
             get { return _maxPlayers; }
             set { _maxPlayers = value; }
+        }
+
+        public List<User> Users
+        {
+            get { return _users; }
+            set { _users = value; }
         }
 
 

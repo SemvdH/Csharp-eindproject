@@ -9,6 +9,8 @@ using System.Diagnostics;
 using System.Windows;
 using System.Collections.ObjectModel;
 using Client.Views;
+using System.Linq;
+using System.Windows.Data;
 
 namespace Client
 {
@@ -21,21 +23,101 @@ namespace Client
 
         public Lobby SelectedLobby { get; set; }
 
+        private Client client;
+
+        private bool wantToBeHost = false;
+        private int wantToBeHostId = 0;
+
         public ViewModel()
         {
             _model = new Model();
             _lobbies = new ObservableCollection<Lobby>();
+            client = ClientData.Instance.Client;
+            client.OnLobbiesListReceived = updateLobbies;
+            
 
-            _lobbies.Add(new Lobby(50, 3, 8));
-            _lobbies.Add(new Lobby(69, 1, 9));
-            _lobbies.Add(new Lobby(420, 7, 7));
+            OnHostButtonClick = new RelayCommand(hostGame);
 
-            OnHostButtonClick = new RelayCommand(() => 
+            JoinSelectedLobby = new RelayCommand(joinLobby, true);
+        }
+
+        private void hostGame()
+        {
+            Debug.WriteLine("attempting to host game for " + ClientData.Instance.User.Username);
+            client.SendMessage(JSONConvert.ConstructLobbyHostMessage());
+            client.OnLobbyCreated = becomeHostForLobby;
+        }
+
+        private void becomeHostForLobby(int id)
+        {
+            
+            Debug.WriteLine($"got host succes with data {id} ");
+            wantToBeHost = true;
+            wantToBeHostId = id;
+            client.OnLobbiesReceivedAndWaitingForHost = hostLobbiesReceived;
+
+        }
+
+        private void hostLobbiesReceived()
+        {
+            if (wantToBeHost)
+                foreach (Lobby l in Lobbies)
+                {
+                    if (l.ID == wantToBeHostId)
+                    {
+                        Debug.WriteLine("found lobby that we want to be host of: " + l.ID + ", joining..");
+                        SelectedLobby = l;
+                        startGameInLobby();
+                        wantToBeHost = false;
+                        client.OnLobbiesReceivedAndWaitingForHost = null;
+                        break;
+                    }
+                }
+        }
+
+        private void joinLobby()
+        {
+            // lobby die je wilt joinen verwijderen
+            // nieuwe binnengekregen lobby toevoegen
+            client.OnLobbyJoinSuccess = OnLobbyJoinSuccess;
+            client.SendMessage(JSONConvert.ConstructLobbyJoinMessage(SelectedLobby.ID));
+        }
+
+        private void OnLobbyJoinSuccess()
+        {
+            startGameInLobby();
+        }
+
+
+
+        private void updateLobbies()
+        {
+            Debug.WriteLine("updating lobbies...");
+            Lobby[] lobbiesArr = client.Lobbies;
+            Application.Current.Dispatcher.Invoke(delegate
             {
-                Debug.WriteLine("Host button clicked");
-            });
+                
+                //for (int i = 0; i < lobbiesArr.Length; i++)
+                //{
+                //    Lobby lobby = lobbiesArr[i];
+                //    Debug.WriteLine(lobby.PlayersIn);
+                //    if (i < _lobbies.Count && _lobbies[i].ID == lobby.ID)
+                //    {
+                //        _lobbies[i].Set(lobby);
+                //    } else
+                //    {
+                //        _lobbies.Add(lobbiesArr[i]);
+                //    }
+                //}
 
-            JoinSelectedLobby = new RelayCommand(startGameInLobby, true);
+                _lobbies.Clear();
+
+                foreach (Lobby l in lobbiesArr)
+                {
+                    _lobbies.Add(l);
+                }
+
+            });
         }
 
         private void startGameInLobby()
@@ -43,11 +125,18 @@ namespace Client
             if (SelectedLobby != null)
             {
                 ClientData.Instance.Lobby = SelectedLobby;
-                
-                _model.CanStartGame = false;
+                startGameWindow();
+            }
+        }
+
+        private void startGameWindow()
+        {
+            _model.CanStartGame = false;
+            Application.Current.Dispatcher.Invoke(delegate
+            {
                 GameWindow window = new GameWindow();
                 window.Show();
-            }
+            });
         }
 
         private void ClickCheck()
