@@ -161,6 +161,31 @@ namespace Server.Models
             }
         }
 
+        public void RemoveFromLobby(Lobby lobby, User user)
+        {
+            foreach (Lobby l in lobbies)
+            {
+                if (l == lobby)
+                {
+                    if (lobby.Users.Contains(user))
+                    {
+                        Debug.WriteLine("[SERVERCOMM] removed user from lobby!");
+                        lobby.Users.Remove(user);
+                        foreach (ServerClient sc in serverClients)
+                        {
+                            if (sc.User.Username == user.Username)
+                            {
+                                serverClientsInlobbies[l].Remove(sc);
+                                break;
+                            }
+                        }
+                    }
+
+                }
+                break;
+            }
+        }
+
         public int HostForLobby(User user)
         {
             Lobby lobby = new Lobby( lobbies.Count + 1,0, 8);
@@ -180,6 +205,17 @@ namespace Server.Models
                     AddToLobby(l, user);
                     Debug.WriteLine($"{user.Username} joined lobby with id {id}");
                     break;
+                }
+            }
+        }
+
+        public void LeaveLobby(User user, int id)
+        {
+            foreach (Lobby l in lobbies)
+            {
+                if (l.ID == id)
+                {
+                    RemoveFromLobby(l, user);
                 }
             }
         }

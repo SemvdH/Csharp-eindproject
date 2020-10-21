@@ -1,15 +1,8 @@
 ﻿using Client.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
 
 namespace Client.Views
 {
@@ -24,6 +17,7 @@ namespace Client.Views
         {
             this.viewModel = new ViewModelGame();
             DataContext = this.viewModel;
+            Closing += this.viewModel.LeaveGame;
             InitializeComponent();
             
         }
@@ -59,9 +53,5 @@ namespace Client.Views
             viewModel.Color_Picker(e, this);
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-
-        }
     }
 }

@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Command;
 using SharedClientServer;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -118,6 +119,12 @@ namespace Client.ViewModels
 
             //Broadcast the message after adding it to the list!
             data.Client.SendMessage(JSONConvert.GetMessageToSend(JSONConvert.MESSAGE, _payload));
+        }
+
+        public void LeaveGame(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Debug.WriteLine("Leaving...");
+            data.Client.SendMessage(JSONConvert.ConstructLobbyLeaveMessage(data.Lobby.ID));
         }
 
 
