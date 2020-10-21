@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -159,7 +160,22 @@ namespace SharedClientServer
             Array.Copy(BitConverter.GetBytes(payloadBytes.Length+5),0,res,0,4);
             return res;
         }
+    
+        public static string GetRandomWord(string filename)
+        {
+            string[] words = new string[25];
+            using(StreamReader reader = new StreamReader(@"../../json1.jsonWordsForGame.json"))
+            {
+                string json = reader.ReadToEnd();
+                words = JsonConvert.DeserializeObject<List<string>>(json).ToArray();
+            }
 
+            Random random = new Random();
+
+            int index = random.Next(0, 24);
+
+            return words[index];
+        }
         
     }
 }
