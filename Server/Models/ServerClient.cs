@@ -1,10 +1,12 @@
 ﻿
+using Client;
 using SharedClientServer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
+using static SharedClientServer.JSONConvert;
 
 namespace Server.Models
 {
@@ -121,6 +123,8 @@ namespace Server.Models
 
                 case JSONConvert.LOBBY:
                     // lobby data
+                    LobbyIdentifier l = JSONConvert.GetLobbyIdentifier(payload);
+                    handleLobbyMessage(payload,l);
                     break;
                 case JSONConvert.CANVAS:
                     // canvas data
@@ -130,7 +134,30 @@ namespace Server.Models
                     Debug.WriteLine("[SERVER] Received weird identifier: " + id);
                     break;
             }
-            //TODO implement ways to handle the message
+        }
+
+        private void handleLobbyMessage(byte[] payload, LobbyIdentifier l)
+        {
+            switch (l)
+            {
+                case LobbyIdentifier.REQUEST:
+                    Debug.WriteLine("[SERVERCLIENT] got lobby request message, sending lobbies...");
+                    sendMessage(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                    break;
+                case LobbyIdentifier.HOST:
+                    // add new lobby and add this serverclient to it
+                    int createdLobbyID = ServerCommunication.INSTANCE.HostForLobby(this.User);
+                    Debug.WriteLine("[SERVERCLIENT] created lobby");
+                    sendMessage(JSONConvert.ConstructLobbyHostCreatedMessage(createdLobbyID));
+                    ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                    break;
+                case LobbyIdentifier.JOIN:
+                    int id = JSONConvert.GetLobbyID(payload);
+                    ServerCommunication.INSTANCE.JoinLobby(this.User,id);
+                    sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage());
+                    ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                    break;
+            }
         }
 
         /// <summary>

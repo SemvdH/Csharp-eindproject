@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
+using static SharedClientServer.JSONConvert;
 
 namespace Client
 {
+    public delegate void OnLobbyCreated(int id);
     class Client : ObservableObject
     {
         private TcpClient tcpClient;
@@ -18,6 +20,11 @@ namespace Client
         public bool Connected = false;
         private string username;
         public Callback OnSuccessfullConnect;
+        public Callback OnLobbiesListReceived;
+        public Callback OnLobbyJoinSuccess;
+        public Callback OnLobbiesReceivedAndWaitingForHost;
+        public OnLobbyCreated OnLobbyCreated;
+        public Lobby[] Lobbies { get; set; }
 
         public Client(string username)
         {
@@ -70,9 +77,9 @@ namespace Client
 
         private void handleData(byte[] message)
         {
-            byte id = message[0];
-            byte[] payload = new byte[message.Length - 1];
-            Array.Copy(message, 1, payload, 0, message.Length - 1);
+            byte id = message[4];
+            byte[] payload = new byte[message.Length - 5];
+            Array.Copy(message, 5, payload, 0, message.Length - 5);
             switch (id)
             {
                 case JSONConvert.LOGIN:
@@ -89,6 +96,26 @@ namespace Client
 
                 case JSONConvert.LOBBY:
                     // lobby data
+                    LobbyIdentifier lobbyIdentifier = JSONConvert.GetLobbyIdentifier(payload);
+                    switch (lobbyIdentifier)
+                    {
+                        case LobbyIdentifier.LIST:
+                            Debug.WriteLine("got lobbies list");
+                            Lobbies = JSONConvert.GetLobbiesFromMessage(payload);
+                            OnLobbiesListReceived?.Invoke();
+                            OnLobbiesReceivedAndWaitingForHost?.Invoke();
+                            break;
+                        case LobbyIdentifier.HOST:
+                            // we receive this when the server has made us a host of a new lobby
+                            // TODO get lobby id 
+                            Debug.WriteLine("[CLIENT] got lobby object");
+                            int lobbyCreatedID = JSONConvert.GetLobbyID(payload);
+                            OnLobbyCreated?.Invoke(lobbyCreatedID);
+                            break;
+                        case LobbyIdentifier.JOIN_SUCCESS:
+                            OnLobbyJoinSuccess?.Invoke();
+                            break;
+                    }
                     //TODO fill lobby with the data received
                     break;
                 case JSONConvert.CANVAS:
