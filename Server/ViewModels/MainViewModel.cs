@@ -33,6 +33,10 @@ namespace Server.ViewModels
             {
                 InformationModel.ClientsConnected++;
             };
+            serverCommunication.DisconnectClientAction = () =>
+            {
+                InformationModel.ClientsConnected--;
+            };
             //BitmapImage onlineImg = new BitmapImage(new Uri(@"/img/online.png",UriKind.Relative));
             //BitmapImage offlineImg = new BitmapImage(new Uri(@"/img/offline.png", UriKind.Relative));
             
