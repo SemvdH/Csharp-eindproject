@@ -27,6 +27,30 @@ namespace SharedClientServer
             _host = false;
         }
 
+        public static bool operator ==(User u1, User u2)
+        {
+            return u1.Username == u2.Username;
+        }
+
+        public static bool operator !=(User u1, User u2)
+        {
+            return u1.Username != u2.Username;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                User other = obj as User;
+                return other.Username == this.Username;
+            }
+        }
+            
+
         public string Username
         {
             get { return _username; }
