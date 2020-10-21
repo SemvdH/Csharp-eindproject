@@ -24,6 +24,7 @@ namespace Client
         public Callback OnLobbyJoinSuccess;
         public Callback OnLobbiesReceivedAndWaitingForHost;
         public OnLobbyCreated OnLobbyCreated;
+        private ClientData data = ClientData.Instance;
         public Lobby[] Lobbies { get; set; }
 
         public Client(string username)
@@ -81,6 +82,7 @@ namespace Client
             byte[] payload = new byte[message.Length - 5];
             Array.Copy(message, 5, payload, 0, message.Length - 5);
 
+            Debug.WriteLine("[CLIENT] GOT STRING" + Encoding.ASCII.GetString(payload));
             switch (id)
             {
                 case JSONConvert.LOGIN:
@@ -91,6 +93,11 @@ namespace Client
                     (string, string) combo = JSONConvert.GetUsernameAndMessage(payload);
                     string textUsername = combo.Item1;
                     string textMsg = combo.Item2;
+
+                    if(textUsername != data.User.Username)
+                    {
+                        ViewModels.ViewModelGame.HandleIncomingMsg(textUsername, textMsg);
+                    }
 
                     //TODO display username and message in chat window
                     Debug.WriteLine("[CLIENT] INCOMING MESSAGE!");

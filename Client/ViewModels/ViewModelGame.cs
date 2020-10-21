@@ -20,13 +20,13 @@ namespace Client.ViewModels
         private Point currentPoint = new Point();
         private Color color;
 
-        public ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
+        public static ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
 
         private dynamic _payload;
 
-        private string _username;
+        public string _username;
 
-        private string _message;
+        public string _message;
         public string Message
         {
             get
@@ -120,7 +120,13 @@ namespace Client.ViewModels
             data.Client.SendMessage(JSONConvert.GetMessageToSend(JSONConvert.MESSAGE, _payload));
         }
 
-
+        public static void HandleIncomingMsg(string username, string message)
+        {
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                Messages.Add($"{username}: {message}");
+            });
+        }
     }
 }
        
