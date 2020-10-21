@@ -120,15 +120,9 @@ namespace Server.Models
 
                     Debug.WriteLine("[SERVERCLIENT] User name: {0}\t User message: {1}", textUsername, textMsg);
 
-                    dynamic dataPacket = new
-                    {
-                        username = textUsername,
-                        message = textMsg
-                    };
-
                     // todo handle sending to all except this user the username and message to display in chat
-                    //serverCom.SendToAllExcept();
-                    serverCom.sendToAll(JSONConvert.GetMessageToSend(JSONConvert.MESSAGE, dataPacket));
+                    serverCom.SendToLobby(User.Lobby,payload);
+                    Debug.WriteLine("Payload has been sent!");
                     break;
 
                 case JSONConvert.LOBBY:

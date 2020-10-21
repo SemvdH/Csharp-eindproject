@@ -33,15 +33,17 @@ namespace Client.ViewModels
 
         public ViewModelGame()
         {
-            //if (_payload == null)
-            //{
-            //    _message = "";
-            //}
-            //else
-            //{
-            //    _message = _payload.message;
-            //    _username = _payload.username;
-            //}
+            if (_payload == null)
+            {
+                _message = "";
+               
+            }
+            else
+            {
+                //_message = data.Message;
+                //_username = data.User.Username;
+                //Messages.Add($"{data.User.Username}: {Message}");
+            }
             OnKeyDown = new RelayCommand(ChatBox_KeyDown);
         }
 

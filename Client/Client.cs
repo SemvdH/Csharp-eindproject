@@ -82,8 +82,9 @@ namespace Client
                     (string, string) combo = JSONConvert.GetUsernameAndMessage(payload);
                     string textUsername = combo.Item1;
                     string textMsg = combo.Item2;
-                    //TODO display username and message in chat window
 
+                    //TODO display username and message in chat window
+                    Debug.WriteLine("[CLIENT] INCOMING MESSAGE!");
                     Debug.WriteLine("[CLIENT] User name: {0}\t User message: {1}", textUsername, textMsg);
                     break;
 

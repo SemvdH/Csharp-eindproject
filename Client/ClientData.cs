@@ -30,6 +30,7 @@ namespace Client
         private User _user;
         private Client _client;
         private Lobby _lobby;
+        private string _message;
 
         private ClientData()
         {
@@ -53,6 +54,18 @@ namespace Client
         {
             get { return _lobby; }
             set { _lobby = value; }
+        }
+
+        public String Message
+        {
+            get
+            {
+                return _message;
+            }
+            set
+            {
+                _message = value;
+            }
         }
 
     }
