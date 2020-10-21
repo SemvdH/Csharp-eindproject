@@ -97,6 +97,12 @@ namespace Server.Models
             }
         }
 
+        public void ServerClientDisconnect(ServerClient serverClient)
+        {
+            // remove from serverclientsinlobbies
+            // send leave message
+        }
+
         public void SendToAllExcept(string username, byte[] message)
         {
             foreach (ServerClient sc in serverClients)
