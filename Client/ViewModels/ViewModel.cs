@@ -34,11 +34,19 @@ namespace Client
             _lobbies = new ObservableCollection<Lobby>();
             client = ClientData.Instance.Client;
             client.OnLobbiesListReceived = updateLobbies;
+            client.OnLobbyLeave = leaveLobby;
             
 
             OnHostButtonClick = new RelayCommand(hostGame);
 
             JoinSelectedLobby = new RelayCommand(joinLobby, true);
+        }
+
+        private void leaveLobby(int id)
+        {
+            _model.CanStartGame = true;
+            ClientData.Instance.Lobby = null;
+            SelectedLobby = null;
         }
 
         private void hostGame()
@@ -96,19 +104,6 @@ namespace Client
             Lobby[] lobbiesArr = client.Lobbies;
             Application.Current.Dispatcher.Invoke(delegate
             {
-                
-                //for (int i = 0; i < lobbiesArr.Length; i++)
-                //{
-                //    Lobby lobby = lobbiesArr[i];
-                //    Debug.WriteLine(lobby.PlayersIn);
-                //    if (i < _lobbies.Count && _lobbies[i].ID == lobby.ID)
-                //    {
-                //        _lobbies[i].Set(lobby);
-                //    } else
-                //    {
-                //        _lobbies.Add(lobbiesArr[i]);
-                //    }
-                //}
 
                 _lobbies.Clear();
 

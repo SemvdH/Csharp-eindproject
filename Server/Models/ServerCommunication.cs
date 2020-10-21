@@ -161,6 +161,7 @@ namespace Server.Models
             }
         }
 
+
         public int HostForLobby(User user)
         {
             Lobby lobby = new Lobby( lobbies.Count + 1,0, 8);
@@ -180,6 +181,41 @@ namespace Server.Models
                     AddToLobby(l, user);
                     Debug.WriteLine($"{user.Username} joined lobby with id {id}");
                     break;
+                }
+            }
+        }
+
+        public void LeaveLobby(User user, int id)
+        {
+            Debug.WriteLine("[SERVERCOMM] removing user from lobby");
+            foreach (Lobby l in lobbies)
+            {
+                if (l.ID == id)
+                {
+                    Debug.WriteLine($"[SERVERCOMM] checking for lobby with id {l.ID}");
+                    
+                    foreach (User u in l.Users)
+                    {
+                        Debug.WriteLine($"[SERVERCOMM] checking if {u.Username} is {user.Username} ");
+                        // contains doesn't work, so we'll do it like this...
+                        if (u.Username == user.Username)
+                        {
+                            Debug.WriteLine("[SERVERCOMM] removed user from lobby!");
+                            l.Users.Remove(user);
+                            foreach (ServerClient sc in serverClients)
+                            {
+                                if (sc.User.Username == user.Username)
+                                {
+                                    serverClientsInlobbies[l].Remove(sc);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+
+                    
+                   
                 }
             }
         }
