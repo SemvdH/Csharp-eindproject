@@ -24,6 +24,7 @@ namespace SharedClientServer
         public static (string,string) GetUsernameAndMessage(byte[] json)
         {
             string msg = Encoding.ASCII.GetString(json);
+            Debug.WriteLine("Sent data: {0}", msg);
             dynamic payload = JsonConvert.DeserializeObject(msg);
             
             return (payload.username, payload.message);
@@ -47,7 +48,6 @@ namespace SharedClientServer
         {
             return null;
         }
-
 
 
         /// <summary>

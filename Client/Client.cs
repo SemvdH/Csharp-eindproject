@@ -69,7 +69,7 @@ namespace Client
 
         private void handleData(byte[] message)
         {
-            byte id = message[0];
+            byte id = message[4];
             byte[] payload = new byte[message.Length - 1];
             Array.Copy(message, 1, payload, 0, message.Length - 1);
             switch (id)
@@ -83,7 +83,8 @@ namespace Client
                     string textUsername = combo.Item1;
                     string textMsg = combo.Item2;
                     //TODO display username and message in chat window
-                    Debug.WriteLine("Message username: {0}\t Message: {1}", textUsername, textMsg);
+
+                    Debug.WriteLine("[CLIENT] User name: {0}\t User message: {1}", textUsername, textMsg);
                     break;
 
                 case JSONConvert.LOBBY:
