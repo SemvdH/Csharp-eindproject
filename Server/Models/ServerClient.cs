@@ -84,6 +84,7 @@ namespace Server.Models
             // start reading for a new message
             stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnRead), null);
 
+            
         }
 
         /// <summary>
@@ -127,6 +128,7 @@ namespace Server.Models
                     handleLobbyMessage(payload,l);
                     break;
                 case JSONConvert.CANVAS:
+                    Debug.WriteLine("GOT A MESSAGE FROM THE CLIENT ABOUT THE CANVAS!!!");
                     // canvas data
                     // todo send canvas data to all other serverclients in lobby
                     break;
