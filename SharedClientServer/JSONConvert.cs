@@ -110,8 +110,14 @@ namespace SharedClientServer
         {
             dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
             JArray lobbiesArray = payload.lobbies;
-            Debug.WriteLine(lobbiesArray.ToString());
-            return lobbiesArray.ToObject<Lobby[]>();
+            Debug.WriteLine("[JSONCONVERT] got lobbies from message" + lobbiesArray.ToString());
+            Lobby[] lobbiesTemp = lobbiesArray.ToObject<Lobby[]>();
+            Debug.WriteLine("lobbies in array: ");
+            foreach (Lobby l in lobbiesTemp)
+            {
+                Debug.WriteLine("players: " + l.PlayersIn);
+            }
+            return lobbiesTemp;
         }
 
         public static int GetLobbyID(byte[] json)

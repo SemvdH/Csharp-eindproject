@@ -72,13 +72,25 @@ namespace Client
 
         private void updateLobbies()
         {
+            Debug.WriteLine("updating lobbies...");
             Lobby[] lobbiesArr = client.Lobbies;
             Application.Current.Dispatcher.Invoke(delegate
             {
-                foreach (Lobby lobby in lobbiesArr)
+                
+                for (int i = 0; i < lobbiesArr.Length; i++)
                 {
-                    _lobbies.Add(lobby);
+                    Lobby lobby = lobbiesArr[i];
+                    Debug.WriteLine(lobby.PlayersIn);
+                    if (i < _lobbies.Count && _lobbies[i].ID == lobby.ID)
+                    {
+                        _lobbies[i].Set(lobby);
+                    } else
+                    {
+                        _lobbies.Add(lobbiesArr[i]);
+                    }
                 }
+                
+
             });
         }
 

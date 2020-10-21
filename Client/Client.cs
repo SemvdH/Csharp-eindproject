@@ -99,6 +99,7 @@ namespace Client
                     switch (lobbyIdentifier)
                     {
                         case LobbyIdentifier.LIST:
+                            Debug.WriteLine("got lobbies list");
                             Lobbies = JSONConvert.GetLobbiesFromMessage(payload);
                             OnLobbiesListReceived?.Invoke();
                             break;

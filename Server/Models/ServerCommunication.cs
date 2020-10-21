@@ -129,6 +129,7 @@ namespace Server.Models
                 {
                     bool succ;
                     l.AddUser(user, out succ);
+                    Debug.WriteLine("[SERVERCOMM] added user to lobby, now contains " + l.PlayersIn);
                     if (!succ)
                     {
                         // TODO send lobby full message

@@ -149,11 +149,13 @@ namespace Server.Models
                     Lobby created = ServerCommunication.INSTANCE.HostForLobby(this.User);
                     Debug.WriteLine("[SERVERCLIENT] created lobby");
                     sendMessage(JSONConvert.ConstructLobbyHostCreatedMessage(created));
+                    sendMessage(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
                     break;
                 case LobbyIdentifier.JOIN:
                     int id = JSONConvert.GetLobbyID(payload);
                     ServerCommunication.INSTANCE.JoinLobby(this.User,id);
                     sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage());
+                    sendMessage(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
                     break;
             }
         }

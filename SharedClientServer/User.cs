@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,6 +11,7 @@ namespace SharedClientServer
         private int _score;
         private bool _host;
 
+        [JsonConstructor]
         public User(string username, int score, bool host)
         {
             _username = username;
