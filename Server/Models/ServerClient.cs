@@ -170,6 +170,12 @@ namespace Server.Models
                     sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage());
                     ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
                     break;
+                case LobbyIdentifier.LEAVE:
+                    id = JSONConvert.GetLobbyID(payload);
+                    ServerCommunication.INSTANCE.LeaveLobby(User, id);
+                    sendMessage(JSONConvert.ConstructLobbyLeaveMessage(id));
+                    ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                    break;
             }
         }
 

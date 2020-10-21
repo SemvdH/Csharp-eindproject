@@ -139,7 +139,6 @@ namespace SharedClientServer
         }
 
         #endregion
-
         /// <summary>
         /// constructs a message that can be sent to the clients or server
         /// </summary>

@@ -8,7 +8,7 @@ using static SharedClientServer.JSONConvert;
 
 namespace Client
 {
-    public delegate void OnLobbyCreated(int id);
+    public delegate void LobbyCallback(int id);
     class Client : ObservableObject
     {
         private TcpClient tcpClient;
@@ -23,7 +23,8 @@ namespace Client
         public Callback OnLobbiesListReceived;
         public Callback OnLobbyJoinSuccess;
         public Callback OnLobbiesReceivedAndWaitingForHost;
-        public OnLobbyCreated OnLobbyCreated;
+        public LobbyCallback OnLobbyCreated;
+        public LobbyCallback OnLobbyLeave;
         private ClientData data = ClientData.Instance;
         public Lobby[] Lobbies { get; set; }
 
@@ -124,6 +125,10 @@ namespace Client
                             break;
                         case LobbyIdentifier.JOIN_SUCCESS:
                             OnLobbyJoinSuccess?.Invoke();
+                            break;
+                        case LobbyIdentifier.LEAVE:
+                            int lobbyLeaveID = JSONConvert.GetLobbyID(payload);
+                            OnLobbyLeave?.Invoke(lobbyLeaveID);
                             break;
                     }
                     //TODO fill lobby with the data received
