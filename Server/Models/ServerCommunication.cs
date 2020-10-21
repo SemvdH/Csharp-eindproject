@@ -161,30 +161,6 @@ namespace Server.Models
             }
         }
 
-        public void RemoveFromLobby(Lobby lobby, User user)
-        {
-            foreach (Lobby l in lobbies)
-            {
-                if (l == lobby)
-                {
-                    if (lobby.Users.Contains(user))
-                    {
-                        Debug.WriteLine("[SERVERCOMM] removed user from lobby!");
-                        lobby.Users.Remove(user);
-                        foreach (ServerClient sc in serverClients)
-                        {
-                            if (sc.User.Username == user.Username)
-                            {
-                                serverClientsInlobbies[l].Remove(sc);
-                                break;
-                            }
-                        }
-                    }
-
-                }
-                break;
-            }
-        }
 
         public int HostForLobby(User user)
         {
@@ -211,11 +187,35 @@ namespace Server.Models
 
         public void LeaveLobby(User user, int id)
         {
+            Debug.WriteLine("[SERVERCOMM] removing user from lobby");
             foreach (Lobby l in lobbies)
             {
                 if (l.ID == id)
                 {
-                    RemoveFromLobby(l, user);
+                    Debug.WriteLine($"[SERVERCOMM] checking for lobby with id {l.ID}");
+                    
+                    foreach (User u in l.Users)
+                    {
+                        Debug.WriteLine($"[SERVERCOMM] checking if {u.Username} is {user.Username} ");
+                        // contains doesn't work, so we'll do it like this...
+                        if (u.Username == user.Username)
+                        {
+                            Debug.WriteLine("[SERVERCOMM] removed user from lobby!");
+                            l.Users.Remove(user);
+                            foreach (ServerClient sc in serverClients)
+                            {
+                                if (sc.User.Username == user.Username)
+                                {
+                                    serverClientsInlobbies[l].Remove(sc);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+
+                    
+                   
                 }
             }
         }
