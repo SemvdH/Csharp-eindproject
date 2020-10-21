@@ -1,0 +1,75 @@
+﻿<Window x:Class="Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Client"
+        mc:Ignorable="d"
+        Title="Scrubl.io" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Content="This client information:" FontSize="17"/>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Your username:" FontSize="15" VerticalAlignment="Center"/>
+
+            <Label Grid.Row="2" Grid.Column="0" Content="Select your color:" FontSize="15" VerticalAlignment="Center"/>
+            <ComboBox Name="colorSelection" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" FontSize="15">
+                <ComboBoxItem Content="BLUE"/>
+                <ComboBoxItem Content="RED"/>
+                <ComboBoxItem Content="YELLOW"/>
+                <ComboBoxItem Content="BLACK"/>
+                <ComboBoxItem Content="GREEN"/>
+                <ComboBoxItem Content="ORANGE"/>
+                <ComboBoxItem Content="PURPLE"/>
+            </ComboBox>
+
+            <Label Grid.Row="3" Name="testLabel" FontSize="15" VerticalAlignment="Center"/>
+            <Label Name="usernameLabel" Content="place username here" Grid.Column="1" HorizontalAlignment="Center" Margin="0,12,0,0" VerticalAlignment="Top" Grid.Row="1"/>
+
+        </Grid>
+
+
+        <ListView Name="LobbyList" Grid.Row="1" Grid.Column="0" SelectedItem="{Binding SelectedLobby}" Margin="10, 10, 10, 10" ItemsSource="{Binding Path=Lobbies}">
+            <ListView.View>
+                <GridView x:Name="grdList">
+                    <GridViewColumn Header="Lobby ID" DisplayMemberBinding="{Binding ID}" Width="70"/>
+                    <GridViewColumn Header="Players in" DisplayMemberBinding="{Binding PlayersIn}" Width="70"/>
+                    <GridViewColumn Header="max players available" DisplayMemberBinding="{Binding MaxPlayers}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Button Name="joinButton" Grid.Row="0" Content="join a selected lobby" Command="{Binding JoinSelectedLobby}" IsEnabled="{Binding Model.CanStartGame}" Width="200" Height="40" HorizontalAlignment="Left" Margin="10, 0, 0, 0"/>
+            <Button Name="hostButton" Grid.Row="1" Content="host a new lobby" Command="{Binding OnHostButtonClick}" IsEnabled="{Binding Model.CanStartGame}" Width="200" Height="40" HorizontalAlignment="left" Margin="10, 0, 0, 0"/>
+        </Grid>
+
+    </Grid>
+</Window>
