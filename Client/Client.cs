@@ -72,14 +72,15 @@ namespace Client
             }
 
             stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete), null);
-
         }
 
         private void handleData(byte[] message)
         {
             byte id = message[4];
+
             byte[] payload = new byte[message.Length - 5];
             Array.Copy(message, 5, payload, 0, message.Length - 5);
+
             switch (id)
             {
                 case JSONConvert.LOGIN:
@@ -90,8 +91,10 @@ namespace Client
                     (string, string) combo = JSONConvert.GetUsernameAndMessage(payload);
                     string textUsername = combo.Item1;
                     string textMsg = combo.Item2;
-                    //TODO display username and message in chat window
 
+                    //TODO display username and message in chat window
+                    Debug.WriteLine("[CLIENT] INCOMING MESSAGE!");
+                    Debug.WriteLine("[CLIENT] User name: {0}\t User message: {1}", textUsername, textMsg);
                     break;
 
                 case JSONConvert.LOBBY:
@@ -118,9 +121,11 @@ namespace Client
                     }
                     //TODO fill lobby with the data received
                     break;
+
                 case JSONConvert.CANVAS:
                     // canvas data
                     break;
+
                 default:
                     Debug.WriteLine("[CLIENT] Received weird identifier: " + id);
                     break;

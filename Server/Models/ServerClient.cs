@@ -1,5 +1,7 @@
 ﻿
+
 using Client;
+using Newtonsoft.Json.Linq;
 using SharedClientServer;
 using System;
 using System.Collections.Generic;
@@ -18,6 +20,7 @@ namespace Server.Models
         private byte[] totalBuffer = new byte[1024];
         private int totalBufferReceived = 0;
         public User User { get; set; }
+        private ServerCommunication serverCom = ServerCommunication.INSTANCE;
         
 
         /// <summary>
@@ -119,7 +122,11 @@ namespace Server.Models
                     string textUsername = combo.Item1;
                     string textMsg = combo.Item2;
 
+                    Debug.WriteLine("[SERVERCLIENT] User name: {0}\t User message: {1}", textUsername, textMsg);
+
                     // todo handle sending to all except this user the username and message to display in chat
+                    serverCom.SendToLobby(ServerCommunication.INSTANCE.GetLobbyForUser(User),payload);
+                    Debug.WriteLine("Payload has been sent!");
                     break;
 
                 case JSONConvert.LOBBY:

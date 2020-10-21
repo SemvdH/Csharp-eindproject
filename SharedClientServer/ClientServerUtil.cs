@@ -18,6 +18,5 @@ namespace SharedClientServer
             Array.Copy(stringAsBytes, 0, res, 1, stringAsBytes.Length);
             return res;
         }
-
     }
 }
