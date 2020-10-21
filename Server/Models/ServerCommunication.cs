@@ -121,6 +121,18 @@ namespace Server.Models
             }
         }
 
+        public Lobby GetLobbyForUser(User user)
+        {
+            foreach (Lobby l in lobbies)
+            {
+                if (l.Users.Contains(user))
+                {
+                    return l;
+                }
+            }
+            return null;
+        }
+
         public void AddToLobby(Lobby lobby, User user)
         {
             foreach (Lobby l in lobbies)

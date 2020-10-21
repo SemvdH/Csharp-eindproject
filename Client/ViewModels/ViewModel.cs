@@ -55,9 +55,6 @@ namespace Client
             wantToBeHost = true;
             wantToBeHostId = id;
             client.OnLobbiesReceivedAndWaitingForHost = hostLobbiesReceived;
-            // lobby id krijgen waarvan je host bent
-            // wachten totdat list van lobbies is gekomen
-            // uit die list de id zoeken en die joinen
 
         }
 
