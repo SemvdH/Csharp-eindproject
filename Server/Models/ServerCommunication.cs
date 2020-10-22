@@ -90,7 +90,7 @@ namespace Server.Models
         /// send a message to all tcp clients in the list
         /// </summary>
         /// <param name="message">the message to send</param>
-        public void sendToAll(byte[] message)
+        public async void sendToAll(byte[] message)
         {
             foreach (ServerClient sc in serverClients)
             {
@@ -142,6 +142,7 @@ namespace Server.Models
                 {
                     foreach (ServerClient sc in serverClientsInlobbies[l])
                     {
+                        Debug.WriteLine("[SERVERCLIENT] Sending message");
                         sc.sendMessage(message);
                     }
                     break;

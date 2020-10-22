@@ -1,5 +1,5 @@
 
-﻿using Client.Views;
+using Client.Views;
 using GalaSoft.MvvmLight.Command;
 using SharedClientServer;
 using System;
@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -24,6 +25,12 @@ namespace Client.ViewModels
         public static ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
 
         private dynamic _payload;
+
+        public static string Word
+        {
+            get;
+            set;
+        }
 
         public string _username;
 
@@ -165,6 +172,10 @@ namespace Client.ViewModels
             data.Client.SendMessage(JSONConvert.GetMessageToSend(JSONConvert.MESSAGE, _payload));
         }
 
+        /*
+         * MISC make this a callback
+         * Handles the incoming chat message from another client.
+         */
         public static void HandleIncomingMsg(string username, string message)
         {
             Application.Current.Dispatcher.Invoke(delegate
@@ -172,13 +183,21 @@ namespace Client.ViewModels
                 Messages.Add($"{username}: {message}");
             });
         }
-        public void LeaveGame(object sender, System.ComponentModel.CancelEventArgs e)
+        public void LeaveGame(object sender, CancelEventArgs e)
         {
             Debug.WriteLine("Leaving...");
             data.Client.SendMessage(JSONConvert.ConstructLobbyLeaveMessage(data.Lobby.ID));
         }
 
-
+        /*
+         * MISC make this a callback
+         * Handles the random word that has been received from the server.
+         */
+        public static void HandleRandomWord(string randomWord)
+        {
+            Debug.WriteLine("[CLIENT] Reached the handle random word method!");
+            Word = "NegerPik";
+        }
     }
 }
-       
+

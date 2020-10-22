@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="resources\WordsForGame.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="resources\WordsForGame.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AsyncAwaitBestPractices" Version="4.3.0" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.0.1" />
     <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
