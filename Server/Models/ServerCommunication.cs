@@ -90,7 +90,7 @@ namespace Server.Models
         /// send a message to all tcp clients in the list
         /// </summary>
         /// <param name="message">the message to send</param>
-        public void sendToAll(byte[] message)
+        public async void sendToAll(byte[] message)
         {
             foreach (ServerClient sc in serverClients)
             {

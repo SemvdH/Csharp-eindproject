@@ -9,6 +9,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using static SharedClientServer.JSONConvert;
 
 namespace Server.Models
@@ -22,7 +24,7 @@ namespace Server.Models
         private int totalBufferReceived = 0;
         public User User { get; set; }
         private ServerCommunication serverCom = ServerCommunication.INSTANCE;
-        
+
 
         /// <summary>
         /// Constructor that creates a new serverclient object with the given tcp client.
@@ -96,8 +98,8 @@ namespace Server.Models
                 tcpClient.Close();
                 ServerCommunication.INSTANCE.ServerClientDisconnect(this);
             }
-            
-            
+
+
         }
 
         /// <summary>
@@ -109,21 +111,21 @@ namespace Server.Models
             Debug.WriteLine($"Got message : {Encoding.ASCII.GetString(message)}");
             byte id = message[4];
             byte[] payload = new byte[message.Length - 5];
-            Array.Copy(message,5,payload,0,message.Length-5);
+            Array.Copy(message, 5, payload, 0, message.Length - 5);
             Debug.WriteLine("[SERVERCLIENT] GOT STRING" + Encoding.ASCII.GetString(payload));
-            switch(id)
+            switch (id)
             {
-                
+
                 case JSONConvert.LOGIN:
                     // json log in username data
                     string uName = JSONConvert.GetUsernameLogin(payload);
-                    
+
                     if (uName != null)
                     {
                         User = new User(uName);
                         User.Username = uName;
                         Debug.WriteLine("[SERVERCLIENT] set username to " + uName);
-                        
+
                     }
                     break;
                 case JSONConvert.MESSAGE:
@@ -146,7 +148,7 @@ namespace Server.Models
                 case JSONConvert.LOBBY:
                     // lobby data
                     LobbyIdentifier l = JSONConvert.GetLobbyIdentifier(payload);
-                    handleLobbyMessage(payload,l);
+                    handleLobbyMessage(payload, l);
                     break;
                 case JSONConvert.CANVAS:
                     Debug.WriteLine("GOT A MESSAGE FROM THE CLIENT ABOUT THE CANVAS!!!");
@@ -180,15 +182,17 @@ namespace Server.Models
                     break;
                 case LobbyIdentifier.JOIN:
                     int id = JSONConvert.GetLobbyID(payload);
-                    ServerCommunication.INSTANCE.JoinLobby(this.User,id);
+                    ServerCommunication.INSTANCE.JoinLobby(this.User, id);
                     sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage());
+                    ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
 
-                    serverCom.SendToLobby(serverCom.GetLobbyForUser(User), JSONConvert.GetMessageToSend(RANDOMWORD, new
+                    Task.Run(SendLobbyData);
+
+                    serverCom.sendToAll(JSONConvert.GetMessageToSend(JSONConvert.RANDOMWORD, new
                     {
+                        id = serverCom.GetLobbyForUser(User).ID,
                         word = JSONConvert.SendRandomWord("WordsForGame.json")
                     }));
-
-                    ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
                     break;
                 case LobbyIdentifier.LEAVE:
                     id = JSONConvert.GetLobbyID(payload);
@@ -197,6 +201,20 @@ namespace Server.Models
                     ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
                     break;
             }
+        }
+
+        private async void SendLobbyData()
+        {
+            string result = await WaitForData();
+            if(result == "bruh momento")
+            {
+            }
+        }
+
+        private async Task<string> WaitForData()
+        {
+            await Task.Delay(1000);
+            return "bruh momento";
         }
 
         /// <summary>
