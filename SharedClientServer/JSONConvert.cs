@@ -1,4 +1,5 @@
 ﻿using Client;
+using Microsoft.VisualBasic.CompilerServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -16,6 +17,7 @@ namespace SharedClientServer
         public const byte MESSAGE = 0x02;
         public const byte LOBBY = 0x03;
         public const byte CANVAS = 0x04;
+        public const byte RANDOMWORD = 0x05;
 
         public enum LobbyIdentifier
         {
@@ -161,21 +163,37 @@ namespace SharedClientServer
             return res;
         }
     
-        public static string GetRandomWord(string filename)
+        /*
+         * This method sends a random word from the json file, this happens when the client joins a lobby.
+         */
+        public static string SendRandomWord(string filename)
         {
-            string[] words = new string[25];
-            using(StreamReader reader = new StreamReader(@"../../json1.jsonWordsForGame.json"))
+            dynamic words;
+            Random random = new Random();
+            string workingDir = Path.GetFullPath(@"..\Server");
+            string projDir = Directory.GetParent(workingDir).Parent.Parent.FullName;
+            string filePath = projDir += $@"\resources\{filename}";
+
+            using(StreamReader reader = new StreamReader(filePath))
             {
                 string json = reader.ReadToEnd();
-                words = JsonConvert.DeserializeObject<List<string>>(json).ToArray();
+                words = JsonConvert.DeserializeObject(json);
             }
 
-            Random random = new Random();
 
             int index = random.Next(0, 24);
 
-            return words[index];
+            Debug.WriteLine($"[SERVERCLIENT] Sending random words {words}");
+            return words.words[index];
         }
         
+        /*
+         * Client gets the payload and retrieves the word from the payload
+         */
+        public static string GetRandomWord(byte[] json)
+        {
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            return payload.word;
+        }
     }
 }

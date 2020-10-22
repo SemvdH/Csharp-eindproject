@@ -142,6 +142,7 @@ namespace Server.Models
                 {
                     foreach (ServerClient sc in serverClientsInlobbies[l])
                     {
+                        Debug.WriteLine("[SERVERCLIENT] Sending message");
                         sc.sendMessage(message);
                     }
                     break;
