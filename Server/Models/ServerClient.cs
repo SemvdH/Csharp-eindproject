@@ -188,15 +188,10 @@ namespace Server.Models
                     break;
                 case LobbyIdentifier.JOIN:
                     int id = JSONConvert.GetLobbyID(payload);
-                    ServerCommunication.INSTANCE.JoinLobby(this.User, id);
-                    sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage());
-
                     bool isHost;
                     ServerCommunication.INSTANCE.JoinLobby(this.User,id, out isHost);
                     sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage(isHost));
                     ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
-
-                    //Task.Run(SendLobbyData);
 
                     serverCom.sendToAll(JSONConvert.GetMessageToSend(JSONConvert.RANDOMWORD, new
                     {

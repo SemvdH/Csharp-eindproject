@@ -87,7 +87,8 @@ namespace Client
 
         private void joinLobby()
         {
-            
+            // lobby die je wilt joinen verwijderen
+            // nieuwe binnengekregen lobby toevoegen
             client.OnLobbyJoinSuccess = OnLobbyJoinSuccess;
             client.SendMessage(JSONConvert.ConstructLobbyJoinMessage(SelectedLobby.ID));
         }
