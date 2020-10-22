@@ -49,6 +49,9 @@ namespace Client
 
         private void OnReadComplete(IAsyncResult ar)
         {
+            if (ar == null || (!ar.IsCompleted) || (!this.stream.CanRead) || !this.tcpClient.Client.Connected)
+                return;
+
             int amountReceived = stream.EndRead(ar);
 
             if (totalBufferReceived + amountReceived > 1024)
@@ -74,6 +77,7 @@ namespace Client
                 expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
             }
 
+            ar.AsyncWaitHandle.WaitOne();
             stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete), null);
         }
 
@@ -140,6 +144,13 @@ namespace Client
                     // canvas data
                     break;
 
+                case JSONConvert.RANDOMWORD:
+                    //Flag byte for receiving the random word.
+                    int lobbyId = JSONConvert.GetLobbyID(payload);
+
+                    if(data.Lobby?.ID == lobbyId)
+                    ViewModels.ViewModelGame.HandleRandomWord(JSONConvert.GetRandomWord(payload));
+                    break;
                 default:
                     Debug.WriteLine("[CLIENT] Received weird identifier: " + id);
                     break;
