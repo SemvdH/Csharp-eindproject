@@ -15,6 +15,7 @@ using static SharedClientServer.JSONConvert;
 
 namespace Server.Models
 {
+    public delegate void Callback();
     class ServerClient : ObservableObject
     {
         private TcpClient tcpClient;
@@ -24,6 +25,7 @@ namespace Server.Models
         private int totalBufferReceived = 0;
         public User User { get; set; }
         private ServerCommunication serverCom = ServerCommunication.INSTANCE;
+        private Callback OnMessageReceivedOk;
 
 
         /// <summary>
@@ -94,6 +96,7 @@ namespace Server.Models
             }
             catch (IOException e)
             {
+                Debug.WriteLine("[SERVERCLIENT] Client disconnected! exception was " + e.Message);
                 tcpClient.Close();
                 ServerCommunication.INSTANCE.ServerClientDisconnect(this);
             }
@@ -157,6 +160,10 @@ namespace Server.Models
 
                 case JSONConvert.RANDOMWORD:
                     //Flag byte for receiving the random word.
+                    break;
+                case JSONConvert.MESSAGE_RECEIVED:
+                    // we now can send a new message
+                    OnMessageReceivedOk?.Invoke();
                     break;
                 default:
                     Debug.WriteLine("[SERVER] Received weird identifier: " + id);
