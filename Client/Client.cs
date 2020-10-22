@@ -173,6 +173,7 @@ namespace Client
                     Debug.WriteLine("[CLIENT] Received weird identifier: " + id);
                     break;
             }
+            SendMessage(JSONConvert.GetMessageToSend(JSONConvert.MESSAGE_RECEIVED,null));
 
         }
 

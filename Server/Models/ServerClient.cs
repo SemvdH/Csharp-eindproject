@@ -192,12 +192,15 @@ namespace Server.Models
                     ServerCommunication.INSTANCE.JoinLobby(this.User,id, out isHost);
                     sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage(isHost));
                     ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
-
-                    serverCom.sendToAll(JSONConvert.GetMessageToSend(JSONConvert.RANDOMWORD, new
+                    OnMessageReceivedOk = () =>
                     {
-                        id = serverCom.GetLobbyForUser(User).ID,
-                        word = JSONConvert.SendRandomWord("WordsForGame.json")
-                    }));
+                        serverCom.sendToAll(JSONConvert.GetMessageToSend(JSONConvert.RANDOMWORD, new
+                        {
+                            id = serverCom.GetLobbyForUser(User).ID,
+                            word = JSONConvert.SendRandomWord("WordsForGame.json")
+                        }));
+                        OnMessageReceivedOk = null;
+                    };
                     break;
                 case LobbyIdentifier.LEAVE:
                     id = JSONConvert.GetLobbyID(payload);
