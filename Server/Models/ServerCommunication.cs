@@ -149,6 +149,21 @@ namespace Server.Models
             }
         }
 
+        public void SendCanvasDataToLobby(Lobby lobby, string username, byte[] message)
+        {
+            foreach (Lobby l in lobbies)
+            {
+                if (l == lobby)
+                {
+                    foreach (ServerClient sc in serverClientsInlobbies[l])
+                    {
+                        sc.sendMessage(message);
+                    }
+                    break;
+                }
+            }
+        }
+
         public Lobby GetLobbyForUser(User user)
         {
             foreach (Lobby l in lobbies)
@@ -261,7 +276,7 @@ namespace Server.Models
             {
                 if (lobby.ID == lobbyID)
                 {
-                    lobby.LobbyJoineble = false;
+                    lobby.LobbyJoinable = false;
                 }
             }
         }

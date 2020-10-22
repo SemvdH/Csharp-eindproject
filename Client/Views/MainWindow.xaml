@@ -58,7 +58,7 @@
                     <GridViewColumn Header="Lobby ID" DisplayMemberBinding="{Binding ID}" Width="70"/>
                     <GridViewColumn Header="Players in" DisplayMemberBinding="{Binding PlayersIn}" Width="70"/>
                     <GridViewColumn Header="max players available" DisplayMemberBinding="{Binding MaxPlayers}" Width="150"/>
-                    <GridViewColumn Header="joineble" DisplayMemberBinding="{Binding LobbyJoineble}"/>
+                    <GridViewColumn Header="joinable" DisplayMemberBinding="{Binding LobbyJoinable}"/>
                 </GridView>
             </ListView.View>
         </ListView>

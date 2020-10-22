@@ -92,7 +92,7 @@ namespace Client
             // nieuwe binnengekregen lobby toevoegen
             if (SelectedLobby != null)
             {
-                if (SelectedLobby.PlayersIn == SelectedLobby.MaxPlayers || !SelectedLobby.LobbyJoineble)
+                if (SelectedLobby.PlayersIn == SelectedLobby.MaxPlayers || !SelectedLobby.LobbyJoinable)
                 {
                     return;
                 }

@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
+using System.Windows.Media;
 using static SharedClientServer.JSONConvert;
 
 namespace Client
 {
     public delegate void LobbyJoinCallback(bool isHost);
-    public delegate void CanvasDataReceived(double[] coordinates);
+    public delegate void CanvasDataReceived(double[] coordinates, Color color);
+    public delegate void CanvasReset();
     public delegate void LobbyCallback(int id);
     class Client : ObservableObject
     {
@@ -32,6 +34,7 @@ namespace Client
         public LobbyCallback OnLobbyLeave;
         private ClientData data = ClientData.Instance;
         public CanvasDataReceived CanvasDataReceived;
+        public CanvasReset CReset;
         public Lobby[] Lobbies { get; set; }
 
         public Client(string username)
@@ -55,13 +58,14 @@ namespace Client
         private void OnReadComplete(IAsyncResult ar)
         {
             int amountReceived = stream.EndRead(ar);
-
-            if (totalBufferReceived > 2048)
+            if (totalBufferReceived + amountReceived > 1024)
             {
                 throw new OutOfMemoryException("buffer too small");
             }
 
+            // copy the received bytes into the buffer
             Array.Copy(buffer, 0, totalBuffer, totalBufferReceived, amountReceived);
+            // add the bytes we received to the total amount
             totalBufferReceived += amountReceived;
 
             int expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
@@ -144,8 +148,18 @@ namespace Client
 
                 case JSONConvert.CANVAS:
                     // canvas data
-                    //clientData.CanvasData = JSONConvert.getCoordinates(payload);                   
-                    CanvasDataReceived?.Invoke(JSONConvert.getCoordinates(payload));
+                    //clientData.CanvasData = JSONConvert.getCoordinates(payload);         
+                    CanvasInfo type = JSONConvert.GetCanvasMessageType(payload);
+                    switch (type)
+                    {
+                        case CanvasInfo.RESET:
+                            CReset?.Invoke();
+                            break;
+
+                        case CanvasInfo.DRAWING:
+                            CanvasDataReceived?.Invoke(JSONConvert.getCoordinates(payload), JSONConvert.getCanvasDrawingColor(payload));
+                            break;
+                    }
                     break;
 
                 default:

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 
 namespace SharedClientServer
 {
@@ -26,6 +27,13 @@ namespace SharedClientServer
             LIST,
             REQUEST
         }
+
+        public enum CanvasInfo
+        {
+            DRAWING,
+            RESET
+        }
+
         public static (string,string) GetUsernameAndMessage(byte[] json)
         {
             string msg = Encoding.ASCII.GetString(json);
@@ -149,22 +157,38 @@ namespace SharedClientServer
 
         #endregion
 
-        public static byte[] ConstructCanvasDataSend(double[] coordinates)
+        public static byte[] ConstructCanvasDataSend(CanvasInfo typeToSend, double[] coordinates, Color colorToSend)
         {
             return GetMessageToSend(CANVAS, new
             {
-                coordinatesLine = coordinates
-            });
+                type = typeToSend,
+                coordinatesLine = coordinates,
+                color = colorToSend
+            }); ;
+        }
+
+        public static CanvasInfo GetCanvasMessageType(byte[] payload)
+        {
+            dynamic json = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(payload));
+            CanvasInfo type = json.type;
+            return type;
         }
 
         public static double[] getCoordinates(byte[] payload)
         {
-            dynamic payloadD = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(payload));
-            JArray coordinatesArray = payloadD.coordinatesLine;
+            dynamic json = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(payload));
+            JArray coordinatesArray = json.coordinatesLine;
 
             double[] coordinates = coordinatesArray.ToObject<double[]>();
 
             return coordinates;
+        }
+
+        public static Color getCanvasDrawingColor(byte[] payload)
+        {
+            dynamic json = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(payload));
+            Color color = json.color;
+            return color;
         }
 
         public static byte[] ConstructGameStartData(int lobbyID)

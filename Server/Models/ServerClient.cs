@@ -150,10 +150,28 @@ namespace Server.Models
 
                 case JSONConvert.CANVAS:
                     Debug.WriteLine("[SERVERCLIENT] GOT A MESSAGE FROM THE CLIENT ABOUT THE CANVAS!!!");
-                    dynamic canvasData = new {
-                        coordinatesLine = JSONConvert.getCoordinates(payload)
-                    };
-                    serverCom.SendToLobby(serverCom.GetLobbyForUser(User), JSONConvert.GetMessageToSend(CANVAS, canvasData));
+                    CanvasInfo typeToCheck = JSONConvert.GetCanvasMessageType(payload);
+                    switch (typeToCheck)
+                    {
+                        case CanvasInfo.DRAWING:
+                            dynamic canvasData = new
+                            {
+                                type = JSONConvert.GetCanvasMessageType(payload),
+                                coordinatesLine = JSONConvert.getCoordinates(payload),
+                                color = JSONConvert.getCanvasDrawingColor(payload)
+                            };
+                            serverCom.SendToLobby(serverCom.GetLobbyForUser(User), JSONConvert.GetMessageToSend(CANVAS, canvasData));
+                            break;
+
+                        case CanvasInfo.RESET:
+                            dynamic canvasDataForReset = new
+                            {
+                                type = JSONConvert.GetCanvasMessageType(payload)
+                            };
+                            serverCom.SendToLobby(serverCom.GetLobbyForUser(User), JSONConvert.GetMessageToSend(CANVAS, canvasDataForReset));
+                            break;
+                    }
+                    
 
                     // canvas data
                     // todo send canvas data to all other serverclients in lobby
