@@ -48,6 +48,9 @@ namespace Client
 
         private void OnReadComplete(IAsyncResult ar)
         {
+            if (ar == null || (!ar.IsCompleted) || (!this.stream.CanRead) || !this.tcpClient.Client.Connected)
+                return;
+
             int amountReceived = stream.EndRead(ar);
 
             if (totalBufferReceived + amountReceived > 1024)
@@ -140,6 +143,9 @@ namespace Client
 
                 case JSONConvert.RANDOMWORD:
                     //Flag byte for receiving the random word.
+                    int lobbyId = JSONConvert.GetLobbyID(payload);
+
+                    if(data.Lobby?.ID == lobbyId)
                     ViewModels.ViewModelGame.HandleRandomWord(JSONConvert.GetRandomWord(payload));
                     break;
                 default:

@@ -184,6 +184,7 @@ namespace SharedClientServer
             int index = random.Next(0, 24);
 
             Debug.WriteLine($"[SERVERCLIENT] Sending random words {words}");
+
             return words.words[index];
         }
         
