@@ -138,6 +138,10 @@ namespace Client
                     // canvas data
                     break;
 
+                case JSONConvert.RANDOMWORD:
+                    //Flag byte for receiving the random word.
+                    ViewModels.ViewModelGame.HandleRandomWord(JSONConvert.GetRandomWord(payload));
+                    break;
                 default:
                     Debug.WriteLine("[CLIENT] Received weird identifier: " + id);
                     break;

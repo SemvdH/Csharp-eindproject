@@ -153,6 +153,10 @@ namespace Server.Models
                     // canvas data
                     // todo send canvas data to all other serverclients in lobby
                     break;
+
+                case JSONConvert.RANDOMWORD:
+                    //Flag byte for receiving the random word.
+                    break;
                 default:
                     Debug.WriteLine("[SERVER] Received weird identifier: " + id);
                     break;
@@ -178,8 +182,13 @@ namespace Server.Models
                     int id = JSONConvert.GetLobbyID(payload);
                     ServerCommunication.INSTANCE.JoinLobby(this.User,id);
                     sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage());
+
+                    serverCom.SendToLobby(serverCom.GetLobbyForUser(User), JSONConvert.GetMessageToSend(RANDOMWORD, new
+                    {
+                        word = JSONConvert.SendRandomWord("WordsForGame.json")
+                    }));
+
                     ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
-                    Debug.WriteLine("Random chosen word: {0}", JSONConvert.GetRandomWord(@"..\resources\WordsForGame.json"));
                     break;
                 case LobbyIdentifier.LEAVE:
                     id = JSONConvert.GetLobbyID(payload);

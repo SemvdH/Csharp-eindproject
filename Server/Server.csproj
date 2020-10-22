@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <Content Include="resources\WordsForGame.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
