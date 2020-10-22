@@ -85,14 +85,14 @@ namespace Client
 
         private void joinLobby()
         {
-            // lobby die je wilt joinen verwijderen
-            // nieuwe binnengekregen lobby toevoegen
+            
             client.OnLobbyJoinSuccess = OnLobbyJoinSuccess;
             client.SendMessage(JSONConvert.ConstructLobbyJoinMessage(SelectedLobby.ID));
         }
 
-        private void OnLobbyJoinSuccess()
+        private void OnLobbyJoinSuccess(bool isHost)
         {
+            ClientData.Instance.User.Host = isHost;
             startGameInLobby();
         }
 
