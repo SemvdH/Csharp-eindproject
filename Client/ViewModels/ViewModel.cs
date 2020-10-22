@@ -35,6 +35,10 @@ namespace Client
             client = ClientData.Instance.Client;
             client.OnLobbiesListReceived = updateLobbies;
             client.OnLobbyLeave = leaveLobby;
+            client.OnServerDisconnect = () =>
+            {
+                Environment.Exit(0);
+            };
             
 
             OnHostButtonClick = new RelayCommand(hostGame);
