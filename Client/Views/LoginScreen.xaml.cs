@@ -28,6 +28,7 @@ namespace Client.Views
         {
             User user = new User(usernameTextbox.Text);
             Client client = new Client(user.Username);
+            loginButton.IsEnabled = false;
             client.OnSuccessfullConnect = () =>
             {
                 // because we need to start the main window on a UI thread, we need to let the dispatcher handle it, which will execute the code on the ui thread
@@ -41,6 +42,7 @@ namespace Client.Views
                 });
             };
 
+            
         }
     }
 }

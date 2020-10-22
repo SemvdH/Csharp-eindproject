@@ -23,7 +23,7 @@
         <Label Grid.Row="2" FontSize="15" Content="(max amount of characters for the username is 10)"/>
 
         <TextBox Name="usernameTextbox" Grid.Row="1" Grid.Column="1" MaxLength="10" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Left" Width="250"/>
-        <Button Content="ENTER" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="100" Height="40" Click="Button_EnterUsername"/>
+        <Button Name="loginButton" Content="ENTER" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="100" Height="40" Click="Button_EnterUsername"/>
 
     </Grid>
 </Window>
