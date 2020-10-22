@@ -88,9 +88,9 @@ namespace Server.Models
 
 
                 }
+                ar.AsyncWaitHandle.WaitOne();
                 // start reading for a new message
                 stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnRead), null);
-
             }
             catch (IOException e)
             {
@@ -185,7 +185,7 @@ namespace Server.Models
                     sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage());
                     ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
 
-                    Task.Run(SendLobbyData);
+                    //Task.Run(SendLobbyData);
 
                     serverCom.sendToAll(JSONConvert.GetMessageToSend(JSONConvert.RANDOMWORD, new
                     {
@@ -207,6 +207,7 @@ namespace Server.Models
             string result = await WaitForData();
             if(result == "bruh momento")
             {
+              
             }
         }
 
