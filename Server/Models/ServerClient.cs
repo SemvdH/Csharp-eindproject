@@ -92,6 +92,7 @@ namespace Server.Models
             }
             catch (IOException e)
             {
+                Debug.WriteLine("[SERVERCLIENT] Client disconnected! exception was " + e.Message);
                 tcpClient.Close();
                 ServerCommunication.INSTANCE.ServerClientDisconnect(this);
             }

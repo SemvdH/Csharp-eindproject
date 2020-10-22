@@ -58,12 +58,10 @@ namespace Client
 
         private void becomeHostForLobby(int id)
         {
-            
             Debug.WriteLine($"got host succes with data {id} ");
             wantToBeHost = true;
             wantToBeHostId = id;
             client.OnLobbiesReceivedAndWaitingForHost = hostLobbiesReceived;
-
         }
 
         private void hostLobbiesReceived()
