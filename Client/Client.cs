@@ -5,19 +5,26 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Windows.Media;
 using System.Windows;
+
 using static SharedClientServer.JSONConvert;
 
 namespace Client
 {
-    public delegate void LobbyCallback(int id);
     public delegate void LobbyJoinCallback(bool isHost);
+    public delegate void CanvasDataReceived(double[][] coordinates, Color color);
+    public delegate void CanvasReset();
+    public delegate void LobbyCallback(int id);
     class Client : ObservableObject
     {
+
+        private ClientData clientData = ClientData.Instance;
+
         private TcpClient tcpClient;
         private NetworkStream stream;
-        private byte[] buffer = new byte[1024];
-        private byte[] totalBuffer = new byte[1024];
+        private byte[] buffer = new byte[2048];
+        private byte[] totalBuffer = new byte[2048];
         private int totalBufferReceived = 0;
         public int Port = 5555;
         public bool Connected = false;
@@ -30,6 +37,8 @@ namespace Client
         public LobbyCallback OnLobbyCreated;
         public LobbyCallback OnLobbyLeave;
         private ClientData data = ClientData.Instance;
+        public CanvasDataReceived CanvasDataReceived;
+        public CanvasReset CReset;
         public Lobby[] Lobbies { get; set; }
 
         public Client(string username)
@@ -60,16 +69,18 @@ namespace Client
 
         private void OnReadComplete(IAsyncResult ar)
         {
+
             if (ar == null || (!ar.IsCompleted) || (!this.stream.CanRead) || !this.tcpClient.Client.Connected)
                 return;
             try
             {
                 int amountReceived = stream.EndRead(ar);
 
-                if (totalBufferReceived + amountReceived > 1024)
+                if (totalBufferReceived + amountReceived > 2048)
                 {
                     throw new OutOfMemoryException("buffer too small");
                 }
+
 
                 Array.Copy(buffer, 0, totalBuffer, totalBufferReceived, amountReceived);
                 totalBufferReceived += amountReceived;
@@ -82,7 +93,6 @@ namespace Client
                     byte[] message = new byte[expectedMessageLength];
                     // put the message received into the message array
                     Array.Copy(totalBuffer, 0, message, 0, expectedMessageLength);
-
                     handleData(message);
 
                     totalBufferReceived -= expectedMessageLength;
@@ -96,7 +106,6 @@ namespace Client
                 Debug.WriteLine("[CLIENT] server not responding! got error: " + e.Message);
                 OnServerDisconnect?.Invoke();   
             }
-            
         }
 
         private void handleData(byte[] message)
@@ -160,7 +169,22 @@ namespace Client
 
                 case JSONConvert.CANVAS:
                     // canvas data
-                    break;
+                    //clientData.CanvasData = JSONConvert.getCoordinates(payload);         
+                    int type = JSONConvert.GetCanvasMessageType(payload);
+                    switch (type)
+                    {
+                        case JSONConvert.CANVAS_RESET:
+                            CReset?.Invoke();
+                            break;
+
+                        case JSONConvert.CANVAS_WRITING:
+                            CanvasDataReceived?.Invoke(JSONConvert.getCoordinates(payload), JSONConvert.getCanvasDrawingColor(payload));
+                            // we hebben gedrawed, dus stuur dat we weer kunnen drawen
+                            
+                            break;
+                    }
+                break;
+
 
                 case JSONConvert.RANDOMWORD:
                     //Flag byte for receiving the random word.

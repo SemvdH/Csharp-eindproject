@@ -2,9 +2,12 @@
 using Client.Views;
 using GalaSoft.MvvmLight.Command;
 using SharedClientServer;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -15,12 +18,16 @@ namespace Client.ViewModels
 {
     class ViewModelGame : INotifyPropertyChanged
     {
-        private ClientData data = ClientData.Instance;
-
         public event PropertyChangedEventHandler PropertyChanged;
-
+        private ClientData data = ClientData.Instance;
+        private GameWindow window;
         private Point currentPoint = new Point();
-        private Color color;
+        public Color color;
+        public double[][] buffer;
+        public int pos = 0;
+        public int maxLines = 50;
+        public Queue<double[][]> linesQueue;
+        private Timer queueTimer;
 
         public static ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
 
@@ -46,7 +53,56 @@ namespace Client.ViewModels
                 _message = value;
             }
         }
+
+        public bool IsHost
+        {
+            get { return data.User.Host; }
+        }
+
+        public ViewModelGame(GameWindow window)
+        {
+            this.window = window;
+            if (_payload == null)
+            {
+                _message = "";
+
+            }
+            else
+            {
+                //_message = data.Message;
+                //_username = data.User.Username;
+                //Messages.Add($"{data.User.Username}: {Message}");
+            }
+
+            buffer = new double[maxLines][];
+            linesQueue = new Queue<double[][]>();
+            OnKeyDown = new RelayCommand(ChatBox_KeyDown);
+            ButtonStartGame = new RelayCommand(BeginGame);
+            ButtonResetCanvas = new RelayCommand(CanvasResetLocal);
+            data.Client.CanvasDataReceived = UpdateCanvasWithNewData;
+            data.Client.CReset = CanvasResetData;
+        }
+
         public ICommand OnKeyDown { get; set; }
+        public ICommand ButtonStartGame { get; set; }
+        public ICommand ButtonResetCanvas { get; set; }
+       
+        public void BeginGame()
+        {
+            
+            queueTimer = new Timer(50);
+            queueTimer.Start();
+            queueTimer.Elapsed += sendArrayFromQueue;
+            data.Client.SendMessage(JSONConvert.ConstructGameStartData(data.Lobby.ID));
+        }
+
+
+        private void CanvasResetLocal()
+        {
+            this.window.CanvasForPaint.Children.Clear();
+            data.Client.SendMessage(JSONConvert.GetMessageToSend(JSONConvert.CANVAS, JSONConvert.CANVAS_RESET));
+        }
+
 
         public void Canvas_MouseDown(MouseButtonEventArgs e, GameWindow window)
         {
@@ -74,9 +130,33 @@ namespace Client.ViewModels
                 coordinates[2] = line.X2;
                 coordinates[3] = line.Y2;
                 currentPoint = e.GetPosition(window.CanvasForPaint);
+                buffer[pos] = coordinates;
+                pos++;
 
                 window.CanvasForPaint.Children.Add(line);
-                data.Client.SendMessage(JSONConvert.GetMessageToSend(0x04, coordinates));
+                if (pos == maxLines)
+                {
+                    double[][] temp = new double[maxLines][];
+                    for (int i = 0; i < maxLines; i++)
+                    {
+                        temp[i] = buffer[i];
+                    }
+                    linesQueue.Enqueue(temp);
+                    Array.Clear(buffer, 0, buffer.Length);
+                    pos = 0;
+                }
+                
+            }
+        }
+
+        private void sendArrayFromQueue(object sender, ElapsedEventArgs e)
+        {
+            
+            if (linesQueue.Count != 0)
+            {
+                Debug.WriteLine("[GAME] sending canvas data...");
+                double[][] temp = linesQueue.Dequeue();
+                data.Client.SendMessage(JSONConvert.ConstructDrawingCanvasData(temp,color));
             }
         }
 
@@ -90,10 +170,26 @@ namespace Client.ViewModels
             color = colorSelected;
         }
 
-
-        public ViewModelGame()
+        private void UpdateCanvasWithNewData(double[][] buffer, Color color)
         {
-            OnKeyDown = new RelayCommand(ChatBox_KeyDown);
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                foreach (double[] arr in buffer)
+                {
+                    Line line = new Line();
+                    line.Stroke = new SolidColorBrush(color);
+                    line.X1 = arr[0];
+                    line.Y1 = arr[1];
+                    line.X2 = arr[2];
+                    line.Y2 = arr[3];
+                    this.window.CanvasForPaint.Children.Add(line);
+                }
+            });
+        }
+
+        private void CanvasResetData()
+        {
+            this.window.CanvasForPaint.Children.Clear();
         }
 
         private void ChatBox_KeyDown()
