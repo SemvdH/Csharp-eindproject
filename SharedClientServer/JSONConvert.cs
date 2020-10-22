@@ -133,9 +133,16 @@ namespace SharedClientServer
             return dynamicAsObject.ToObject<Lobby>();
         }
 
-        public static byte[] ConstructLobbyJoinSuccessMessage()
+        public static byte[] ConstructLobbyJoinSuccessMessage(bool isHost)
         {
-            return GetMessageToSend(LOBBY, new { identifier = LobbyIdentifier.JOIN_SUCCESS});
+            return GetMessageToSend(LOBBY, new { identifier = LobbyIdentifier.JOIN_SUCCESS,
+            host = isHost});
+        }
+
+        public static bool GetLobbyJoinIsHost(byte[] json)
+        {
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            return payload.host;
         }
 
         #endregion
