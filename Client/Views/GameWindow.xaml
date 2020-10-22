@@ -50,11 +50,11 @@
         </Grid>
 
         <Button Name="StartGame" Grid.Row="0" Grid.Column="2" Content="Start Game" FontSize="20" Command="{Binding ButtonStartGame}" IsEnabled="{Binding IsHost}"/>
-        <Label Name="GuessWord" Grid.Row="0" Grid.Column="1" Content="{Binding Path=Word, UpdateSourceTrigger=PropertyChanged}" Margin="140,0,109,0"/>
+        <Label Name="GuessWord" Grid.Row="0" Grid.Column="1" Content="{Binding Path=Word, UpdateSourceTrigger=PropertyChanged}" Margin="418,-5,103,5"/>
 
 
         <Border Grid.Row="1" Grid.Column="1" Margin ="10,10,10,10" BorderBrush="Black" BorderThickness ="2.5">
-            <Canvas Name="CanvasForPaint" MouseDown="CanvasForPaint_MouseDown" MouseMove="CanvasForPaint_MouseMove">
+            <Canvas Name="CanvasForPaint" MouseDown="CanvasForPaint_MouseDown" MouseMove="CanvasForPaint_MouseMove" MouseUp="CanvasForPaint_MouseUp">
                 <Canvas.Background>
                     <SolidColorBrush Color="White" Opacity="0"/>
                 </Canvas.Background>

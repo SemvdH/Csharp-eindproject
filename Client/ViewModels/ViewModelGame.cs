@@ -148,12 +148,16 @@ namespace Client.ViewModels
             }
         }
 
+        public void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            sendArrayFromQueue(sender, null);
+        }
+
         private void sendArrayFromQueue(object sender, ElapsedEventArgs e)
         {
             
             if (linesQueue.Count != 0)
             {
-                Debug.WriteLine("[GAME] sending canvas data...");
                 double[][] temp = linesQueue.Dequeue();
                 data.Client.SendMessage(JSONConvert.ConstructDrawingCanvasData(temp,color));
             }

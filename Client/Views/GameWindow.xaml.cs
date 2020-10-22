@@ -43,5 +43,9 @@ namespace Client.Views
             viewModel.Color_Picker(e, this);
         }
 
+        private void CanvasForPaint_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            viewModel.Canvas_MouseUp(sender, e);
+        }
     }
 }
