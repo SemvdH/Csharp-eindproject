@@ -10,7 +10,7 @@ using static SharedClientServer.JSONConvert;
 namespace Client
 {
     public delegate void LobbyJoinCallback(bool isHost);
-    public delegate void CanvasDataReceived(double[] coordinates, Color color);
+    public delegate void CanvasDataReceived(double[][] coordinates, Color color);
     public delegate void CanvasReset();
     public delegate void LobbyCallback(int id);
     class Client : ObservableObject
@@ -58,7 +58,7 @@ namespace Client
         private void OnReadComplete(IAsyncResult ar)
         {
             int amountReceived = stream.EndRead(ar);
-            if (totalBufferReceived + amountReceived > 1024)
+            if (totalBufferReceived + amountReceived > 2048)
             {
                 throw new OutOfMemoryException("buffer too small");
             }
@@ -83,7 +83,7 @@ namespace Client
                 Debug.WriteLine($"reduced buffer: {expectedMessageLength}");
                 expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
             }
-
+            ar.AsyncWaitHandle.WaitOne();
             stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete), null);
         }
 
@@ -149,18 +149,21 @@ namespace Client
                 case JSONConvert.CANVAS:
                     // canvas data
                     //clientData.CanvasData = JSONConvert.getCoordinates(payload);         
-                    CanvasInfo type = JSONConvert.GetCanvasMessageType(payload);
+                    int type = JSONConvert.GetCanvasMessageType(payload);
                     switch (type)
                     {
-                        case CanvasInfo.RESET:
+                        case JSONConvert.CANVAS_RESET:
                             CReset?.Invoke();
                             break;
 
-                        case CanvasInfo.DRAWING:
+                        case JSONConvert.CANVAS_WRITING:
                             CanvasDataReceived?.Invoke(JSONConvert.getCoordinates(payload), JSONConvert.getCanvasDrawingColor(payload));
+                            // we hebben gedrawed, dus stuur dat we weer kunnen drawen
+                            
                             break;
                     }
-                    break;
+                break;
+
 
                 default:
                     Debug.WriteLine("[CLIENT] Received weird identifier: " + id);

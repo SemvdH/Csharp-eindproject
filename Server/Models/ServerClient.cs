@@ -50,7 +50,7 @@ namespace Server.Models
             {
                 int bytesReceived = this.stream.EndRead(ar);
 
-                if (totalBufferReceived + bytesReceived > 1024)
+                if (totalBufferReceived + bytesReceived > 2048)
                 {
                     throw new OutOfMemoryException("buffer is too small!");
                 }
@@ -149,21 +149,21 @@ namespace Server.Models
                     break;
 
                 case JSONConvert.CANVAS:
-                    Debug.WriteLine("[SERVERCLIENT] GOT A MESSAGE FROM THE CLIENT ABOUT THE CANVAS!!!");
-                    CanvasInfo typeToCheck = JSONConvert.GetCanvasMessageType(payload);
+                    
+                    int typeToCheck = JSONConvert.GetCanvasMessageType(payload);
                     switch (typeToCheck)
                     {
-                        case CanvasInfo.DRAWING:
+                        case JSONConvert.CANVAS_WRITING:
                             dynamic canvasData = new
                             {
-                                type = JSONConvert.GetCanvasMessageType(payload),
-                                coordinatesLine = JSONConvert.getCoordinates(payload),
+                                canvasType = typeToCheck,
+                                coords = JSONConvert.getCoordinates(payload),
                                 color = JSONConvert.getCanvasDrawingColor(payload)
                             };
-                            serverCom.SendToLobby(serverCom.GetLobbyForUser(User), JSONConvert.GetMessageToSend(CANVAS, canvasData));
+                            serverCom.SendToLobby(serverCom.GetLobbyForUser(User),JSONConvert.GetMessageToSend(JSONConvert.CANVAS,canvasData));
                             break;
 
-                        case CanvasInfo.RESET:
+                        case JSONConvert.CANVAS_RESET:
                             dynamic canvasDataForReset = new
                             {
                                 type = JSONConvert.GetCanvasMessageType(payload)
