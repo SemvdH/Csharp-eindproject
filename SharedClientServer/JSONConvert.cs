@@ -18,9 +18,10 @@ namespace SharedClientServer
         public const byte MESSAGE = 0x02;
         public const byte LOBBY = 0x03;
         public const byte CANVAS = 0x04;
-        public const byte RANDOMWORD = 0x05;
-        public const byte MESSAGE_RECEIVED = 0x06;
         public const byte GAME = 0x05;
+        public const byte MESSAGE_RECEIVED = 0x06;
+        public const byte RANDOMWORD = 0x07;
+
 
         public enum LobbyIdentifier
         {
