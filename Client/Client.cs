@@ -159,12 +159,14 @@ namespace Client
         {
             Debug.WriteLine("[CLIENT] sending message " + Encoding.ASCII.GetString(message));
             stream.BeginWrite(message, 0, message.Length, new AsyncCallback(OnWriteComplete), null);
+
         }
 
         private void OnWriteComplete(IAsyncResult ar)
         {
             Debug.WriteLine("[CLIENT] finished writing");
             stream.EndWrite(ar);
+            stream.Flush();
         }
     }
 }
