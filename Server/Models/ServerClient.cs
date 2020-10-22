@@ -9,10 +9,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using static SharedClientServer.JSONConvert;
 
 namespace Server.Models
 {
+    public delegate void Callback();
     class ServerClient : ObservableObject
     {
         private TcpClient tcpClient;
@@ -22,7 +25,8 @@ namespace Server.Models
         private int totalBufferReceived = 0;
         public User User { get; set; }
         private ServerCommunication serverCom = ServerCommunication.INSTANCE;
-        
+        private Callback OnMessageReceivedOk;
+
 
         /// <summary>
         /// Constructor that creates a new serverclient object with the given tcp client.
@@ -86,17 +90,18 @@ namespace Server.Models
 
 
                 }
+                ar.AsyncWaitHandle.WaitOne();
                 // start reading for a new message
                 stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnRead), null);
-
             }
             catch (IOException e)
             {
+                Debug.WriteLine("[SERVERCLIENT] Client disconnected! exception was " + e.Message);
                 tcpClient.Close();
                 ServerCommunication.INSTANCE.ServerClientDisconnect(this);
             }
-            
-            
+
+
         }
 
         /// <summary>
@@ -108,21 +113,21 @@ namespace Server.Models
             Debug.WriteLine($"Got message : {Encoding.ASCII.GetString(message)}");
             byte id = message[4];
             byte[] payload = new byte[message.Length - 5];
-            Array.Copy(message,5,payload,0,message.Length-5);
+            Array.Copy(message, 5, payload, 0, message.Length - 5);
             Debug.WriteLine("[SERVERCLIENT] GOT STRING" + Encoding.ASCII.GetString(payload));
-            switch(id)
+            switch (id)
             {
-                
+
                 case JSONConvert.LOGIN:
                     // json log in username data
                     string uName = JSONConvert.GetUsernameLogin(payload);
-                    
+
                     if (uName != null)
                     {
                         User = new User(uName);
                         User.Username = uName;
                         Debug.WriteLine("[SERVERCLIENT] set username to " + uName);
-                        
+
                     }
                     break;
                 case JSONConvert.MESSAGE:
@@ -145,7 +150,7 @@ namespace Server.Models
                 case JSONConvert.LOBBY:
                     // lobby data
                     LobbyIdentifier l = JSONConvert.GetLobbyIdentifier(payload);
-                    handleLobbyMessage(payload,l);
+                    handleLobbyMessage(payload, l);
                     break;
 
                 case JSONConvert.CANVAS:
@@ -190,6 +195,13 @@ namespace Server.Models
                     }
 
                     break;
+                case JSONConvert.RANDOMWORD:
+                    //Flag byte for receiving the random word.
+                    break;
+                case JSONConvert.MESSAGE_RECEIVED:
+                    // we now can send a new message
+                    OnMessageReceivedOk?.Invoke();
+                    break;
 
                 default:
                     Debug.WriteLine("[SERVER] Received weird identifier: " + id);
@@ -218,6 +230,15 @@ namespace Server.Models
                     ServerCommunication.INSTANCE.JoinLobby(this.User,id, out isHost);
                     sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage(isHost));
                     ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                    OnMessageReceivedOk = () =>
+                    {
+                        serverCom.sendToAll(JSONConvert.GetMessageToSend(JSONConvert.RANDOMWORD, new
+                        {
+                            id = serverCom.GetLobbyForUser(User).ID,
+                            word = JSONConvert.SendRandomWord("WordsForGame.json")
+                        }));
+                        OnMessageReceivedOk = null;
+                    };
                     break;
                 case LobbyIdentifier.LEAVE:
                     id = JSONConvert.GetLobbyID(payload);
@@ -226,6 +247,21 @@ namespace Server.Models
                     ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
                     break;
             }
+        }
+
+        private async void SendLobbyData()
+        {
+            string result = await WaitForData();
+            if(result == "bruh momento")
+            {
+              
+            }
+        }
+
+        private async Task<string> WaitForData()
+        {
+            await Task.Delay(1000);
+            return "bruh momento";
         }
 
         /// <summary>

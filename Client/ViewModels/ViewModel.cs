@@ -38,6 +38,10 @@ namespace Client
             client = ClientData.Instance.Client;
             client.OnLobbiesListReceived = updateLobbies;
             client.OnLobbyLeave = leaveLobby;
+            client.OnServerDisconnect = () =>
+            {
+                Environment.Exit(0);
+            };
             
 
             OnHostButtonClick = new RelayCommand(hostGame);
@@ -61,12 +65,10 @@ namespace Client
 
         private void becomeHostForLobby(int id)
         {
-            
             Debug.WriteLine($"got host succes with data {id} ");
             wantToBeHost = true;
             wantToBeHostId = id;
             client.OnLobbiesReceivedAndWaitingForHost = hostLobbiesReceived;
-
         }
 
         private void hostLobbiesReceived()
@@ -88,8 +90,6 @@ namespace Client
 
         private void joinLobby()
         {
-            // lobby die je wilt joinen verwijderen
-            // nieuwe binnengekregen lobby toevoegen
             if (SelectedLobby != null)
             {
                 if (SelectedLobby.PlayersIn == SelectedLobby.MaxPlayers || !SelectedLobby.LobbyJoinable)

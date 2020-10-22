@@ -50,6 +50,9 @@
         </Grid>
 
         <Button Name="StartGame" Grid.Row="0" Grid.Column="2" Content="Start Game" FontSize="20" Command="{Binding ButtonStartGame}" IsEnabled="{Binding IsHost}"/>
+        <Label Name="GuessWord" Grid.Row="0" Grid.Column="1" Content="{Binding Path=Word, UpdateSourceTrigger=PropertyChanged}" Margin="140,0,109,0"/>
+
+        <xctk:ColorPicker Name="ClrPcker_Background" SelectedColorChanged="ClrPcker_Background_SelectedColorChanged_1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="22" Width="100"/>
 
 
         <Border Grid.Row="1" Grid.Column="1" Margin ="10,10,10,10" BorderBrush="Black" BorderThickness ="2.5">

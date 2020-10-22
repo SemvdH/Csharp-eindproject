@@ -1,4 +1,4 @@
-﻿using Client;
+using Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -17,6 +17,8 @@ namespace SharedClientServer
         public const byte LOBBY = 0x03;
         public const byte CANVAS = 0x04;
         public const byte GAME = 0x05;
+        public const byte MESSAGE_RECEIVED = 0x06;
+        public const byte RANDOMWORD = 0x07;
 
         public const int CANVAS_WRITING = 0;
         public const int CANVAS_RESET = 1;
@@ -242,6 +244,40 @@ namespace SharedClientServer
             // put the length of the payload at the start of the res array
             Array.Copy(BitConverter.GetBytes(payloadBytes.Length+5),0,res,0,4);
             return res;
+        }
+      
+             /*
+         * This method sends a random word from the json file, this happens when the client joins a lobby.
+         */
+        public static string SendRandomWord(string filename)
+        {
+            dynamic words;
+            Random random = new Random();
+            string workingDir = Path.GetFullPath(@"..\Server");
+            string projDir = Directory.GetParent(workingDir).Parent.Parent.FullName;
+            string filePath = projDir += $@"\resources\{filename}";
+
+            using(StreamReader reader = new StreamReader(filePath))
+            {
+                string json = reader.ReadToEnd();
+                words = JsonConvert.DeserializeObject(json);
+            }
+
+
+            int index = random.Next(0, 24);
+
+            Debug.WriteLine($"[SERVERCLIENT] Sending random words {words}");
+
+            return words.words[index];
+        }
+        
+        /*
+         * Client gets the payload and retrieves the word from the payload
+         */
+        public static string GetRandomWord(byte[] json)
+        {
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            return payload.word;
         }
 
         

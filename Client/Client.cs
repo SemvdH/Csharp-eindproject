@@ -2,9 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Windows.Media;
+using System.Windows;
+
 using static SharedClientServer.JSONConvert;
 
 namespace Client
@@ -30,6 +33,7 @@ namespace Client
         public Callback OnLobbiesListReceived;
         public LobbyJoinCallback OnLobbyJoinSuccess;
         public Callback OnLobbiesReceivedAndWaitingForHost;
+        public Callback OnServerDisconnect;
         public LobbyCallback OnLobbyCreated;
         public LobbyCallback OnLobbyLeave;
         private ClientData data = ClientData.Instance;
@@ -48,43 +52,60 @@ namespace Client
         private void OnConnect(IAsyncResult ar)
         {
             Debug.Write("finished connecting to server");
-            this.tcpClient.EndConnect(ar);
-            this.stream = tcpClient.GetStream();
-            OnSuccessfullConnect?.Invoke();
-            SendMessage(JSONConvert.ConstructUsernameMessage(username));
-            this.stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete),null);
+            try
+            {
+                this.tcpClient.EndConnect(ar);
+                this.stream = tcpClient.GetStream();
+                OnSuccessfullConnect?.Invoke();
+                SendMessage(JSONConvert.ConstructUsernameMessage(username));
+                this.stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete),null);
+
+            } catch (Exception e)
+            {
+                Debug.WriteLine("Can't connect, retrying...");
+                tcpClient.BeginConnect("localhost", Port, new AsyncCallback(OnConnect), null);
+            }
         }
 
         private void OnReadComplete(IAsyncResult ar)
         {
-            int amountReceived = stream.EndRead(ar);
-            if (totalBufferReceived + amountReceived > 2048)
+
+            if (ar == null || (!ar.IsCompleted) || (!this.stream.CanRead) || !this.tcpClient.Client.Connected)
+                return;
+            try
             {
-                throw new OutOfMemoryException("buffer too small");
-            }
+                int amountReceived = stream.EndRead(ar);
 
-            // copy the received bytes into the buffer
-            Array.Copy(buffer, 0, totalBuffer, totalBufferReceived, amountReceived);
-            // add the bytes we received to the total amount
-            totalBufferReceived += amountReceived;
+                if (totalBufferReceived + amountReceived > 2048)
+                {
+                    throw new OutOfMemoryException("buffer too small");
+                }
 
-            int expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
 
-            while (totalBufferReceived >= expectedMessageLength)
+                Array.Copy(buffer, 0, totalBuffer, totalBufferReceived, amountReceived);
+                totalBufferReceived += amountReceived;
+
+                int expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
+
+                while (totalBufferReceived >= expectedMessageLength)
+                {
+                    // we have received the complete packet
+                    byte[] message = new byte[expectedMessageLength];
+                    // put the message received into the message array
+                    Array.Copy(totalBuffer, 0, message, 0, expectedMessageLength);
+                    handleData(message);
+
+                    totalBufferReceived -= expectedMessageLength;
+                    expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
+                }
+
+                ar.AsyncWaitHandle.WaitOne();
+                stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete), null);
+            } catch (IOException e)
             {
-                // we have received the complete packet
-                byte[] message = new byte[expectedMessageLength];
-                // put the message received into the message array
-                Array.Copy(totalBuffer, 0, message, 0, expectedMessageLength);
-
-                handleData(message);
-
-                totalBufferReceived -= expectedMessageLength;
-                Debug.WriteLine($"reduced buffer: {expectedMessageLength}");
-                expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
+                Debug.WriteLine("[CLIENT] server not responding! got error: " + e.Message);
+                OnServerDisconnect?.Invoke();   
             }
-            ar.AsyncWaitHandle.WaitOne();
-            stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete), null);
         }
 
         private void handleData(byte[] message)
@@ -165,10 +186,18 @@ namespace Client
                 break;
 
 
+                case JSONConvert.RANDOMWORD:
+                    //Flag byte for receiving the random word.
+                    int lobbyId = JSONConvert.GetLobbyID(payload);
+
+                    if(data.Lobby?.ID == lobbyId)
+                    ViewModels.ViewModelGame.HandleRandomWord(JSONConvert.GetRandomWord(payload));
+                    break;
                 default:
                     Debug.WriteLine("[CLIENT] Received weird identifier: " + id);
                     break;
             }
+            SendMessage(JSONConvert.GetMessageToSend(JSONConvert.MESSAGE_RECEIVED,null));
 
         }
 
@@ -176,12 +205,14 @@ namespace Client
         {
             Debug.WriteLine("[CLIENT] sending message " + Encoding.ASCII.GetString(message));
             stream.BeginWrite(message, 0, message.Length, new AsyncCallback(OnWriteComplete), null);
+
         }
 
         private void OnWriteComplete(IAsyncResult ar)
         {
             Debug.WriteLine("[CLIENT] finished writing");
             stream.EndWrite(ar);
+            stream.Flush();
         }
     }
 }
