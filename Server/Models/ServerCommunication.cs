@@ -207,6 +207,10 @@ namespace Server.Models
             {
                 if (l.ID == id)
                 {
+                    if (l.Users.Count == 0)
+                    {
+                        user.Host = true;
+                    }
                     AddToLobby(l, user);
                     Debug.WriteLine($"{user.Username} joined lobby with id {id}");
                     break;
