@@ -16,6 +16,7 @@ namespace Server.Models
         public bool Started = false;
         public List<Lobby> lobbies;
         private Dictionary<Lobby, List<ServerClient>> serverClientsInlobbies;
+        internal Action DisconnectClientAction;
         public Action newClientAction;
         
 
@@ -97,11 +98,39 @@ namespace Server.Models
             }
         }
 
+        public void ServerClientDisconnect(ServerClient serverClient)
+        {
+            Debug.WriteLine("[SERVERCOMM] handling disconnect");
+            DisconnectClientAction?.Invoke();
+            int id = -1;
+            foreach (Lobby l in serverClientsInlobbies.Keys)
+            {
+                if (serverClientsInlobbies[l].Contains(serverClient))
+                {
+                    id = l.ID;
+                }break;
+            }
+
+            if (id != -1)
+            {
+                LeaveLobby(serverClient.User, id);
+                SendToAllExcept(serverClient, JSONConvert.ConstructLobbyLeaveMessage(id));
+            }
+        }
+
         public void SendToAllExcept(string username, byte[] message)
         {
             foreach (ServerClient sc in serverClients)
             {
                 if (sc.User.Username != username) sc.sendMessage(message);
+            }
+        }
+
+        public void SendToAllExcept(ServerClient sc, byte[] message)
+        {
+            foreach (ServerClient s in serverClients)
+            {
+                if (s != sc) s.sendMessage(message);
             }
         }
 
@@ -161,6 +190,7 @@ namespace Server.Models
             }
         }
 
+
         public int HostForLobby(User user)
         {
             Lobby lobby = new Lobby( lobbies.Count + 1,0, 8);
@@ -171,15 +201,56 @@ namespace Server.Models
             return lobby.ID;
         }
 
-        public void JoinLobby(User user, int id)
+        public void JoinLobby(User user, int id, out bool isHost)
         {
+            isHost = false;
             foreach (Lobby l in lobbies)
             {
                 if (l.ID == id)
                 {
+                    if (l.Users.Count == 0)
+                    {
+                        user.Host = true;
+                        isHost = true;
+                    }
                     AddToLobby(l, user);
                     Debug.WriteLine($"{user.Username} joined lobby with id {id}");
                     break;
+                }
+            }
+        }
+
+        public void LeaveLobby(User user, int id)
+        {
+            Debug.WriteLine("[SERVERCOMM] removing user from lobby");
+            foreach (Lobby l in lobbies)
+            {
+                if (l.ID == id)
+                {
+                    Debug.WriteLine($"[SERVERCOMM] checking for lobby with id {l.ID}");
+                    
+                    foreach (User u in l.Users)
+                    {
+                        Debug.WriteLine($"[SERVERCOMM] checking if {u.Username} is {user.Username} ");
+                        // contains doesn't work, so we'll do it like this...
+                        if (u.Username == user.Username)
+                        {
+                            Debug.WriteLine("[SERVERCOMM] removed user from lobby!");
+                            l.Users.Remove(user);
+                            foreach (ServerClient sc in serverClients)
+                            {
+                                if (sc.User.Username == user.Username)
+                                {
+                                    serverClientsInlobbies[l].Remove(sc);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+
+                    
+                   
                 }
             }
         }

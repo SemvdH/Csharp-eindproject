@@ -8,9 +8,9 @@ using static SharedClientServer.JSONConvert;
 
 namespace Client
 {
-    public delegate void OnLobbyCreated(int id);
-
+    public delegate void LobbyJoinCallback(bool isHost);
     public delegate void CanvasDataReceived(double[] coordinates);
+    public delegate void LobbyCallback(int id);
     class Client : ObservableObject
     {
 
@@ -26,10 +26,11 @@ namespace Client
         private string username;
         public Callback OnSuccessfullConnect;
         public Callback OnLobbiesListReceived;
-        public Callback OnLobbyJoinSuccess;
+        public LobbyJoinCallback OnLobbyJoinSuccess;
         public Callback OnLobbiesReceivedAndWaitingForHost;
-        public OnLobbyCreated OnLobbyCreated;
-
+        public LobbyCallback OnLobbyCreated;
+        public LobbyCallback OnLobbyLeave;
+        private ClientData data = ClientData.Instance;
         public CanvasDataReceived CanvasDataReceived;
         public Lobby[] Lobbies { get; set; }
 
@@ -89,6 +90,7 @@ namespace Client
             byte[] payload = new byte[message.Length - 5];
             Array.Copy(message, 5, payload, 0, message.Length - 5);
 
+            Debug.WriteLine("[CLIENT] GOT STRING" + Encoding.ASCII.GetString(payload));
             switch (id)
             {
                 case JSONConvert.LOGIN:
@@ -99,6 +101,11 @@ namespace Client
                     (string, string) combo = JSONConvert.GetUsernameAndMessage(payload);
                     string textUsername = combo.Item1;
                     string textMsg = combo.Item2;
+
+                    if(textUsername != data.User.Username)
+                    {
+                        ViewModels.ViewModelGame.HandleIncomingMsg(textUsername, textMsg);
+                    }
 
                     //TODO display username and message in chat window
                     Debug.WriteLine("[CLIENT] INCOMING MESSAGE!");
@@ -124,7 +131,12 @@ namespace Client
                             OnLobbyCreated?.Invoke(lobbyCreatedID);
                             break;
                         case LobbyIdentifier.JOIN_SUCCESS:
-                            OnLobbyJoinSuccess?.Invoke();
+
+                            OnLobbyJoinSuccess?.Invoke(JSONConvert.GetLobbyJoinIsHost(payload));
+                            break;
+                        case LobbyIdentifier.LEAVE:
+                            int lobbyLeaveID = JSONConvert.GetLobbyID(payload);
+                            OnLobbyLeave?.Invoke(lobbyLeaveID);
                             break;
                     }
                     //TODO fill lobby with the data received

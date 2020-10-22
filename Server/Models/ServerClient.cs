@@ -6,6 +6,7 @@ using SharedClientServer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using static SharedClientServer.JSONConvert;
@@ -45,48 +46,56 @@ namespace Server.Models
             if (ar == null || (!ar.IsCompleted) || (!this.stream.CanRead) || !this.tcpClient.Client.Connected)
                 return;
 
-
-            int bytesReceived = this.stream.EndRead(ar);
-
-            if (totalBufferReceived > 2048)
+            try
             {
-                throw new OutOfMemoryException("buffer is too small!");
-            }
+                int bytesReceived = this.stream.EndRead(ar);
 
-            // copy the received bytes into the buffer
-            Array.Copy(buffer, 0, totalBuffer, totalBufferReceived, bytesReceived);
-            // add the bytes we received to the total amount
-            totalBufferReceived += bytesReceived;
-
-            // calculate the expected length of the message
-            int expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
-
-            while (totalBufferReceived >= expectedMessageLength)
-            {
-                // we have received the full packet
-                byte[] message = new byte[expectedMessageLength];
-                // copy the total buffer contents into the message array so we can pass it to the handleIncomingMessage method
-                Array.Copy(totalBuffer, 0, message, 0, expectedMessageLength);
-                HandleIncomingMessage(message);
-
-                // move the contents of the totalbuffer to the start of the array
-                Array.Copy(totalBuffer, expectedMessageLength, totalBuffer, 0, (totalBufferReceived - expectedMessageLength));
-
-                // remove the length of the expected message from the total buffer
-                totalBufferReceived -= expectedMessageLength;
-                // and set the new expected length to the rest that is still in the buffer
-                expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
-
-                if (expectedMessageLength == 0)
+                if (totalBufferReceived + bytesReceived > 1024)
                 {
-                    break;
-                } 
+                    throw new OutOfMemoryException("buffer is too small!");
+                }
 
+                // copy the received bytes into the buffer
+                Array.Copy(buffer, 0, totalBuffer, totalBufferReceived, bytesReceived);
+                // add the bytes we received to the total amount
+                totalBufferReceived += bytesReceived;
+
+                // calculate the expected length of the message
+                int expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
+
+                while (totalBufferReceived >= expectedMessageLength)
+                {
+                    // we have received the full packet
+                    byte[] message = new byte[expectedMessageLength];
+                    // copy the total buffer contents into the message array so we can pass it to the handleIncomingMessage method
+                    Array.Copy(totalBuffer, 0, message, 0, expectedMessageLength);
+                    HandleIncomingMessage(message);
+
+                    // move the contents of the totalbuffer to the start of the array
+                    Array.Copy(totalBuffer, expectedMessageLength, totalBuffer, 0, (totalBufferReceived - expectedMessageLength));
+
+                    // remove the length of the expected message from the total buffer
+                    totalBufferReceived -= expectedMessageLength;
+                    // and set the new expected length to the rest that is still in the buffer
+                    expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
+
+                    if (expectedMessageLength == 0)
+                    {
+                        break;
+                    }
+
+
+                }
+                // start reading for a new message
+                stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnRead), null);
 
             }
-            // start reading for a new message
-            stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnRead), null);
-
+            catch (IOException e)
+            {
+                tcpClient.Close();
+                ServerCommunication.INSTANCE.ServerClientDisconnect(this);
+            }
+            
             
         }
 
@@ -122,11 +131,15 @@ namespace Server.Models
                     string textUsername = combo.Item1;
                     string textMsg = combo.Item2;
 
-                    Debug.WriteLine("[SERVERCLIENT] User name: {0}\t User message: {1}", textUsername, textMsg);
+                    //Takes the data sent from the client, and then sets it in a data packet to be sent.
+                    dynamic packet = new
+                    {
+                        username = textUsername,
+                        message = textMsg
+                    };
 
-                    // todo handle sending to all except this user the username and message to display in chat
-                    serverCom.SendToLobby(ServerCommunication.INSTANCE.GetLobbyForUser(User),payload);
-                    Debug.WriteLine("Payload has been sent!");
+                    //Sends the incomming message to be broadcast to all of the clients inside the current lobby.
+                    serverCom.SendToLobby(serverCom.GetLobbyForUser(User), JSONConvert.GetMessageToSend(JSONConvert.MESSAGE, packet));
                     break;
 
                 case JSONConvert.LOBBY:
@@ -183,8 +196,15 @@ namespace Server.Models
                     break;
                 case LobbyIdentifier.JOIN:
                     int id = JSONConvert.GetLobbyID(payload);
-                    ServerCommunication.INSTANCE.JoinLobby(this.User,id);
-                    sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage());
+                    bool isHost;
+                    ServerCommunication.INSTANCE.JoinLobby(this.User,id, out isHost);
+                    sendMessage(JSONConvert.ConstructLobbyJoinSuccessMessage(isHost));
+                    ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                    break;
+                case LobbyIdentifier.LEAVE:
+                    id = JSONConvert.GetLobbyID(payload);
+                    ServerCommunication.INSTANCE.LeaveLobby(User, id);
+                    sendMessage(JSONConvert.ConstructLobbyLeaveMessage(id));
                     ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
                     break;
             }

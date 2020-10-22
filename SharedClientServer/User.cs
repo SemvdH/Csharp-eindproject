@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace SharedClientServer
 {
-    class User
+    class User : IEquatable<User>
     {
         private string _username;
         private int _score;
@@ -28,6 +29,42 @@ namespace SharedClientServer
             _score = 0;
             _host = false;
             _turnToDraw = false;
+        }
+
+        public static bool operator ==(User u1, User u2)
+        {
+            if (object.ReferenceEquals(u1, null))
+            {
+                return object.ReferenceEquals(u2, null);
+            }
+            return u1.Equals(u2 as object);
+        }
+
+        public static bool operator !=(User u1, User u2)
+        {
+            if (object.ReferenceEquals(u1, null))
+            {
+                return object.ReferenceEquals(u2, null);
+            }
+            return u1.Equals(u2 as object);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                return this.Equals(obj as User);
+                
+            }
+        }
+
+        public bool Equals([AllowNull] User other)
+        {
+            return other.Username == this.Username;
         }
 
         public string Username
