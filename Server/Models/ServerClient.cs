@@ -59,6 +59,8 @@ namespace Server.Models
                     throw new OutOfMemoryException("buffer is too small!");
                 }
 
+                ar.AsyncWaitHandle.WaitOne();
+
                 // copy the received bytes into the buffer
                 Array.Copy(buffer, 0, totalBuffer, totalBufferReceived, bytesReceived);
                 // add the bytes we received to the total amount
@@ -90,7 +92,6 @@ namespace Server.Models
 
 
                 }
-                ar.AsyncWaitHandle.WaitOne();
                 // start reading for a new message
                 stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnRead), null);
             }
@@ -194,6 +195,7 @@ namespace Server.Models
                     ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
                     OnMessageReceivedOk = () =>
                     {
+
                         serverCom.sendToAll(JSONConvert.GetMessageToSend(JSONConvert.RANDOMWORD, new
                         {
                             id = serverCom.GetLobbyForUser(User).ID,

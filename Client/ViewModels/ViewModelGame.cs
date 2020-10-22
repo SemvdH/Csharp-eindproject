@@ -2,6 +2,7 @@
 using Client.Views;
 using GalaSoft.MvvmLight.Command;
 using SharedClientServer;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -23,6 +24,8 @@ namespace Client.ViewModels
         private Color color;
 
         public static ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
+
+        public static ObservableCollection<string> Players { get; } = new ObservableCollection<string>();
 
         private dynamic _payload;
 
@@ -46,6 +49,7 @@ namespace Client.ViewModels
                 _message = value;
             }
         }
+
         public ICommand OnKeyDown { get; set; }
 
         public void Canvas_MouseDown(MouseButtonEventArgs e, GameWindow window)
@@ -106,7 +110,6 @@ namespace Client.ViewModels
         internal void AddMessage(string message)
         {
             Messages.Add($"{data.User.Username}: {message}");
-
             _payload = new
             {
                 username = data.User.Username,
@@ -131,6 +134,10 @@ namespace Client.ViewModels
         public void LeaveGame(object sender, CancelEventArgs e)
         {
             Debug.WriteLine("Leaving...");
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                Players.Remove(data.User.Username);
+            });
             data.Client.SendMessage(JSONConvert.ConstructLobbyLeaveMessage(data.Lobby.ID));
         }
 
@@ -141,7 +148,22 @@ namespace Client.ViewModels
         public static void HandleRandomWord(string randomWord)
         {
             Debug.WriteLine("[CLIENT] Reached the handle random word method!");
-            Word = "NegerPik";
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                Word = randomWord;
+            });
+        }
+
+        public static void HandleIncomingPlayer(Lobby lobby)
+        {
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                Players.Clear();
+                foreach (var item in lobby.Users)
+                {
+                    Players.Add(item.Username);
+                }
+            });
         }
     }
 }
