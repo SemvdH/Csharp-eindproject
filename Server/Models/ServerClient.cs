@@ -134,8 +134,9 @@ namespace Server.Models
                     LobbyIdentifier l = JSONConvert.GetLobbyIdentifier(payload);
                     handleLobbyMessage(payload,l);
                     break;
+
                 case JSONConvert.CANVAS:
-                    Debug.WriteLine("GOT A MESSAGE FROM THE CLIENT ABOUT THE CANVAS!!!");
+                    Debug.WriteLine("[SERVERCLIENT] GOT A MESSAGE FROM THE CLIENT ABOUT THE CANVAS!!!");
                     dynamic canvasData = new {
                         coordinatesLine = JSONConvert.getCoordinates(payload)
                     };
@@ -144,6 +145,21 @@ namespace Server.Models
                     // canvas data
                     // todo send canvas data to all other serverclients in lobby
                     break;
+
+                case JSONConvert.GAME:
+                    Debug.WriteLine("[SERVERCLIENT] Got a message about the game logic");
+                    string command = JSONConvert.GetGameCommand(payload);
+                    switch (command)
+                    {
+                        case "startGame":
+                            int lobbyID = JSONConvert.GetStartGameLobbyID(payload);
+                            serverCom.CloseALobby(lobbyID);
+                            ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                            break;
+                    }
+
+                    break;
+
                 default:
                     Debug.WriteLine("[SERVER] Received weird identifier: " + id);
                     break;

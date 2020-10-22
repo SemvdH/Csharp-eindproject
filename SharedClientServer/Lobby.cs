@@ -14,6 +14,7 @@ namespace Client
         private int _id;
         private int _playersIn;
         private int _maxPlayers;
+        private bool _lobbyJoineble;
         //private List<string> _usernames;
         private List<User> _users;
 
@@ -34,6 +35,7 @@ namespace Client
             _maxPlayers = maxPlayers;
             //_usernames = new List<string>();
             _users = new List<User>();
+            _lobbyJoineble = true;
         }
 
         public void AddUser(string username, out bool succes)
@@ -41,7 +43,7 @@ namespace Client
             succes = false;
             if (_users.Count < _maxPlayers)
             {
-                _users.Add(new User(username, 0, false));
+                _users.Add(new User(username, 0, false, false));
                 succes = true;
             }
         }
@@ -87,6 +89,11 @@ namespace Client
             set { _users = value; }
         }
 
+        public bool LobbyJoineble
+        {
+            get { return _lobbyJoineble; }
+            set { _lobbyJoineble = value; }
+        }
 
     }
 }

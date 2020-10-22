@@ -10,14 +10,16 @@ namespace SharedClientServer
         private string _username;
         private int _score;
         private bool _host;
+        private bool _turnToDraw;
         private string _message;
 
         [JsonConstructor]
-        public User(string username, int score, bool host)
+        public User(string username, int score, bool host, bool turnToDraw)
         {
             _username = username;
             _score = score;
             _host = host;
+            _turnToDraw = turnToDraw;
         }
 
         public User(string username)
@@ -25,6 +27,7 @@ namespace SharedClientServer
             _username = username;
             _score = 0;
             _host = false;
+            _turnToDraw = false;
         }
 
         public string Username
@@ -43,6 +46,12 @@ namespace SharedClientServer
         {
             get { return _host; }
             set { _host = value; }
+        }
+
+        public bool TurnToDraw
+        {
+            get { return _turnToDraw; }
+            set { _turnToDraw = value; }
         }
     }
 }

@@ -183,5 +183,16 @@ namespace Server.Models
                 }
             }
         }
+
+        public void CloseALobby(int lobbyID)
+        {
+            foreach (Lobby lobby in lobbies)
+            {
+                if (lobby.ID == lobbyID)
+                {
+                    lobby.LobbyJoineble = false;
+                }
+            }
+        }
     }
 }

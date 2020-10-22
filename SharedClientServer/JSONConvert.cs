@@ -15,6 +15,7 @@ namespace SharedClientServer
         public const byte MESSAGE = 0x02;
         public const byte LOBBY = 0x03;
         public const byte CANVAS = 0x04;
+        public const byte GAME = 0x05;
 
         public enum LobbyIdentifier
         {
@@ -146,7 +147,7 @@ namespace SharedClientServer
             return GetMessageToSend(CANVAS, new
             {
                 coordinatesLine = coordinates
-            }); ;
+            });
         }
 
         public static double[] getCoordinates(byte[] payload)
@@ -157,6 +158,28 @@ namespace SharedClientServer
             double[] coordinates = coordinatesArray.ToObject<double[]>();
 
             return coordinates;
+        }
+
+        public static byte[] ConstructGameStartData(int lobbyID)
+        {
+            string startGame = "startGame";
+            return GetMessageToSend(GAME, new
+            {
+                command = startGame,
+                lobbyToStart = lobbyID
+            }); ;
+        }
+
+        public static string GetGameCommand(byte[] payload)
+        {
+            dynamic json = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(payload));
+            return json.command;
+        }
+
+        public static int GetStartGameLobbyID(byte[] payload)
+        {
+            dynamic json = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(payload));
+            return json.lobbyToStart;
         }
 
         /// <summary>

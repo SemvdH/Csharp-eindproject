@@ -13,21 +13,15 @@ namespace Client.ViewModels
 {
     class ViewModelGame : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         private ClientData data = ClientData.Instance;
         private GameWindow window;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private Point currentPoint = new Point();
         private Color color;
-
-        public ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
-
         private dynamic _payload;
-
         private string _username;
-
         private string _message;
+
         public string Message
         {
             get
@@ -39,7 +33,43 @@ namespace Client.ViewModels
                 _message = value;
             }
         }
+
+        public User User
+        {
+            get { return data.User; }
+            set 
+            {
+                data.User = value; 
+            }
+        }
+
+        public ViewModelGame(GameWindow window)
+        {
+            this.window = window;
+            if (_payload == null)
+            {
+                _message = "";
+
+            }
+            else
+            {
+                //_message = data.Message;
+                //_username = data.User.Username;
+                //Messages.Add($"{data.User.Username}: {Message}");
+            }
+            OnKeyDown = new RelayCommand(ChatBox_KeyDown);
+            ButtonStartGame = new RelayCommand(BeginGame);
+            data.Client.CanvasDataReceived = UpdateCanvasWithNewData;
+        }
+
+        public ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
         public ICommand OnKeyDown { get; set; }
+        public ICommand ButtonStartGame { get; set; }
+       
+        public void BeginGame()
+        {
+            data.Client.SendMessage(JSONConvert.ConstructGameStartData(data.Lobby.ID));
+        }
 
         public void Canvas_MouseDown(MouseButtonEventArgs e, GameWindow window)
         {
@@ -82,26 +112,6 @@ namespace Client.ViewModels
             colorSelected.B = window.ClrPcker_Background.SelectedColor.Value.B;
             color = colorSelected;
         }
-        
-
-        public ViewModelGame(GameWindow window)
-        {
-            this.window = window;
-            if (_payload == null)
-            {
-                _message = "";
-
-            }
-            else
-            {
-                //_message = data.Message;
-                //_username = data.User.Username;
-                //Messages.Add($"{data.User.Username}: {Message}");
-            }
-            OnKeyDown = new RelayCommand(ChatBox_KeyDown);
-            data.Client.CanvasDataReceived = UpdateCanvasWithNewData;
-        }
-
 
         private void UpdateCanvasWithNewData(double[] coordinates)
         {
