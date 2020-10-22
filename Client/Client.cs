@@ -76,6 +76,7 @@ namespace Client
                 expectedMessageLength = BitConverter.ToInt32(totalBuffer, 0);
             }
 
+            ar.AsyncWaitHandle.WaitOne();
             stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete), null);
         }
 
