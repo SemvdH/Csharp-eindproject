@@ -24,7 +24,7 @@ namespace Client.ViewModels
         public Color color;
         public double[][] buffer;
         public int pos = 0;
-        public int maxLines = 1;
+        public int maxLines = 50;
         public Queue<double[][]> linesQueue;
         private Timer queueTimer;
 
@@ -83,7 +83,7 @@ namespace Client.ViewModels
         public void BeginGame()
         {
             
-            queueTimer = new Timer(500);
+            queueTimer = new Timer(50);
             queueTimer.Start();
             queueTimer.Elapsed += sendArrayFromQueue;
             data.Client.SendMessage(JSONConvert.ConstructGameStartData(data.Lobby.ID));
@@ -149,7 +149,7 @@ namespace Client.ViewModels
             {
                 Debug.WriteLine("[GAME] sending canvas data...");
                 double[][] temp = linesQueue.Dequeue();
-                data.Client.SendMessage(JSONConvert.GetMessageToSend(JSONConvert.CANVAS, JSONConvert.ConstructDrawingCanvasData(temp,color)));
+                data.Client.SendMessage(JSONConvert.ConstructDrawingCanvasData(temp,color));
             }
         }
 

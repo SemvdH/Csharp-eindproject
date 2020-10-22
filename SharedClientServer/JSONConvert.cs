@@ -173,16 +173,13 @@ namespace SharedClientServer
                 canvasType = CANVAS_WRITING,
                 coords = buffer,
                 color = colorToSend
-            }); ;
+            });
         }
 
-        public static int GetCanvasMessageType(byte[] payload)
+        public static int GetCanvasMessageType(byte[] json)
         {
-            dynamic json = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(payload));
-            var temp = Convert.FromBase64String(json);
-            string fdasf = System.Text.Encoding.UTF8.GetString(temp);
-            int cType = temp.canvasType;
-            return cType;
+            dynamic d = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(json));
+            return d.canvasType;
         }
 
         public static double[][] getCoordinates(byte[] payload)
