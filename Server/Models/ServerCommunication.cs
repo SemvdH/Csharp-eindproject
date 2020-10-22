@@ -201,8 +201,9 @@ namespace Server.Models
             return lobby.ID;
         }
 
-        public void JoinLobby(User user, int id)
+        public void JoinLobby(User user, int id, out bool isHost)
         {
+            isHost = false;
             foreach (Lobby l in lobbies)
             {
                 if (l.ID == id)
@@ -210,6 +211,7 @@ namespace Server.Models
                     if (l.Users.Count == 0)
                     {
                         user.Host = true;
+                        isHost = true;
                     }
                     AddToLobby(l, user);
                     Debug.WriteLine($"{user.Username} joined lobby with id {id}");
