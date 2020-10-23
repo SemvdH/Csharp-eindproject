@@ -20,6 +20,7 @@ namespace Client
     public delegate void CanvasDataReceived(double[][] coordinates, Color color);
     public delegate void CanvasReset();
     public delegate void LobbyCallback(int id);
+    
 
     class Client : ObservableObject
     {
@@ -48,6 +49,7 @@ namespace Client
         private ClientData data = ClientData.Instance;
         public CanvasDataReceived CanvasDataReceived;
         public CanvasReset CReset;
+        public HandleIncomingPlayer UpdateUserScores;
         public Lobby[] Lobbies { get; set; }
 
         public Client(string username)
@@ -91,7 +93,6 @@ namespace Client
                 {
                     throw new OutOfMemoryException("buffer too small");
                 }
-
 
                 Array.Copy(buffer, 0, totalBuffer, totalBufferReceived, amountReceived);
                 totalBufferReceived += amountReceived;
@@ -190,7 +191,6 @@ namespace Client
 
                         case JSONConvert.CANVAS_WRITING:
                             CanvasDataReceived?.Invoke(JSONConvert.getCoordinates(payload), JSONConvert.getCanvasDrawingColor(payload));
-                            // we hebben gedrawed, dus stuur dat we weer kunnen drawen
                             
                             break;
                     }
@@ -216,11 +216,16 @@ namespace Client
 
         private void updateGameLobby()
         {
+            Debug.WriteLine("[CLIENT] updating game lobby");
             foreach (var item in Lobbies)
             {
                 Debug.WriteLine("[CLIENT] lobby data: {0}", item.Users.Count);
                 if (item.ID == data.Lobby?.ID)
-                    IncomingPlayer?.Invoke(item);
+                {
+                    //IncomingPlayer?.Invoke(item);
+                    UpdateUserScores?.Invoke(item as Lobby);
+                }
+
             }
         }
         

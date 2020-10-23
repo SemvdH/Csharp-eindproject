@@ -48,17 +48,10 @@ namespace Client.ViewModels
         }
 
         private string _randomWord;
-
         public string RandomWord
         {
             get { return _randomWord; }
             set { _randomWord = value; }
-        }
-
-        public static string Word
-        {
-            get;
-            set;
         }
 
         public bool IsHost
@@ -69,17 +62,6 @@ namespace Client.ViewModels
         public ViewModelGame(GameWindow window)
         {
             this.window = window;
-            if (_payload == null)
-            {
-                _message = "";
-
-            }
-            else
-            {
-                //_message = data.Message;
-                //_username = data.User.Username;
-                //Messages.Add($"{data.User.Username}: {Message}");
-            }
 
             buffer = new double[maxLines][];
             linesQueue = new Queue<double[][]>();
@@ -91,6 +73,7 @@ namespace Client.ViewModels
             data.Client.RandomWord = HandleRandomWord;
             data.Client.IncomingMsg = HandleIncomingMsg;
             data.Client.IncomingPlayer = HandleIncomingPlayer;
+            data.Client.UpdateUserScores = UpdateUserScores;
         }
 
         public ICommand OnKeyDown { get; set; }
@@ -227,7 +210,7 @@ namespace Client.ViewModels
             data.Client.SendMessage(JSONConvert.GetMessageToSend(JSONConvert.MESSAGE, _payload));
         }
 
-        public static void HandleIncomingMsg(string username, string message)
+        public void HandleIncomingMsg(string username, string message)
         {
             Application.Current.Dispatcher.Invoke(delegate
             {
@@ -240,12 +223,12 @@ namespace Client.ViewModels
             data.Client.SendMessage(JSONConvert.ConstructLobbyLeaveMessage(data.Lobby.ID));
         }
 
-        public static void HandleRandomWord(string randomWord)
+        public void HandleRandomWord(string randomWord)
         {
             Debug.WriteLine("[CLIENT] Reached the handle random word method!");
             Application.Current.Dispatcher.Invoke(delegate
             {
-                Word = randomWord;
+                RandomWord = randomWord;
             });
         }
         public void HandleIncomingPlayer(Lobby lobby)
@@ -255,9 +238,34 @@ namespace Client.ViewModels
                 Players.Clear();
                 foreach (var item in lobby.Users)
                 {
-                    Players.Add(item.Username);
+                    Players.Add(item.Username + "\n" + item.Score);
                 }
             });
         }
+
+        private void UpdateUserScores(Lobby newLobby) {
+            Debug.WriteLine("[GAME] updating user scores");
+            List<User> newUsers = newLobby.Users;
+            // go over all users in current lobby
+            foreach (User user in data.Lobby?.Users)
+            {
+                // check with all users in new lobby
+                foreach (User newUser in newUsers)
+                {
+                    // and update the score
+                    if (newUser.Username == user.Username)
+                    {
+                        Debug.WriteLine($"[GAME] setting score of {user.Username} to {newUser.Score}. it was {user.Score}");
+                        user.Score = newUser.Score;
+                        break;
+                    }
+                }
+            }
+
+            // update all the scores in the player list
+            HandleIncomingPlayer(newLobby);
+        }
+
+        
     }
 }

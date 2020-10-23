@@ -27,9 +27,12 @@ namespace Client.Views
 
         private void Button_EnterUsername(object sender, RoutedEventArgs e)
         {
-            User user = new User(usernameTextbox.Text);
+            string name = usernameTextbox.Text;
+            if (name == string.Empty) return;
+            User user = new User(name);
+
             Client client = new Client(user.Username);
-            loginButton.IsEnabled = false;
+            LoginButton.IsEnabled = false;
             client.OnSuccessfullConnect = () =>
             {
                 // because we need to start the main window on a UI thread, we need to let the dispatcher handle it, which will execute the code on the ui thread
