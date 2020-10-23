@@ -61,6 +61,7 @@ namespace Client
             Debug.WriteLine("attempting to host game for " + ClientData.Instance.User.Username);
             client.SendMessage(JSONConvert.ConstructLobbyHostMessage());
             client.OnLobbyCreated = becomeHostForLobby;
+
         }
 
         private void becomeHostForLobby(int id)
@@ -68,6 +69,7 @@ namespace Client
             Debug.WriteLine($"got host succes with data {id} ");
             wantToBeHost = true;
             wantToBeHostId = id;
+            ClientData.Instance.User.Host = true;
             client.OnLobbiesReceivedAndWaitingForHost = hostLobbiesReceived;
         }
 
