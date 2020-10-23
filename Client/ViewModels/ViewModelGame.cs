@@ -75,8 +75,13 @@ namespace Client.ViewModels
             data.Client.IncomingPlayer = HandleIncomingPlayer;
             data.Client.UpdateUserScores = UpdateUserScores;
 
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                Messages.Clear();
+            });
 
-            queueTimer = new Timer(50);
+
+                queueTimer = new Timer(50);
             queueTimer.Start();
             queueTimer.Elapsed += sendArrayFromQueue;
         }
