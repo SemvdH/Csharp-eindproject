@@ -197,7 +197,6 @@ namespace Client.ViewModels
             {
                 this.window.CanvasForPaint.Children.Clear();
             });
-             
         }
 
         private void ChatBox_KeyDown()

@@ -25,7 +25,5 @@
 
         <TextBox Name="usernameTextbox" Grid.Row="1" Grid.Column="1" MaxLength="69" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Left" Width="250"/>
         <Button Name="LoginButton" Content="ENTER" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="100" Height="40" Click="Button_EnterUsername"/>
-
-        <Label Grid.Row="3" Grid.Column="0" Content="Tip of the century: base64 != UTF8!" FontSize="20" FontWeight="Bold"/>
     </Grid>
 </Window>
