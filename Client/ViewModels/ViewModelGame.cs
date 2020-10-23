@@ -1,5 +1,6 @@
 
 using Client.Views;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using SharedClientServer;
 using System.Collections.Generic;
@@ -24,18 +25,16 @@ namespace Client.ViewModels
         private Color color;
 
         public static ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
-
         public static ObservableCollection<string> Players { get; } = new ObservableCollection<string>();
 
         private dynamic _payload;
 
-        public static string Word
+        private static string _randomWord;
+        public string RandomWord
         {
-            get;
-            set;
+            get { return _randomWord; }
+            set { _randomWord = value; }
         }
-
-        public string _username;
 
         public string _message;
         public string Message
@@ -107,13 +106,13 @@ namespace Client.ViewModels
             Message = string.Empty;
         }
 
-        internal void AddMessage(string message)
+        internal void AddMessage(string incomingMessage)
         {
-            Messages.Add($"{data.User.Username}: {message}");
+            Messages.Add($"{data.User.Username}: {incomingMessage}");
             _payload = new
             {
                 username = data.User.Username,
-                message = message
+                message = incomingMessage
             };
 
             //Broadcast the message after adding it to the list!
@@ -147,11 +146,8 @@ namespace Client.ViewModels
          */
         public static void HandleRandomWord(string randomWord)
         {
-            Debug.WriteLine("[CLIENT] Reached the handle random word method!");
-            Application.Current.Dispatcher.Invoke(delegate
-            {
-                Word = randomWord;
-            });
+            _randomWord = randomWord;
+            Debug.WriteLine($"[CLIENT] The random word is: {_randomWord}");
         }
 
         public static void HandleIncomingPlayer(Lobby lobby)

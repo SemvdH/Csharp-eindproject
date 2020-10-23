@@ -179,9 +179,10 @@ namespace Client
                 case JSONConvert.RANDOMWORD:
                     //Flag byte for receiving the random word.
                     int lobbyId = JSONConvert.GetLobbyID(payload);
+                    string randomWord = JSONConvert.GetRandomWord(payload);
 
-                    if(data.Lobby?.ID == lobbyId)
-                    ViewModels.ViewModelGame.HandleRandomWord(JSONConvert.GetRandomWord(payload));
+                    if (data.Lobby?.ID == lobbyId)
+                    ViewModels.ViewModelGame.HandleRandomWord(randomWord);
                     break;
                 default:
                     Debug.WriteLine("[CLIENT] Received weird identifier: " + id);
