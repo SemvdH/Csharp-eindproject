@@ -74,6 +74,11 @@ namespace Client.ViewModels
             data.Client.IncomingMsg = HandleIncomingMsg;
             data.Client.IncomingPlayer = HandleIncomingPlayer;
             data.Client.UpdateUserScores = UpdateUserScores;
+
+
+            queueTimer = new Timer(50);
+            queueTimer.Start();
+            queueTimer.Elapsed += sendArrayFromQueue;
         }
 
         public ICommand OnKeyDown { get; set; }
@@ -82,10 +87,7 @@ namespace Client.ViewModels
        
         public void BeginGame()
         {
-            
-            queueTimer = new Timer(50);
-            queueTimer.Start();
-            queueTimer.Elapsed += sendArrayFromQueue;
+    
             data.Client.SendMessage(JSONConvert.ConstructGameStartData(data.Lobby.ID));
         }
 
@@ -186,7 +188,7 @@ namespace Client.ViewModels
 
         private void CanvasResetData()
         {
-            this.window.CanvasForPaint.Children.Clear();
+             this.window.CanvasForPaint.Children.Clear();
         }
 
         private void ChatBox_KeyDown()

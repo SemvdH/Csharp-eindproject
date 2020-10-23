@@ -43,7 +43,7 @@
             <Button Name="CanvasReset" Click="CanvasReset_Click" Grid.Row="0" Grid.Column="3" Content="RESET"/>
         </Grid>
 
-        <Button Name="StartGame" Grid.Row="0" Grid.Column="2" Content="Start Game" FontSize="20" Command="{Binding ButtonStartGame}" IsEnabled="{Binding IsHost}"/>
+        
 
 
         <Border Grid.Row="1" Grid.Column="1" Margin ="10,10,10,10" BorderBrush="Black" BorderThickness ="2.5">
