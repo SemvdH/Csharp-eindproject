@@ -59,7 +59,6 @@ namespace Server.Models
                     throw new OutOfMemoryException("buffer is too small!");
                 }
 
-                ar.AsyncWaitHandle.WaitOne();
 
                 // copy the received bytes into the buffer
                 Array.Copy(buffer, 0, totalBuffer, totalBufferReceived, bytesReceived);
@@ -92,6 +91,8 @@ namespace Server.Models
 
 
                 }
+
+                ar.AsyncWaitHandle.WaitOne();
                 // start reading for a new message
                 stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnRead), null);
             }
