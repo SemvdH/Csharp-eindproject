@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Client
 {
-    internal class Lobby : INotifyPropertyChanged
+    public class Lobby : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

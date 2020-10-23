@@ -2,16 +2,14 @@ using Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows.Media;
 
 namespace SharedClientServer
 {
-    class JSONConvert
+    public class JSONConvert
     {
         public const byte LOGIN = 0x01;
         public const byte MESSAGE = 0x02;
@@ -23,7 +21,6 @@ namespace SharedClientServer
 
         public const int CANVAS_WRITING = 0;
         public const int CANVAS_RESET = 1;
-        
 
         public enum LobbyIdentifier
         {
@@ -42,11 +39,11 @@ namespace SharedClientServer
             NEXT_ROUND
         }
 
-        public static (string,string) GetUsernameAndMessage(byte[] json)
+        public static (string, string) GetUsernameAndMessage(byte[] json)
         {
             string msg = Encoding.UTF8.GetString(json);
             dynamic payload = JsonConvert.DeserializeObject(msg);
-            
+
             return (payload.username, payload.message);
         }
 
@@ -88,7 +85,7 @@ namespace SharedClientServer
             {
                 identifier = LobbyIdentifier.HOST,
                 id = lobbyID
-            }) ;
+            });
         }
 
         public static byte[] ConstructLobbyRequestMessage()
@@ -102,12 +99,11 @@ namespace SharedClientServer
         public static byte[] ConstructLobbyListMessage(Lobby[] lobbiesList)
         {
             return GetMessageToSend(LOBBY, new
-            { 
+            {
                 identifier = LobbyIdentifier.LIST,
                 lobbies = lobbiesList
             });
         }
-
 
         public static byte[] ConstructLobbyJoinMessage(int lobbyID)
         {
@@ -126,6 +122,7 @@ namespace SharedClientServer
                 id = lobbyID
             });
         }
+
         public static LobbyIdentifier GetLobbyIdentifier(byte[] json)
         {
             dynamic payload = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(json));
@@ -161,8 +158,11 @@ namespace SharedClientServer
 
         public static byte[] ConstructLobbyJoinSuccessMessage(bool isHost)
         {
-            return GetMessageToSend(LOBBY, new { identifier = LobbyIdentifier.JOIN_SUCCESS,
-            host = isHost});
+            return GetMessageToSend(LOBBY, new
+            {
+                identifier = LobbyIdentifier.JOIN_SUCCESS,
+                host = isHost
+            });
         }
 
         public static bool GetLobbyJoinIsHost(byte[] json)
@@ -171,11 +171,10 @@ namespace SharedClientServer
             return payload.host;
         }
 
-        #endregion
+        #endregion lobby messages
 
         public static byte[] ConstructCanvasDataSend(int typeToSend, double[][] buffer, Color colorToSend)
         {
-            
             return GetMessageToSend(CANVAS, new
             {
                 canvasType = typeToSend,
@@ -193,7 +192,7 @@ namespace SharedClientServer
                 color = colorToSend
             });
         }
-        
+
         public static byte[] ConstructCanvasReset()
         {
             dynamic payload = new
@@ -229,7 +228,6 @@ namespace SharedClientServer
 
         public static byte[] ConstructGameStartData(int lobbyID)
         {
-            
             return GetMessageToSend(GAME, new
             {
                 command = GameCommand.START_GAME,
@@ -276,13 +274,14 @@ namespace SharedClientServer
             // put the identifier at the start of the payload part
             res[4] = identifier;
             // put the length of the payload at the start of the res array
-            Array.Copy(BitConverter.GetBytes(payloadBytes.Length+5),0,res,0,4);
+            Array.Copy(BitConverter.GetBytes(payloadBytes.Length + 5), 0, res, 0, 4);
             return res;
         }
-      
-             /*
-         * This method sends a random word from the json file, this happens when the client joins a lobby.
-         */
+
+        /*
+    * This method sends a random word from the json file, this happens when the client joins a lobby.
+    */
+
         public static string SendRandomWord(string filename)
         {
             dynamic words;
@@ -291,12 +290,11 @@ namespace SharedClientServer
             string projDir = Directory.GetParent(workingDir).Parent.Parent.FullName;
             string filePath = projDir += $@"\resources\{filename}";
 
-            using(StreamReader reader = new StreamReader(filePath))
+            using (StreamReader reader = new StreamReader(filePath))
             {
                 string json = reader.ReadToEnd();
                 words = JsonConvert.DeserializeObject(json);
             }
-
 
             int index = random.Next(0, 24);
 
@@ -304,16 +302,15 @@ namespace SharedClientServer
 
             return words.words[index];
         }
-        
+
         /*
          * Client gets the payload and retrieves the word from the payload
          */
+
         public static string GetRandomWord(byte[] json)
         {
             dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
             return payload.word;
         }
-
-        
     }
 }

@@ -6,12 +6,15 @@ using Xunit.Sdk;
 
 namespace Tests
 {
+    
     [TestClass]
     public class JSONConvertTest
     {
+        
         [TestMethod]
         public void TestGetMessageToSendLength()
         {
+            
             byte identifier = 0x01;
             dynamic payload = new
             {
@@ -22,9 +25,9 @@ namespace Tests
 
             byte[] result = JSONConvert.GetMessageToSend(identifier, payload);
             Assert.AreEqual(payloadToBytes.Length + 5, result.Length);
-            Assert.AreEqual(0x01, result[4]);
         }
 
+        [TestMethod]
         public void TestGetMessageToSendIdentifier()
         {
             byte identifier = 0x01;
@@ -32,8 +35,6 @@ namespace Tests
             {
                 value = "test"
             };
-            string payloadToJson = JsonConvert.SerializeObject(payload);
-            byte[] payloadToBytes = Encoding.UTF8.GetBytes(payloadToJson);
 
             byte[] result = JSONConvert.GetMessageToSend(identifier, payload);
             Assert.AreEqual(0x01, result[4]);

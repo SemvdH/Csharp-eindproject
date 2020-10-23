@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SharedClientServer
 {
-    class User : IEquatable<User>
+    public class User : IEquatable<User>
     {
         private string _username;
         private int _score;
