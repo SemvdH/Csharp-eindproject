@@ -34,6 +34,7 @@ namespace Client.ViewModels
 
         public string _username;
 
+
         public string _message;
         public string Message
         {
