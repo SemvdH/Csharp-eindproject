@@ -151,7 +151,6 @@ namespace Client
                             Debug.WriteLine("[CLIENT] got lobby object");
                             int lobbyCreatedID = JSONConvert.GetLobbyID(payload);
                             OnLobbyCreated?.Invoke(lobbyCreatedID);
-                            OnLobbyUpdate?.Invoke();
                             break;
                         case LobbyIdentifier.JOIN_SUCCESS:
                             OnLobbyJoinSuccess?.Invoke(JSONConvert.GetLobbyJoinIsHost(payload));
