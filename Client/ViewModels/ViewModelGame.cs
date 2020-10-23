@@ -24,8 +24,8 @@ namespace Client.ViewModels
         private Point currentPoint = new Point();
         private Color color;
 
-        public static ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
-        public static ObservableCollection<string> Players { get; } = new ObservableCollection<string>();
+        public ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
+        public ObservableCollection<string> Players { get; } = new ObservableCollection<string>();
 
         private dynamic _payload;
 
@@ -99,6 +99,8 @@ namespace Client.ViewModels
         {
             OnKeyDown = new RelayCommand(ChatBox_KeyDown);
             data.Client.RandomWord = HandleRandomWord;
+            data.Client.IncomingMsg = HandleIncomingMsg;
+            data.Client.IncomingPlayer = HandleIncomingPlayer;
         }
 
         private void ChatBox_KeyDown()
@@ -125,7 +127,7 @@ namespace Client.ViewModels
          * MISC make this a callback
          * Handles the incoming chat message from another client.
          */
-        public static void HandleIncomingMsg(string username, string message)
+        public void HandleIncomingMsg(string username, string message)
         {
             Application.Current.Dispatcher.Invoke(delegate
             {
@@ -143,7 +145,6 @@ namespace Client.ViewModels
         }
 
         /*
-         * MISC make this a callback
          * Handles the random word that has been received from the server.
          */
         public void HandleRandomWord(string randomWord)
@@ -152,7 +153,7 @@ namespace Client.ViewModels
             Debug.WriteLine($"[CLIENT] The random word is: {_randomWord}");
         }
 
-        public static void HandleIncomingPlayer(Lobby lobby)
+        public void HandleIncomingPlayer(Lobby lobby)
         {
             Application.Current.Dispatcher.Invoke(delegate
             {

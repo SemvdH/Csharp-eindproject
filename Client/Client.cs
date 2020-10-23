@@ -13,6 +13,8 @@ namespace Client
     public delegate void LobbyCallback(int id);
     public delegate void LobbyJoinCallback(bool isHost);
     public delegate void RandomWord(string word);
+    public delegate void HandleIncomingMsg(string username, string msg);
+    internal delegate void HandleIncomingPlayer(Lobby lobby);
     class Client : ObservableObject
     {
         private TcpClient tcpClient;
@@ -32,6 +34,8 @@ namespace Client
         public LobbyCallback OnLobbyCreated;
         public LobbyCallback OnLobbyLeave;
         public RandomWord RandomWord;
+        public HandleIncomingMsg IncomingMsg;
+        public HandleIncomingPlayer IncomingPlayer;
         private ClientData data = ClientData.Instance;
         public Lobby[] Lobbies { get; set; }
 
@@ -124,7 +128,7 @@ namespace Client
 
                     if(textUsername != data.User.Username)
                     {
-                        ViewModels.ViewModelGame.HandleIncomingMsg(textUsername, textMsg);
+                        IncomingMsg?.Invoke(textUsername, textMsg);
                     }
 
                     //TODO display username and message in chat window
@@ -160,7 +164,7 @@ namespace Client
                                 {
                                     Debug.WriteLine("[CLIENT] lobby data: {0}", item.Users.Count);
                                     if (item.ID == data.Lobby.ID)
-                                        ViewModels.ViewModelGame.HandleIncomingPlayer(item);
+                                        IncomingPlayer(item);
                                 }
                                 
                             };
