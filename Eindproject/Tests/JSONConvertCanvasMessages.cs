@@ -136,52 +136,5 @@ namespace Tests
             };
 
         }
-
-        [TestMethod]
-        public void TestConstructGameStartData()
-        {
-            byte identifier = 0x05;
-            dynamic payload = new
-            {
-
-            };
-
-        }
-
-        [TestMethod]
-        public void TestConstructGameTimerElapsedMessage()
-        {
-            byte identifier = 0x05;
-            dynamic payload = new
-            {
-
-            };
-
-        }
-
-        [TestMethod]
-        public void TestGetGameCommand()
-        {
-            byte identifier = 0x05;
-            dynamic payload = new
-            {
-
-            };
-
-        }
-
-        [TestMethod]
-        public void TestGetStartGameLobbyID()
-        {
-            byte identifier = 0x05;
-            dynamic payload = new
-            {
-
-            };
-
-        }
-
-
-
     }
 }
