@@ -38,10 +38,8 @@
             <xctk:ColorPicker Name="ClrPcker_Background" SelectedColorChanged="ClrPcker_Background_SelectedColorChanged_1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="22" Width="100"/>
 
 
-        <Label Name="GuessWord" Grid.Row="0" Grid.Column="1" Content="{Binding Path=RandomWord, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <Label Name="GuessWord" Grid.Row="0" Grid.Column="2" Content="{Binding Path=RandomWord, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20"/>
 
-            <Label Grid.Row="0" Grid.Column="2" FontSize="20" Content="" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            
             <Button Name="CanvasReset" Click="CanvasReset_Click" Grid.Row="0" Grid.Column="3" Content="RESET"/>
         </Grid>
 

@@ -94,7 +94,6 @@ namespace Client
                     throw new OutOfMemoryException("buffer too small");
                 }
 
-
                 Array.Copy(buffer, 0, totalBuffer, totalBufferReceived, amountReceived);
                 totalBufferReceived += amountReceived;
 
