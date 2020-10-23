@@ -54,10 +54,11 @@ namespace Server.Models
             {
                 int bytesReceived = this.stream.EndRead(ar);
 
-                if (totalBufferReceived + bytesReceived > 1024)
+                if (totalBufferReceived + bytesReceived > 2048)
                 {
                     throw new OutOfMemoryException("buffer is too small!");
                 }
+
 
                 // copy the received bytes into the buffer
                 Array.Copy(buffer, 0, totalBuffer, totalBufferReceived, bytesReceived);
@@ -90,6 +91,7 @@ namespace Server.Models
 
 
                 }
+
                 ar.AsyncWaitHandle.WaitOne();
                 // start reading for a new message
                 stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnRead), null);
@@ -154,21 +156,21 @@ namespace Server.Models
                     break;
 
                 case JSONConvert.CANVAS:
-                    Debug.WriteLine("[SERVERCLIENT] GOT A MESSAGE FROM THE CLIENT ABOUT THE CANVAS!!!");
-                    CanvasInfo typeToCheck = JSONConvert.GetCanvasMessageType(payload);
+                    
+                    int typeToCheck = JSONConvert.GetCanvasMessageType(payload);
                     switch (typeToCheck)
                     {
-                        case CanvasInfo.DRAWING:
+                        case JSONConvert.CANVAS_WRITING:
                             dynamic canvasData = new
                             {
-                                type = JSONConvert.GetCanvasMessageType(payload),
-                                coordinatesLine = JSONConvert.getCoordinates(payload),
+                                canvasType = typeToCheck,
+                                coords = JSONConvert.getCoordinates(payload),
                                 color = JSONConvert.getCanvasDrawingColor(payload)
                             };
-                            serverCom.SendToLobby(serverCom.GetLobbyForUser(User), JSONConvert.GetMessageToSend(CANVAS, canvasData));
+                            serverCom.SendToLobby(serverCom.GetLobbyForUser(User),JSONConvert.GetMessageToSend(JSONConvert.CANVAS,canvasData));
                             break;
 
-                        case CanvasInfo.RESET:
+                        case JSONConvert.CANVAS_RESET:
                             dynamic canvasDataForReset = new
                             {
                                 type = JSONConvert.GetCanvasMessageType(payload)
@@ -195,7 +197,6 @@ namespace Server.Models
                     }
 
                     break;
-
                 case JSONConvert.RANDOMWORD:
                     //Flag byte for receiving the random word.
                     break;
@@ -203,6 +204,7 @@ namespace Server.Models
                     // we now can send a new message
                     OnMessageReceivedOk?.Invoke();
                     break;
+
                 default:
                     Debug.WriteLine("[SERVER] Received weird identifier: " + id);
                     break;
@@ -232,6 +234,7 @@ namespace Server.Models
                     ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
                     OnMessageReceivedOk = () =>
                     {
+
                         serverCom.sendToAll(JSONConvert.GetMessageToSend(JSONConvert.RANDOMWORD, new
                         {
                             id = serverCom.GetLobbyForUser(User).ID,

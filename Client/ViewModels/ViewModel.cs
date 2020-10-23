@@ -92,8 +92,6 @@ namespace Client
 
         private void joinLobby()
         {
-            // lobby die je wilt joinen verwijderen
-            // nieuwe binnengekregen lobby toevoegen
             if (SelectedLobby != null)
             {
                 if (SelectedLobby.PlayersIn == SelectedLobby.MaxPlayers || !SelectedLobby.LobbyJoinable)
