@@ -142,7 +142,7 @@ namespace Server.Models
                 {
                     foreach (ServerClient sc in serverClientsInlobbies[l])
                     {
-                        Debug.WriteLine("[SERVERCLIENT] Sending message");
+                        Debug.WriteLine("[SERVERCLIENT] Sending message to lobby");
                         sc.sendMessage(message);
                     }
                     break;
@@ -260,6 +260,10 @@ namespace Server.Models
                                     serverClientsInlobbies[l].Remove(sc);
                                     break;
                                 }
+                            }
+                            if (l.Users.Count != 0)
+                            {
+                                l.Users[0].Host = true;
                             }
                             break;
                         }
