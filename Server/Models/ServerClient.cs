@@ -23,6 +23,7 @@ namespace Server.Models
         private NetworkStream stream;
         private byte[] buffer = new byte[2048];
         private byte[] totalBuffer = new byte[2048];
+        private string _randomWord = "";
         private int totalBufferReceived = 0;
         private Dictionary<System.Timers.Timer, int> lobbyTimers;
         public User User { get; set; }
@@ -148,6 +149,11 @@ namespace Server.Models
                         message = textMsg
                     };
 
+                    if (textMsg == _randomWord && !string.IsNullOrEmpty(_randomWord))
+                    {
+                        Debug.WriteLine($"[SERVERCLIENT] word has been guessed! {User.Username} + Word: {_randomWord}");
+                    }
+
                     //Sends the incomming message to be broadcast to all of the clients inside the current lobby.
                     serverCom.SendToLobby(serverCom.GetLobbyForUser(User), JSONConvert.GetMessageToSend(JSONConvert.MESSAGE, packet));
                     break;
@@ -269,11 +275,11 @@ namespace Server.Models
                     ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
                     OnMessageReceivedOk = () =>
                     {
-
+                        _randomWord = JSONConvert.SendRandomWord("WordsForGame.json");
                         serverCom.sendToAll(JSONConvert.GetMessageToSend(JSONConvert.RANDOMWORD, new
                         {
                             id = serverCom.GetLobbyForUser(User).ID,
-                            word = JSONConvert.SendRandomWord("WordsForGame.json")
+                            word = _randomWord
                         }));
                         OnMessageReceivedOk = null;
                     };
