@@ -91,6 +91,7 @@ namespace Client.ViewModels
             data.Client.RandomWord = HandleRandomWord;
             data.Client.IncomingMsg = HandleIncomingMsg;
             data.Client.IncomingPlayer = HandleIncomingPlayer;
+            data.Client.UpdateUserScores = UpdateUserScores;
         }
 
         public ICommand OnKeyDown { get; set; }
@@ -255,9 +256,34 @@ namespace Client.ViewModels
                 Players.Clear();
                 foreach (var item in lobby.Users)
                 {
-                    Players.Add(item.Username);
+                    Players.Add(item.Username + "\n" + item.Score);
                 }
             });
         }
+
+        private void UpdateUserScores(Lobby newLobby) {
+            Debug.WriteLine("[GAME] updating user scores");
+            List<User> newUsers = newLobby.Users;
+            // go over all users in current lobby
+            foreach (User user in data.Lobby?.Users)
+            {
+                // check with all users in new lobby
+                foreach (User newUser in newUsers)
+                {
+                    // and update the score
+                    if (newUser.Username == user.Username)
+                    {
+                        Debug.WriteLine($"[GAME] setting score of {user.Username} to {newUser.Score}. it was {user.Score}");
+                        user.Score = newUser.Score;
+                        break;
+                    }
+                }
+            }
+
+            // update all the scores in the player list
+            HandleIncomingPlayer(newLobby);
+        }
+
+        
     }
 }

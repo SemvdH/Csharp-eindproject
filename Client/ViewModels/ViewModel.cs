@@ -112,7 +112,7 @@ namespace Client
 
         private void updateLobbies()
         {
-            Debug.WriteLine("updating lobbies...");
+            Debug.WriteLine("[VIEWMODEL] updating lobbies...");
             Lobby[] lobbiesArr = client.Lobbies;
             Application.Current.Dispatcher.Invoke(delegate
             {
@@ -122,6 +122,11 @@ namespace Client
                 foreach (Lobby l in lobbiesArr)
                 {
                     _lobbies.Add(l);
+                    Lobby clientLobby = ClientData.Instance.Lobby;
+                    if (l.ID == clientLobby?.ID)
+                    {
+                        clientLobby = l;
+                    }
                 }
 
             });
