@@ -112,6 +112,7 @@ namespace Tests
         [TestMethod]
         public void TestgetCoordinates()
         {
+
             int type = JSONConvert.CANVAS_WRITING;
             byte IDsend = JSONConvert.CANVAS;
             double[][] coordinateInfo = new double[2][];
@@ -133,11 +134,13 @@ namespace Tests
             {
                 CollectionAssert.AreEqual(coordinateInfo[i], coordinates[i], "Coordinates are not correct on the ConstructDrawingCanvasData");
             }
+
         }
 
         [TestMethod]
         public void TestGetCanvasDrawingColor()
         {
+
             int type = JSONConvert.CANVAS_WRITING;
             byte IDsend = JSONConvert.CANVAS;
             Color colorSend = Color.FromRgb(0, 0, 0);
