@@ -30,7 +30,7 @@ namespace Client
         public LobbyJoinCallback OnLobbyJoinSuccess;
         public Callback OnLobbiesReceivedAndWaitingForHost;
         public Callback OnServerDisconnect;
-        public Callback OnClientJoinLobby;
+        public Callback OnLobbyUpdate;
         public LobbyCallback OnLobbyCreated;
         public LobbyCallback OnLobbyLeave;
         public RandomWord RandomWord;
@@ -55,6 +55,7 @@ namespace Client
                 this.tcpClient.EndConnect(ar);
                 this.stream = tcpClient.GetStream();
                 OnSuccessfullConnect?.Invoke();
+                OnLobbyUpdate = updateGameLobby;
                 SendMessage(JSONConvert.ConstructUsernameMessage(username));
                 this.stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete),null);
 
@@ -146,7 +147,7 @@ namespace Client
                             Lobbies = JSONConvert.GetLobbiesFromMessage(payload);
                             OnLobbiesListReceived?.Invoke();
                             OnLobbiesReceivedAndWaitingForHost?.Invoke();
-                            OnClientJoinLobby?.Invoke();
+                            OnLobbyUpdate?.Invoke();
                             break;
                         case LobbyIdentifier.HOST:
                             // we receive this when the server has made us a host of a new lobby
@@ -157,18 +158,6 @@ namespace Client
                             break;
                         case LobbyIdentifier.JOIN_SUCCESS:
                             OnLobbyJoinSuccess?.Invoke(JSONConvert.GetLobbyJoinIsHost(payload));
-
-                            OnClientJoinLobby = () =>
-                            {
-                                foreach (var item in Lobbies)
-                                {
-                                    Debug.WriteLine("[CLIENT] lobby data: {0}", item.Users.Count);
-                                    if (item.ID == data.Lobby.ID)
-                                        IncomingPlayer(item);
-                                }
-                                
-                            };
-                            
                             break;
                         case LobbyIdentifier.LEAVE:
                             int lobbyLeaveID = JSONConvert.GetLobbyID(payload);
@@ -199,6 +188,16 @@ namespace Client
 
         }
 
+        private void updateGameLobby()
+        {
+            foreach (var item in Lobbies)
+            {
+                Debug.WriteLine("[CLIENT] lobby data: {0}", item.Users.Count);
+                if (data.Lobby != null && item.ID == data.Lobby.ID)
+                    ViewModels.ViewModelGame.HandleIncomingPlayer(item);
+            }
+        }
+        
         public void SendMessage(byte[] message)
         {
             Debug.WriteLine("[CLIENT] sending message " + Encoding.ASCII.GetString(message));
