@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using static SharedClientServer.JSONConvert;
 
 namespace Server.Models
@@ -23,6 +24,7 @@ namespace Server.Models
         private byte[] buffer = new byte[2048];
         private byte[] totalBuffer = new byte[2048];
         private int totalBufferReceived = 0;
+        private Dictionary<System.Timers.Timer, int> lobbyTimers;
         public User User { get; set; }
         private ServerCommunication serverCom = ServerCommunication.INSTANCE;
         private Callback OnMessageReceivedOk;
@@ -34,6 +36,7 @@ namespace Server.Models
         /// <param name="client">the TcpClient object to use</param>
         public ServerClient(TcpClient client)
         {
+            lobbyTimers = new Dictionary<System.Timers.Timer, int>();
             Debug.WriteLine("[SERVERCLIENT] making new instance and starting");
             tcpClient = client;
             stream = tcpClient.GetStream();
@@ -186,13 +189,34 @@ namespace Server.Models
 
                 case JSONConvert.GAME:
                     Debug.WriteLine("[SERVERCLIENT] Got a message about the game logic");
-                    string command = JSONConvert.GetGameCommand(payload);
+                    GameCommand command = JSONConvert.GetGameCommand(payload);
                     switch (command)
                     {
-                        case "startGame":
+                        case GameCommand.START_GAME:
                             int lobbyID = JSONConvert.GetStartGameLobbyID(payload);
                             serverCom.CloseALobby(lobbyID);
+                            //todo start a timer for this lobby
+                            Debug.WriteLine("[SERVERCLIENT] making timer for lobby " + lobbyID);
+                            System.Timers.Timer lobbyTimer = new System.Timers.Timer(60 * 1000);
+                            this.lobbyTimers.Add(lobbyTimer, lobbyID);
+                            lobbyTimer.Elapsed += LobbyTimer_Elapsed;
+                            lobbyTimer.Start();
                             ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                            break;
+                        case GameCommand.TIMER_ELAPSED:
+                            
+                            break;
+                        case GameCommand.NEXT_ROUND:
+                            // The next round has been started, so we can start the timer again
+                            lobbyID = JSONConvert.GetLobbyID(payload);
+                            foreach (System.Timers.Timer timer in lobbyTimers.Keys)
+                            {
+                                if (lobbyTimers[timer] == lobbyID)
+                                {
+                                    timer.Start();
+                                    break;
+                                }
+                            }
                             break;
                     }
 
@@ -209,6 +233,17 @@ namespace Server.Models
                     Debug.WriteLine("[SERVER] Received weird identifier: " + id);
                     break;
             }
+        }
+
+        private void LobbyTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            System.Timers.Timer timer = sender as System.Timers.Timer;
+            int lobbyID = lobbyTimers[timer];
+            Debug.WriteLine("[SERVERCLIENT] timer elapsed for lobby " + lobbyID);
+            serverCom.SendToLobby(lobbyID, JSONConvert.ConstructGameTimerElapsedMessage(lobbyID));
+            timer.Stop();
+            
+
         }
 
         private void handleLobbyMessage(byte[] payload, LobbyIdentifier l)

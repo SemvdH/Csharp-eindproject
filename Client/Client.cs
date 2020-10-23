@@ -209,6 +209,17 @@ namespace Client
                 default:
                     Debug.WriteLine("[CLIENT] Received weird identifier: " + id);
                     break;
+                case JSONConvert.GAME:
+                    switch (JSONConvert.GetGameCommand(payload))
+                    {
+                        case JSONConvert.GameCommand.TIMER_ELAPSED:
+                            int lobbyElapsedID = JSONConvert.GetLobbyID(payload);
+                            
+                            //todo set next round
+                            break;
+                        
+                    }
+                    break;
             }
             SendMessage(JSONConvert.GetMessageToSend(JSONConvert.MESSAGE_RECEIVED,null));
 
