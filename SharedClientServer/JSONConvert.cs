@@ -193,6 +193,15 @@ namespace SharedClientServer
                 color = colorToSend
             });
         }
+        
+        public static byte[] ConstructCanvasReset()
+        {
+            dynamic payload = new
+            {
+                canvasType = CANVAS_RESET
+            };
+            return GetMessageToSend(CANVAS, payload);
+        }
 
         public static int GetCanvasMessageType(byte[] json)
         {
