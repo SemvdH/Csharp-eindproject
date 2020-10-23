@@ -150,6 +150,22 @@ namespace Server.Models
             }
         }
 
+        public void SendToLobby(int lobbyID, byte[] message)
+        {
+            foreach (Lobby l in lobbies)
+            {
+                if (l.ID == lobbyID)
+                {
+                    foreach (ServerClient sc in serverClientsInlobbies[l])
+                    {
+                        Debug.WriteLine("[SERVERCLIENT] Sending message to lobby");
+                        sc.sendMessage(message);
+                    }
+                    break;
+                }
+            }
+        }
+
         public void SendCanvasDataToLobby(Lobby lobby, string username, byte[] message)
         {
             foreach (Lobby l in lobbies)
