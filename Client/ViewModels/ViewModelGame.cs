@@ -27,6 +27,8 @@ namespace Client.ViewModels
         public Queue<double[][]> linesQueue;
         private Timer queueTimer;
 
+        private bool wordGuessed = false;
+
         public static ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
         public ObservableCollection<string> Players { get; } = new ObservableCollection<string>();
 
@@ -50,7 +52,23 @@ namespace Client.ViewModels
         private string _randomWord;
         public string RandomWord
         {
-            get { return _randomWord; }
+            get {
+                if (data.User.TurnToDraw)
+                    return _randomWord;
+
+                if (!wordGuessed)
+                {
+                    string hiddenWord = "";
+                    for (int i = 0; i < _randomWord.Length; i++)
+                    {
+                        hiddenWord += "_ ";
+                    }
+                    return hiddenWord;
+                }
+                else
+                    return _randomWord;
+            }
+
             set { _randomWord = value; }
         }
 
@@ -59,10 +77,15 @@ namespace Client.ViewModels
             get { return data.User.Host; }
         }
 
+        public bool UserTurnToDraw
+        {
+            get { return data.User.TurnToDraw; }
+        }
+
         public ViewModelGame(GameWindow window)
         {
             this.window = window;
-
+            _randomWord = "";
             buffer = new double[maxLines][];
             linesQueue = new Queue<double[][]>();
             OnKeyDown = new RelayCommand(ChatBox_KeyDown);
@@ -99,7 +122,7 @@ namespace Client.ViewModels
 
         public void Canvas_MouseDown(MouseButtonEventArgs e, GameWindow window)
         {
-            if (e.ButtonState == MouseButtonState.Pressed)
+            if (e.ButtonState == MouseButtonState.Pressed && data.User.TurnToDraw)
             {
                 currentPoint = e.GetPosition(window.CanvasForPaint);
             }
@@ -107,7 +130,7 @@ namespace Client.ViewModels
 
         public void Canvas_MouseMove(MouseEventArgs e, GameWindow window)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && data.User.TurnToDraw)
             {
                 double[] coordinates = new double[4];
                 Line line = new Line();
@@ -144,7 +167,9 @@ namespace Client.ViewModels
 
         public void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            sendArrayFromQueue(sender, null);
+            if (data.User.TurnToDraw)
+                sendArrayFromQueue(sender, null);
+
         }
 
         private void sendArrayFromQueue(object sender, ElapsedEventArgs e)

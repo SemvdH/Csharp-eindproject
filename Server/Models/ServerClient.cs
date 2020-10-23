@@ -208,12 +208,14 @@ namespace Server.Models
                             lobbyTimer.Elapsed += LobbyTimer_Elapsed;
                             lobbyTimer.Start();
                             ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                            serverCom.SendToLobby(lobbyID, JSONConvert.ConstructGameInitializeData( serverCom.FindUserNameInLobby(lobbyID),lobbyID));
                             break;
                         case GameCommand.TIMER_ELAPSED:
                             
                             break;
                         case GameCommand.NEXT_ROUND:
                             // The next round has been started, so we can start the timer again
+
                             lobbyID = JSONConvert.GetLobbyID(payload);
                             foreach (System.Timers.Timer timer in lobbyTimers.Keys)
                             {

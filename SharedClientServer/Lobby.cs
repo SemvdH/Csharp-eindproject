@@ -17,6 +17,7 @@ namespace Client
         private bool _lobbyJoinable;
         //private List<string> _usernames;
         private List<User> _users;
+        private int _userDrawing;
 
         //public void AddUsername(string username, out bool success)
         //{
@@ -36,6 +37,7 @@ namespace Client
             //_usernames = new List<string>();
             _users = new List<User>();
             _lobbyJoinable = true;
+            _userDrawing = 0;
         }
 
         public void AddUser(string username, out bool succes)
@@ -93,6 +95,12 @@ namespace Client
         {
             get { return _lobbyJoinable; }
             set { _lobbyJoinable = value; }
+        }
+
+        public int UserDrawing
+        {
+            get { return _userDrawing; }
+            set { _userDrawing = value; }
         }
 
     }

@@ -298,8 +298,24 @@ namespace Server.Models
                 if (lobby.ID == lobbyID)
                 {
                     lobby.LobbyJoinable = false;
+                    break;
                 }
             }
+        }
+
+        public string FindUserNameInLobby(int lobbyID)
+        {
+            Lobby lobbyFound = null;
+            foreach (Lobby lobby in lobbies)
+            {
+                if (lobby.ID == lobbyID)
+                {
+                    lobbyFound = lobby;
+                    break;
+                }
+            }
+
+            return lobbyFound?.Users[lobbyFound.UserDrawing]?.Username;
         }
     }
 }

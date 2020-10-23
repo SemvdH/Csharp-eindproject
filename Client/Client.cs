@@ -222,6 +222,18 @@ namespace Client
                             
                             //todo set next round
                             break;
+
+                        case JSONConvert.GameCommand.INITIALIZE:
+                            int lobbyID = JSONConvert.GetLobbyID(payload);
+                            string userName = JSONConvert.GetUsernameLogin(payload);
+                            if (lobbyID == clientData.Lobby.ID)
+                                if (userName == clientData.User.Username)
+                                {
+                                    clientData.User.TurnToDraw = true;
+                                    Debug.WriteLine("[CLIENT] Setting a player's turnToDraw to true");
+                                }
+                                   
+                            break;
                         
                     }
                     break;

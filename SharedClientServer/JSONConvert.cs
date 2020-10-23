@@ -38,6 +38,7 @@ namespace SharedClientServer
         public enum GameCommand
         {
             START_GAME,
+            INITIALIZE,
             TIMER_ELAPSED,
             NEXT_ROUND
         }
@@ -218,6 +219,17 @@ namespace SharedClientServer
                 command = GameCommand.START_GAME,
                 lobbyToStart = lobbyID
             }); ;
+        }
+
+        public static byte[] ConstructGameInitializeData(string userName, int lobbyID)
+        {
+            dynamic payload = new
+            {
+                id = lobbyID,
+                command = GameCommand.INITIALIZE,
+                username = userName
+            };
+            return GetMessageToSend(GAME, payload);
         }
 
         public static byte[] ConstructGameTimerElapsedMessage(int lobbyID)
