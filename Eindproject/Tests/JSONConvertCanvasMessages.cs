@@ -85,56 +85,77 @@ namespace Tests
         [TestMethod]
         public void TestConstructCanvasReset()
         {
-          
-            dynamic payload = new
-            {
+            byte[] canvasReset = JSONConvert.ConstructCanvasReset();
+            dynamic json = GetDynamic(GetPayload(canvasReset));
+            int ID = json.canvasType;
 
-            };
-
-        }
-
-        [TestMethod]
-        public void TestConstructCanvasResetMessage()
-        {
-            byte identifier = 0x04;
-            dynamic payload = new
-            {
-
-            };
-
+            Assert.AreEqual(JSONConvert.CANVAS_RESET, ID, $"Canvas type should be reset(1)! Not, {ID}");
         }
 
         [TestMethod]
         public void TestGetCanvasMessageType()
         {
-            byte identifier = 0x04;
-            dynamic payload = new
+            int type = JSONConvert.CANVAS_WRITING;
+            byte IDsend = JSONConvert.CANVAS;
+           
+            dynamic payloadSend = new
             {
-
+                canvasType = type
             };
+            byte[] message = JSONConvert.GetMessageToSend(IDsend, payloadSend);
+            byte[] payload = GetPayload(message);
+            int resultID = JSONConvert.GetCanvasMessageType(payload);
 
+            Assert.AreEqual(type, resultID, $"Canvas type should be {IDsend}! Not, {resultID}");
         }
 
         [TestMethod]
         public void TestgetCoordinates()
         {
-            byte identifier = 0x04;
-            dynamic payload = new
-            {
 
+            int type = JSONConvert.CANVAS_WRITING;
+            byte IDsend = JSONConvert.CANVAS;
+            double[][] coordinateInfo = new double[2][];
+            double[] coordinatesOne = { 10.0, 10.0, 3.0, 3.0 };
+            double[] coordinatesTwo = { 10.0, 10.0, 3.0, 3.0 };
+            coordinateInfo[0] = coordinatesOne;
+            coordinateInfo[1] = coordinatesTwo;
+            dynamic payloadSend = new
+            {
+                canvasType = type,
+                coords = coordinateInfo
             };
+            byte[] message = JSONConvert.GetMessageToSend(IDsend, payloadSend);
+            byte[] payload = GetPayload(message);
+
+            double[][] coordinates = JSONConvert.getCoordinates(payload);
+
+            for (int i = 0; i < coordinateInfo.Length; i++)
+            {
+                CollectionAssert.AreEqual(coordinateInfo[i], coordinates[i], "Coordinates are not correct on the ConstructDrawingCanvasData");
+            }
 
         }
 
         [TestMethod]
         public void TestGetCanvasDrawingColor()
         {
-            byte identifier = 0x04;
-            dynamic payload = new
+
+            int type = JSONConvert.CANVAS_WRITING;
+            byte IDsend = JSONConvert.CANVAS;
+            Color colorSend = Color.FromRgb(0, 0, 0);
+            dynamic payloadSend = new
             {
-
+                canvasType = type,
+                color = colorSend
             };
+            byte[] message = JSONConvert.GetMessageToSend(IDsend, payloadSend);
+            byte[] payload = GetPayload(message);
 
+            Color colorResult = JSONConvert.getCanvasDrawingColor(payload);
+
+            Assert.AreEqual(colorSend, colorResult, "Colors are not equal!");
         }
+
     }
 }
