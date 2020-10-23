@@ -100,7 +100,7 @@ namespace Client.ViewModels
         private void CanvasResetLocal()
         {
             this.window.CanvasForPaint.Children.Clear();
-            data.Client.SendMessage(JSONConvert.GetMessageToSend(JSONConvert.CANVAS, JSONConvert.CANVAS_RESET));
+            data.Client.SendMessage(JSONConvert.ConstructCanvasReset());
         }
 
 
@@ -193,7 +193,11 @@ namespace Client.ViewModels
 
         private void CanvasResetData()
         {
-             this.window.CanvasForPaint.Children.Clear();
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                this.window.CanvasForPaint.Children.Clear();
+            });
+             
         }
 
         private void ChatBox_KeyDown()
