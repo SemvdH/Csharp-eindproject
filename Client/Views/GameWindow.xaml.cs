@@ -15,7 +15,7 @@ namespace Client.Views
         private ViewModelGame viewModel;
         public GameWindow()
         {
-            this.viewModel = new ViewModelGame();
+            this.viewModel = new ViewModelGame(this);
             DataContext = this.viewModel;
             Closing += this.viewModel.LeaveGame;
             InitializeComponent();
@@ -36,16 +36,6 @@ namespace Client.Views
         private void CanvasReset_Click(object sender, RoutedEventArgs e)
         {
             CanvasForPaint.Children.Clear();
-
-            //FOR FUTURE USE, IF NECCESSARY
-            //TEST.Children.Clear();
-
-            //foreach (UIElement child in CanvasForPaint.Children)
-            //{
-            //    var xaml = System.Windows.Markup.XamlWriter.Save(child);
-            //    var deepCopy = System.Windows.Markup.XamlReader.Parse(xaml) as UIElement;
-            //    TEST.Children.Add(deepCopy);
-            //}
         }
 
         private void ClrPcker_Background_SelectedColorChanged_1(object sender, RoutedPropertyChangedEventArgs<Color?> e)
@@ -53,5 +43,9 @@ namespace Client.Views
             viewModel.Color_Picker(e, this);
         }
 
+        private void CanvasForPaint_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            viewModel.Canvas_MouseUp(sender, e);
+        }
     }
 }

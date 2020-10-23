@@ -31,6 +31,7 @@ namespace Client
         private Client _client;
         private Lobby _lobby;
         private string _message;
+        private double[] _canvasData = new double[4];
 
         private ClientData()
         {
@@ -66,6 +67,12 @@ namespace Client
             {
                 _message = value;
             }
+        }
+
+        public double[] CanvasData
+        {
+            get { return _canvasData; }
+            set { _canvasData = value; }
         }
 
     }

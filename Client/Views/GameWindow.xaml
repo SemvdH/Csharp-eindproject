@@ -27,14 +27,29 @@
             <ListBox Name="PlayerList" ItemsSource="{Binding Path=Players}" Margin="10,0,0,10" FontSize="20"/>
         </Grid>
 
-        <Button Name="CanvasReset" Click="CanvasReset_Click" Grid.Row="0" Grid.Column="2" Margin="84,10,10,10" Content="RESET"/>
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Content="Pick a color -->"/>
+            <xctk:ColorPicker Name="ClrPcker_Background" SelectedColorChanged="ClrPcker_Background_SelectedColorChanged_1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="22" Width="100"/>
+
 
         <Label Name="GuessWord" Grid.Row="0" Grid.Column="1" Content="{Binding Path=RandomWord, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
-        <xctk:ColorPicker Name="ClrPcker_Background" SelectedColorChanged="ClrPcker_Background_SelectedColorChanged_1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="22" Width="100"/>
+            <Label Grid.Row="0" Grid.Column="2" FontSize="20" Content="" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            
+            <Button Name="CanvasReset" Click="CanvasReset_Click" Grid.Row="0" Grid.Column="3" Content="RESET"/>
+        </Grid>
+
+        <Button Name="StartGame" Grid.Row="0" Grid.Column="2" Content="Start Game" FontSize="20" Command="{Binding ButtonStartGame}" IsEnabled="{Binding IsHost}"/>
+
 
         <Border Grid.Row="1" Grid.Column="1" Margin ="10,10,10,10" BorderBrush="Black" BorderThickness ="2.5">
-            <Canvas Name="CanvasForPaint" MouseDown="CanvasForPaint_MouseDown" MouseMove="CanvasForPaint_MouseMove">
+            <Canvas Name="CanvasForPaint" MouseDown="CanvasForPaint_MouseDown" MouseMove="CanvasForPaint_MouseMove" MouseUp="CanvasForPaint_MouseUp">
                 <Canvas.Background>
                     <SolidColorBrush Color="White" Opacity="0"/>
                 </Canvas.Background>

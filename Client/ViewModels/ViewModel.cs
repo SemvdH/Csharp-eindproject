@@ -11,6 +11,9 @@ using System.Collections.ObjectModel;
 using Client.Views;
 using System.Linq;
 using System.Windows.Data;
+using System.Data;
+using System.Windows.Controls.Primitives;
+using System.Windows.Controls;
 
 namespace Client
 {
@@ -87,10 +90,16 @@ namespace Client
 
         private void joinLobby()
         {
-            // lobby die je wilt joinen verwijderen
-            // nieuwe binnengekregen lobby toevoegen
-            client.OnLobbyJoinSuccess = OnLobbyJoinSuccess;
-            client.SendMessage(JSONConvert.ConstructLobbyJoinMessage(SelectedLobby.ID));
+            if (SelectedLobby != null)
+            {
+                if (SelectedLobby.PlayersIn == SelectedLobby.MaxPlayers || !SelectedLobby.LobbyJoinable)
+                {
+                    return;
+                }
+                client.OnLobbyJoinSuccess = OnLobbyJoinSuccess;
+                client.SendMessage(JSONConvert.ConstructLobbyJoinMessage(SelectedLobby.ID));
+            }
+            
         }
 
         private void OnLobbyJoinSuccess(bool isHost)
@@ -166,5 +175,7 @@ namespace Client
             get { return _lobbies; }
             set { _lobbies = value; }
         }
+
+   
     }
 }

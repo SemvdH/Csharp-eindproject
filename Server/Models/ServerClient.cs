@@ -20,8 +20,8 @@ namespace Server.Models
     {
         private TcpClient tcpClient;
         private NetworkStream stream;
-        private byte[] buffer = new byte[1024];
-        private byte[] totalBuffer = new byte[1024];
+        private byte[] buffer = new byte[2048];
+        private byte[] totalBuffer = new byte[2048];
         private int totalBufferReceived = 0;
         public User User { get; set; }
         private ServerCommunication serverCom = ServerCommunication.INSTANCE;
@@ -54,7 +54,7 @@ namespace Server.Models
             {
                 int bytesReceived = this.stream.EndRead(ar);
 
-                if (totalBufferReceived + bytesReceived > 1024)
+                if (totalBufferReceived + bytesReceived > 2048)
                 {
                     throw new OutOfMemoryException("buffer is too small!");
                 }
@@ -154,12 +154,49 @@ namespace Server.Models
                     LobbyIdentifier l = JSONConvert.GetLobbyIdentifier(payload);
                     handleLobbyMessage(payload, l);
                     break;
+
                 case JSONConvert.CANVAS:
-                    Debug.WriteLine("GOT A MESSAGE FROM THE CLIENT ABOUT THE CANVAS!!!");
+                    
+                    int typeToCheck = JSONConvert.GetCanvasMessageType(payload);
+                    switch (typeToCheck)
+                    {
+                        case JSONConvert.CANVAS_WRITING:
+                            dynamic canvasData = new
+                            {
+                                canvasType = typeToCheck,
+                                coords = JSONConvert.getCoordinates(payload),
+                                color = JSONConvert.getCanvasDrawingColor(payload)
+                            };
+                            serverCom.SendToLobby(serverCom.GetLobbyForUser(User),JSONConvert.GetMessageToSend(JSONConvert.CANVAS,canvasData));
+                            break;
+
+                        case JSONConvert.CANVAS_RESET:
+                            dynamic canvasDataForReset = new
+                            {
+                                type = JSONConvert.GetCanvasMessageType(payload)
+                            };
+                            serverCom.SendToLobby(serverCom.GetLobbyForUser(User), JSONConvert.GetMessageToSend(CANVAS, canvasDataForReset));
+                            break;
+                    }
+                    
+
                     // canvas data
                     // todo send canvas data to all other serverclients in lobby
                     break;
 
+                case JSONConvert.GAME:
+                    Debug.WriteLine("[SERVERCLIENT] Got a message about the game logic");
+                    string command = JSONConvert.GetGameCommand(payload);
+                    switch (command)
+                    {
+                        case "startGame":
+                            int lobbyID = JSONConvert.GetStartGameLobbyID(payload);
+                            serverCom.CloseALobby(lobbyID);
+                            ServerCommunication.INSTANCE.sendToAll(JSONConvert.ConstructLobbyListMessage(ServerCommunication.INSTANCE.lobbies.ToArray()));
+                            break;
+                    }
+
+                    break;
                 case JSONConvert.RANDOMWORD:
                     //Flag byte for receiving the random word.
                     break;
@@ -167,6 +204,7 @@ namespace Server.Models
                     // we now can send a new message
                     OnMessageReceivedOk?.Invoke();
                     break;
+
                 default:
                     Debug.WriteLine("[SERVER] Received weird identifier: " + id);
                     break;

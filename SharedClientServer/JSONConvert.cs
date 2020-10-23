@@ -1,5 +1,4 @@
-﻿using Client;
-using Microsoft.VisualBasic.CompilerServices;
+using Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -8,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 
 namespace SharedClientServer
 {
@@ -17,8 +17,13 @@ namespace SharedClientServer
         public const byte MESSAGE = 0x02;
         public const byte LOBBY = 0x03;
         public const byte CANVAS = 0x04;
-        public const byte RANDOMWORD = 0x05;
+        public const byte GAME = 0x05;
         public const byte MESSAGE_RECEIVED = 0x06;
+        public const byte RANDOMWORD = 0x07;
+
+        public const int CANVAS_WRITING = 0;
+        public const int CANVAS_RESET = 1;
+        
 
         public enum LobbyIdentifier
         {
@@ -29,9 +34,10 @@ namespace SharedClientServer
             LIST,
             REQUEST
         }
+
         public static (string,string) GetUsernameAndMessage(byte[] json)
         {
-            string msg = Encoding.ASCII.GetString(json);
+            string msg = Encoding.UTF8.GetString(json);
             dynamic payload = JsonConvert.DeserializeObject(msg);
             
             return (payload.username, payload.message);
@@ -39,7 +45,7 @@ namespace SharedClientServer
 
         public static string GetUsernameLogin(byte[] json)
         {
-            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(json));
             return payload.username;
         }
 
@@ -87,6 +93,7 @@ namespace SharedClientServer
             });
         }
 
+
         public static byte[] ConstructLobbyJoinMessage(int lobbyID)
         {
             return GetMessageToSend(LOBBY, new
@@ -106,13 +113,13 @@ namespace SharedClientServer
         }
         public static LobbyIdentifier GetLobbyIdentifier(byte[] json)
         {
-            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(json));
             return payload.identifier;
         }
 
         public static Lobby[] GetLobbiesFromMessage(byte[] json)
         {
-            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(json));
             JArray lobbiesArray = payload.lobbies;
             Debug.WriteLine("[JSONCONVERT] got lobbies from message" + lobbiesArray.ToString());
             Lobby[] lobbiesTemp = lobbiesArray.ToObject<Lobby[]>();
@@ -126,13 +133,13 @@ namespace SharedClientServer
 
         public static int GetLobbyID(byte[] json)
         {
-            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(json));
             return payload.id;
         }
 
         public static Lobby GetLobby(byte[] json)
         {
-            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(json));
             JObject dynamicAsObject = payload.lobby;
             return dynamicAsObject.ToObject<Lobby>();
         }
@@ -145,11 +152,79 @@ namespace SharedClientServer
 
         public static bool GetLobbyJoinIsHost(byte[] json)
         {
-            dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
+            dynamic payload = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(json));
             return payload.host;
         }
 
         #endregion
+
+        public static byte[] ConstructCanvasDataSend(int typeToSend, double[][] buffer, Color colorToSend)
+        {
+            
+            return GetMessageToSend(CANVAS, new
+            {
+                canvasType = typeToSend,
+                coords = buffer,
+                color = colorToSend
+            }); ;
+        }
+
+        public static byte[] ConstructDrawingCanvasData(double[][] buffer, Color colorToSend)
+        {
+            return GetMessageToSend(CANVAS, new
+            {
+                canvasType = CANVAS_WRITING,
+                coords = buffer,
+                color = colorToSend
+            });
+        }
+
+        public static int GetCanvasMessageType(byte[] json)
+        {
+            dynamic d = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(json));
+            return d.canvasType;
+        }
+
+        public static double[][] getCoordinates(byte[] payload)
+        {
+            Debug.WriteLine("got coords " + Encoding.UTF8.GetString(payload));
+            dynamic json = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(payload));
+            JArray coordinatesArray = json.coords;
+
+            double[][] coordinates = coordinatesArray.ToObject<double[][]>();
+
+            return coordinates;
+        }
+
+        public static Color getCanvasDrawingColor(byte[] payload)
+        {
+            dynamic json = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(payload));
+            Color color = json.color;
+            return color;
+        }
+
+        public static byte[] ConstructGameStartData(int lobbyID)
+        {
+            string startGame = "startGame";
+            return GetMessageToSend(GAME, new
+            {
+                command = startGame,
+                lobbyToStart = lobbyID
+            }); ;
+        }
+
+        public static string GetGameCommand(byte[] payload)
+        {
+            dynamic json = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(payload));
+            return json.command;
+        }
+
+        public static int GetStartGameLobbyID(byte[] payload)
+        {
+            dynamic json = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(payload));
+            return json.lobbyToStart;
+        }
+
         /// <summary>
         /// constructs a message that can be sent to the clients or server
         /// </summary>
@@ -159,7 +234,8 @@ namespace SharedClientServer
         public static byte[] GetMessageToSend(byte identifier, dynamic payload)
         {
             // convert the dynamic to bytes
-            byte[] payloadBytes = Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(payload));
+            string json = JsonConvert.SerializeObject(payload);
+            byte[] payloadBytes = Encoding.UTF8.GetBytes(json);
             // make the array that holds the message and copy the payload into it with the first spot containing the identifier
             byte[] res = new byte[payloadBytes.Length + 5];
             // put the payload in the res array
@@ -170,8 +246,8 @@ namespace SharedClientServer
             Array.Copy(BitConverter.GetBytes(payloadBytes.Length+5),0,res,0,4);
             return res;
         }
-    
-        /*
+      
+             /*
          * This method sends a random word from the json file, this happens when the client joins a lobby.
          */
         public static string SendRandomWord(string filename)
@@ -204,5 +280,7 @@ namespace SharedClientServer
             dynamic payload = JsonConvert.DeserializeObject(Encoding.ASCII.GetString(json));
             return payload.word;
         }
+
+        
     }
 }
