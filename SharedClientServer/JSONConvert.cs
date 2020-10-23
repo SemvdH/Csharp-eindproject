@@ -50,6 +50,14 @@ namespace SharedClientServer
             return (payload.username, payload.message);
         }
 
+        internal static byte[] ConstructCanvasResetMessage()
+        {
+            return GetMessageToSend(CANVAS, new
+            {
+                canvasType = CANVAS_RESET
+            });
+        }
+
         public static string GetUsernameLogin(byte[] json)
         {
             dynamic payload = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(json));

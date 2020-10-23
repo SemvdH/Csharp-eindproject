@@ -183,7 +183,7 @@ namespace Server.Models
                         case JSONConvert.CANVAS_RESET:
                             dynamic canvasDataForReset = new
                             {
-                                type = JSONConvert.GetCanvasMessageType(payload)
+                                canvasType = JSONConvert.GetCanvasMessageType(payload)
                             };
                             serverCom.SendToLobby(serverCom.GetLobbyForUser(User), JSONConvert.GetMessageToSend(CANVAS, canvasDataForReset));
                             break;
