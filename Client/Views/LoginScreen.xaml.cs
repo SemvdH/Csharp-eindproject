@@ -20,8 +20,10 @@ namespace Client.Views
     public partial class LoginScreen : Window
     {
         ClientData data = ClientData.Instance;
+        private LoginViewModel loginViewModel;
         public LoginScreen()
         {
+            loginViewModel = new LoginViewModel(this);
             InitializeComponent();
         }
 
@@ -29,22 +31,8 @@ namespace Client.Views
         {
             string name = usernameTextbox.Text;
             if (name == string.Empty) return;
-            User user = new User(name);
-
-            Client client = new Client(user.Username);
             LoginButton.IsEnabled = false;
-            client.OnSuccessfullConnect = () =>
-            {
-                // because we need to start the main window on a UI thread, we need to let the dispatcher handle it, which will execute the code on the ui thread
-                Application.Current.Dispatcher.Invoke(delegate {
-                    data.User = user;
-                    data.Client = client;
-                    client.SendMessage(JSONConvert.ConstructLobbyRequestMessage());
-                    MainWindow startWindow = new MainWindow();
-                    startWindow.Show();
-                    this.Close();
-                });
-            };
+            loginViewModel.UsernameEntered(name);
 
             
         }
