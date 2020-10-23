@@ -20,7 +20,7 @@ namespace Client
     public delegate void CanvasDataReceived(double[][] coordinates, Color color);
     public delegate void CanvasReset();
     public delegate void LobbyCallback(int id);
-    
+
 
     class Client : ObservableObject
     {
@@ -70,9 +70,10 @@ namespace Client
                 OnSuccessfullConnect?.Invoke();
                 OnLobbyUpdate = updateGameLobby;
                 SendMessage(JSONConvert.ConstructUsernameMessage(username));
-                this.stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete),null);
+                this.stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete), null);
 
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Debug.WriteLine("Can't connect, retrying...");
                 tcpClient.BeginConnect("localhost", Port, new AsyncCallback(OnConnect), null);
@@ -113,10 +114,11 @@ namespace Client
 
                 ar.AsyncWaitHandle.WaitOne();
                 stream.BeginRead(buffer, 0, buffer.Length, new AsyncCallback(OnReadComplete), null);
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 Debug.WriteLine("[CLIENT] server not responding! got error: " + e.Message);
-                OnServerDisconnect?.Invoke();   
+                OnServerDisconnect?.Invoke();
             }
         }
 
@@ -139,9 +141,14 @@ namespace Client
                     string textUsername = combo.Item1;
                     string textMsg = combo.Item2;
 
-                    if(textUsername != data.User.Username)
+                    if (textUsername != data.User.Username)
                     {
                         IncomingMsg?.Invoke(textUsername, textMsg);
+                    }
+
+                    if (textMsg == data.User.RandomWord && !string.IsNullOrEmpty(data.User.RandomWord))
+                    {
+                        Debug.WriteLine($"[CLIENT] word has been guessed! {data.User.Username} + Word: {data.User.RandomWord}");
                     }
 
                     //TODO display username and message in chat window
@@ -191,29 +198,42 @@ namespace Client
 
                         case JSONConvert.CANVAS_WRITING:
                             CanvasDataReceived?.Invoke(JSONConvert.getCoordinates(payload), JSONConvert.getCanvasDrawingColor(payload));
-                            
                             break;
                     }
-                break;
-
+                    break;
 
                 case JSONConvert.RANDOMWORD:
                     //Flag byte for receiving the random word.
                     int lobbyId = JSONConvert.GetLobbyID(payload);
-                    string randomWord = JSONConvert.GetRandomWord(payload);
-
-                    if (data.Lobby?.ID == lobbyId)
-                        RandomWord?.Invoke(randomWord);
-                    
+                    data.User.RandomWord = JSONConvert.GetRandomWord(payload);
+                    data.User.TurnToDraw = true; // Dit is test code, dit kan weg zodra alles lopende is.
+                    if (data.Lobby?.ID == lobbyId && data.User.TurnToDraw)
+                        RandomWord?.Invoke(data.User.RandomWord);
                     break;
+
                 default:
                     Debug.WriteLine("[CLIENT] Received weird identifier: " + id);
                     break;
+                case JSONConvert.GAME:
+                    switch (JSONConvert.GetGameCommand(payload))
+                    {
+                        case JSONConvert.GameCommand.TIMER_ELAPSED:
+                            int lobbyElapsedID = JSONConvert.GetLobbyID(payload);
+                            
+                            //todo set next round
+                            break;
+                        
+                    }
+                    break;
             }
-            SendMessage(JSONConvert.GetMessageToSend(JSONConvert.MESSAGE_RECEIVED,null));
+            SendMessage(JSONConvert.GetMessageToSend(JSONConvert.MESSAGE_RECEIVED, null));
 
         }
 
+        /*
+         * Updates the current lobby with the joining players, 
+         * their player score is also tracked and should always be zero.
+         */
         private void updateGameLobby()
         {
             Debug.WriteLine("[CLIENT] updating game lobby");
@@ -228,7 +248,7 @@ namespace Client
 
             }
         }
-        
+
         public void SendMessage(byte[] message)
         {
             Debug.WriteLine("[CLIENT] sending message " + Encoding.ASCII.GetString(message));

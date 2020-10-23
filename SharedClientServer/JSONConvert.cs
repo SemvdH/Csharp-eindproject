@@ -35,6 +35,13 @@ namespace SharedClientServer
             REQUEST
         }
 
+        public enum GameCommand
+        {
+            START_GAME,
+            TIMER_ELAPSED,
+            NEXT_ROUND
+        }
+
         public static (string,string) GetUsernameAndMessage(byte[] json)
         {
             string msg = Encoding.UTF8.GetString(json);
@@ -205,15 +212,24 @@ namespace SharedClientServer
 
         public static byte[] ConstructGameStartData(int lobbyID)
         {
-            string startGame = "startGame";
+            
             return GetMessageToSend(GAME, new
             {
-                command = startGame,
+                command = GameCommand.START_GAME,
                 lobbyToStart = lobbyID
             }); ;
         }
 
-        public static string GetGameCommand(byte[] payload)
+        public static byte[] ConstructGameTimerElapsedMessage(int lobbyID)
+        {
+            return GetMessageToSend(GAME, new
+            {
+                command = GameCommand.TIMER_ELAPSED,
+                id = lobbyID
+            });
+        }
+
+        public static GameCommand GetGameCommand(byte[] payload)
         {
             dynamic json = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(payload));
             return json.command;
