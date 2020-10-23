@@ -1,4 +1,3 @@
-
 ﻿using Client.Views;
 using GalaSoft.MvvmLight.Command;
 using SharedClientServer;
@@ -29,6 +28,7 @@ namespace Client.ViewModels
         private Timer queueTimer;
 
         public static ObservableCollection<string> Messages { get; } = new ObservableCollection<string>();
+        public ObservableCollection<string> Players { get; } = new ObservableCollection<string>();
 
         private dynamic _payload;
 
@@ -45,6 +45,14 @@ namespace Client.ViewModels
             {
                 _message = value;
             }
+        }
+
+        private string _randomWord;
+
+        public string RandomWord
+        {
+            get { return _randomWord; }
+            set { _randomWord = value; }
         }
 
         public static string Word
@@ -80,6 +88,9 @@ namespace Client.ViewModels
             ButtonResetCanvas = new RelayCommand(CanvasResetLocal);
             data.Client.CanvasDataReceived = UpdateCanvasWithNewData;
             data.Client.CReset = CanvasResetData;
+            data.Client.RandomWord = HandleRandomWord;
+            data.Client.IncomingMsg = HandleIncomingMsg;
+            data.Client.IncomingPlayer = HandleIncomingPlayer;
         }
 
         public ICommand OnKeyDown { get; set; }
@@ -237,6 +248,16 @@ namespace Client.ViewModels
                 Word = randomWord;
             });
         }
+        public void HandleIncomingPlayer(Lobby lobby)
+        {
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                Players.Clear();
+                foreach (var item in lobby.Users)
+                {
+                    Players.Add(item.Username);
+                }
+            });
+        }
     }
 }
-       

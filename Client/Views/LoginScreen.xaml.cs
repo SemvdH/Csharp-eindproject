@@ -1,4 +1,5 @@
-﻿using SharedClientServer;
+﻿using Client.ViewModels;
+using SharedClientServer;
 using System;
 using System.Collections.Generic;
 using System.Text;

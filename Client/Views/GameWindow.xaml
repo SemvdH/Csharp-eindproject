@@ -22,16 +22,9 @@
         <Grid Grid.Column="0" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
             </Grid.RowDefinitions>
 
-
+            <ListBox Name="PlayerList" ItemsSource="{Binding Path=Players}" Margin="10,0,0,10" FontSize="20"/>
         </Grid>
 
         <Grid Grid.Row="0" Grid.Column="1">
@@ -44,13 +37,15 @@
             <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" FontSize="20" Content="Pick a color -->"/>
             <xctk:ColorPicker Name="ClrPcker_Background" SelectedColorChanged="ClrPcker_Background_SelectedColorChanged_1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="22" Width="100"/>
 
+
+        <Label Name="GuessWord" Grid.Row="0" Grid.Column="1" Content="{Binding Path=RandomWord, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
             <Label Grid.Row="0" Grid.Column="2" FontSize="20" Content="" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             
             <Button Name="CanvasReset" Click="CanvasReset_Click" Grid.Row="0" Grid.Column="3" Content="RESET"/>
         </Grid>
 
         <Button Name="StartGame" Grid.Row="0" Grid.Column="2" Content="Start Game" FontSize="20" Command="{Binding ButtonStartGame}" IsEnabled="{Binding IsHost}"/>
-        <Label Name="GuessWord" Grid.Row="0" Grid.Column="1" Content="{Binding Path=Word, UpdateSourceTrigger=PropertyChanged}" Margin="418,-5,103,5"/>
 
 
         <Border Grid.Row="1" Grid.Column="1" Margin ="10,10,10,10" BorderBrush="Black" BorderThickness ="2.5">
@@ -62,9 +57,9 @@
         </Border>
 
         <Grid Grid.Column="2" Grid.Row="1">
-            <ListBox Name ="TextBox" ItemsSource="{Binding Path=Messages}" Margin="0,0,0,69"/>
+            <ListBox Name ="TextBox" ItemsSource="{Binding Path=Messages}" Margin="0,0,10,69" />
 
-            <TextBox Name="ChatBox" Text="{Binding Message, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,465,0,0">
+            <TextBox Name="ChatBox" Text="{Binding Message, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,465,10,0">
                 <TextBox.InputBindings>
                     <KeyBinding Key="Return" Command="{Binding OnKeyDown}"/>
                 </TextBox.InputBindings>
