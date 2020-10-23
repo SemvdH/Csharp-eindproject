@@ -193,8 +193,8 @@ namespace Client
             foreach (var item in Lobbies)
             {
                 Debug.WriteLine("[CLIENT] lobby data: {0}", item.Users.Count);
-                if (data.Lobby != null && item.ID == data.Lobby.ID)
-                    ViewModels.ViewModelGame.HandleIncomingPlayer(item);
+                if (item.ID == data.Lobby?.ID)
+                    IncomingPlayer?.Invoke(item);
             }
         }
         
