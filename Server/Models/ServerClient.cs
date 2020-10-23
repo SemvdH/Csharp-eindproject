@@ -176,7 +176,7 @@ namespace Server.Models
                                 coords = JSONConvert.getCoordinates(payload),
                                 color = JSONConvert.getCanvasDrawingColor(payload)
                             };
-                            serverCom.SendToLobby(serverCom.GetLobbyForUser(User),JSONConvert.GetMessageToSend(JSONConvert.CANVAS,canvasData));
+                            serverCom.SendCanvasDataToLobby(serverCom.GetLobbyForUser(User),User.Username,JSONConvert.GetMessageToSend(JSONConvert.CANVAS,canvasData));
                             break;
 
                         case JSONConvert.CANVAS_RESET:

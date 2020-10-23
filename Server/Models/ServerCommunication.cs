@@ -174,7 +174,8 @@ namespace Server.Models
                 {
                     foreach (ServerClient sc in serverClientsInlobbies[l])
                     {
-                        sc.sendMessage(message);
+                        if (sc.User.Username != username)
+                            sc.sendMessage(message);
                     }
                     break;
                 }
