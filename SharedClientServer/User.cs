@@ -13,6 +13,7 @@ namespace SharedClientServer
         private bool _host;
         private bool _turnToDraw;
         private string _message;
+        private string _randomWord;
 
         [JsonConstructor]
         public User(string username, int score, bool host, bool turnToDraw)
@@ -89,6 +90,11 @@ namespace SharedClientServer
         {
             get { return _turnToDraw; }
             set { _turnToDraw = value; }
+        }
+        public string RandomWord
+        {
+            get { return _randomWord; }
+            set { _randomWord = value; }
         }
     }
 }
