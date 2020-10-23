@@ -1,5 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using SharedClientServer;
+using System.Text;
 using Xunit.Sdk;
 
 namespace Tests
@@ -8,8 +10,33 @@ namespace Tests
     public class JSONConvertTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestGetMessageToSendLength()
         {
+            byte identifier = 0x01;
+            dynamic payload = new
+            {
+                value = "test"
+            };
+            string payloadToJson = JsonConvert.SerializeObject(payload);
+            byte[] payloadToBytes = Encoding.UTF8.GetBytes(payloadToJson);
+
+            byte[] result = JSONConvert.GetMessageToSend(identifier, payload);
+            Assert.AreEqual(payloadToBytes.Length + 5, result.Length);
+            Assert.AreEqual(0x01, result[4]);
+        }
+
+        public void TestGetMessageToSendIdentifier()
+        {
+            byte identifier = 0x01;
+            dynamic payload = new
+            {
+                value = "test"
+            };
+            string payloadToJson = JsonConvert.SerializeObject(payload);
+            byte[] payloadToBytes = Encoding.UTF8.GetBytes(payloadToJson);
+
+            byte[] result = JSONConvert.GetMessageToSend(identifier, payload);
+            Assert.AreEqual(0x01, result[4]);
         }
     }
 }
