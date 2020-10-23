@@ -29,7 +29,8 @@ namespace Client.ViewModels
 
         private dynamic _payload;
 
-        private static string _randomWord;
+        private string _randomWord;
+
         public string RandomWord
         {
             get { return _randomWord; }
@@ -97,6 +98,7 @@ namespace Client.ViewModels
         public ViewModelGame()
         {
             OnKeyDown = new RelayCommand(ChatBox_KeyDown);
+            data.Client.RandomWord = HandleRandomWord;
         }
 
         private void ChatBox_KeyDown()
@@ -144,9 +146,9 @@ namespace Client.ViewModels
          * MISC make this a callback
          * Handles the random word that has been received from the server.
          */
-        public static void HandleRandomWord(string randomWord)
+        public void HandleRandomWord(string randomWord)
         {
-            _randomWord = randomWord;
+            RandomWord = randomWord;
             Debug.WriteLine($"[CLIENT] The random word is: {_randomWord}");
         }
 

@@ -29,7 +29,7 @@
 
         <Button Name="CanvasReset" Click="CanvasReset_Click" Grid.Row="0" Grid.Column="2" Margin="84,10,10,10" Content="RESET"/>
 
-        <Label Name="GuessWord" Grid.Row="0" Grid.Column="1" Content="{Binding Path=Word, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Margin="140,0,109,0"/>
+        <Label Name="GuessWord" Grid.Row="0" Grid.Column="1" Content="{Binding Path=RandomWord, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
         <xctk:ColorPicker Name="ClrPcker_Background" SelectedColorChanged="ClrPcker_Background_SelectedColorChanged_1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Height="22" Width="100"/>
 

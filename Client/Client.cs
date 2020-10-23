@@ -12,6 +12,7 @@ namespace Client
 {
     public delegate void LobbyCallback(int id);
     public delegate void LobbyJoinCallback(bool isHost);
+    public delegate void RandomWord(string word);
     class Client : ObservableObject
     {
         private TcpClient tcpClient;
@@ -30,6 +31,7 @@ namespace Client
         public Callback OnClientJoinLobby;
         public LobbyCallback OnLobbyCreated;
         public LobbyCallback OnLobbyLeave;
+        public RandomWord RandomWord;
         private ClientData data = ClientData.Instance;
         public Lobby[] Lobbies { get; set; }
 
@@ -182,7 +184,8 @@ namespace Client
                     string randomWord = JSONConvert.GetRandomWord(payload);
 
                     if (data.Lobby?.ID == lobbyId)
-                    ViewModels.ViewModelGame.HandleRandomWord(randomWord);
+                        RandomWord?.Invoke(randomWord);
+                    
                     break;
                 default:
                     Debug.WriteLine("[CLIENT] Received weird identifier: " + id);
