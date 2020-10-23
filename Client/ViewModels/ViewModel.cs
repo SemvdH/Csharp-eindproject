@@ -121,13 +121,18 @@ namespace Client
 
                 _lobbies.Clear();
 
+                Lobby clientLobby = ClientData.Instance.Lobby;
                 foreach (Lobby l in lobbiesArr)
                 {
                     _lobbies.Add(l);
-                    Lobby clientLobby = ClientData.Instance.Lobby;
                     if (l.ID == clientLobby?.ID)
                     {
-                        clientLobby = l;
+                        clientLobby.Users.Clear();
+
+                        foreach (User user in l.Users)
+                        {
+                            clientLobby.Users.Add(user);
+                        }
                     }
                 }
 

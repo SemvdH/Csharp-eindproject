@@ -227,12 +227,17 @@ namespace Client
                             int lobbyID = JSONConvert.GetLobbyID(payload);
                             string userName = JSONConvert.GetUsernameLogin(payload);
                             if (lobbyID == clientData.Lobby.ID)
+                            {
                                 if (userName == clientData.User.Username)
                                 {
                                     clientData.User.TurnToDraw = true;
                                     Debug.WriteLine("[CLIENT] Setting a player's turnToDraw to true");
                                 }
-                                   
+                                clientData.Client.UpdateUserScores?.Invoke(clientData.Lobby);
+
+                            }
+
+                            
                             break;
                         
                     }

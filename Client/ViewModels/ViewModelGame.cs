@@ -122,7 +122,7 @@ namespace Client.ViewModels
 
         public void Canvas_MouseDown(MouseButtonEventArgs e, GameWindow window)
         {
-            if (e.ButtonState == MouseButtonState.Pressed && data.User.TurnToDraw)
+            if (e.ButtonState == MouseButtonState.Pressed)
             {
                 currentPoint = e.GetPosition(window.CanvasForPaint);
             }
@@ -130,7 +130,7 @@ namespace Client.ViewModels
 
         public void Canvas_MouseMove(MouseEventArgs e, GameWindow window)
         {
-            if (e.LeftButton == MouseButtonState.Pressed && data.User.TurnToDraw)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
                 double[] coordinates = new double[4];
                 Line line = new Line();
@@ -167,7 +167,7 @@ namespace Client.ViewModels
 
         public void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (data.User.TurnToDraw)
+           
                 sendArrayFromQueue(sender, null);
 
         }
@@ -263,7 +263,7 @@ namespace Client.ViewModels
                 Players.Clear();
                 foreach (var item in lobby.Users)
                 {
-                    Players.Add(item.Username + "\n" + item.Score);
+                    Players.Add(item.Username + "\n" + item.Score + "\n" + item.TurnToDraw);
                 }
             });
         }
