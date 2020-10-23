@@ -9,8 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "..\Client\Client.
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SharedClientServer", "..\SharedClientServer\SharedClientServer.shproj", "{6D26F969-9CB1-414F-AC3E-7253D449AC5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{4CB2CD76-07D9-44D0-A559-A7A301621D30}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\SharedClientServer\SharedClientServer.projitems*{4cb2cd76-07d9-44d0-a559-a7a301621d30}*SharedItemsImports = 5
 		..\SharedClientServer\SharedClientServer.projitems*{67a9bf1a-d317-47ca-9f07-c3480d1360ff}*SharedItemsImports = 5
 		..\SharedClientServer\SharedClientServer.projitems*{6d26f969-9cb1-414f-ac3e-7253d449ac5a}*SharedItemsImports = 13
 		..\SharedClientServer\SharedClientServer.projitems*{83768edb-097e-4089-a5de-208cb252d1a0}*SharedItemsImports = 5
@@ -28,6 +31,10 @@ Global
 		{83768EDB-097E-4089-A5DE-208CB252D1A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83768EDB-097E-4089-A5DE-208CB252D1A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83768EDB-097E-4089-A5DE-208CB252D1A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CB2CD76-07D9-44D0-A559-A7A301621D30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CB2CD76-07D9-44D0-A559-A7A301621D30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CB2CD76-07D9-44D0-A559-A7A301621D30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CB2CD76-07D9-44D0-A559-A7A301621D30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
