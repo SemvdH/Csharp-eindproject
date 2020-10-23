@@ -300,7 +300,7 @@ namespace SharedClientServer
 
             Debug.WriteLine($"[SERVERCLIENT] Sending random words {words}");
 
-            return words.words[index];
+            return words.words[0];
         }
 
         /*
